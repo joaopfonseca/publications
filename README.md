@@ -17,7 +17,7 @@ TODO
 ## Installation
 
 To install the basic project dependencies, first activate a Python 3 virtual
-environment and from the root of the project run the command::
+environment and from the root of the project run the command:
 
     pip install .
 
@@ -30,7 +30,7 @@ directories.
 ## scripts
 
 It is the entry point every project. To install the required dependencies from
-the scripts directory run the command::
+the scripts directory run the command:
 
     pip install -r requirements.txt
 
@@ -39,19 +39,19 @@ various scripts are provided.
 
 **data.py**
 
-Download and save the datasets used for the experiments::
+Download and save the datasets used for the experiments:
 
     python data.py
 
 **results.py**
 
-Run the experiments and get the results::
+Run the experiments and get the results:
 
     python results.py
 
 **analysis.py**
 
-Analyze the results of experiments::
+Analyze the results of experiments:
 
     python analysis.py
 
