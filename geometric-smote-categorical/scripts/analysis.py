@@ -29,9 +29,9 @@ def summarize_datasets(datasets):
     )
 
     formatter = "{0:.%sf}" % 2
-    summarized["IR"] = (
-        summarized["Maj. Obs."] / summarized["Min. Obs."]
-    ).apply(formatter.format)
+    summarized["IR"] = (summarized["Maj. Obs."] / summarized["Min. Obs."]).apply(
+        formatter.format
+    )
     summarized["Classes"] = [dataset[1][1].unique().shape[0] for dataset in datasets]
 
     return summarized
