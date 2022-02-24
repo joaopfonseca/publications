@@ -19,19 +19,19 @@ if __name__ == "__main__":
     ]
 
     # Sample datasets
-    # min_n_samples, max_n_samples, fraction, rnd_seed = 20, 1000, 0.1, 5
+    min_n_samples, n_obs, rnd_seed = 15, 5000, 5
     content = []
     for name, data in filtered_content:
 
         cat_feats = data.columns[data.columns.str.startswith("cat_")].tolist()
 
-        # data = data.sample(frac=fraction, random_state=rnd_seed)
-        # classes = [
-        #     cl
-        #     for cl, count in Counter(data.target).items()
-        #     if count >= min_n_samples and count <= max_n_samples
-        # ]
-        # data = data[data.target.isin(classes)].reset_index(drop=True)
+        if data.shape[0] > n_obs:
+            data = data.sample(n=n_obs, random_state=rnd_seed)
+
+        classes = [
+            cl for cl, count in Counter(data.target).items() if count >= min_n_samples
+        ]
+        data = data[data.target.isin(classes)].reset_index(drop=True)
         data = pd.concat(
             [
                 pd.DataFrame(

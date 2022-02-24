@@ -10,12 +10,19 @@ def summarize_datasets(datasets):
     summarized = pd.DataFrame(
         {
             "Dataset": [dataset[0] for dataset in datasets],
-            "Features": [dataset[1][0].shape[1] for dataset in datasets],
-            "Instances": [dataset[1][0].shape[0] for dataset in datasets],
-            "Min. Instances": [
+            "Metric Feat.": [
+                dataset[1][0].columns.str.startswith("cat_").sum()
+                for dataset in datasets
+            ],
+            "Non-Metric Feat.": [
+                (~dataset[1][0].columns.str.startswith("cat_")).sum()
+                for dataset in datasets
+            ],
+            "Obs.": [dataset[1][0].shape[0] for dataset in datasets],
+            "Min. Obs.": [
                 Counter(dataset[1][1]).most_common()[-1][-1] for dataset in datasets
             ],
-            "Maj. Instances": [
+            "Maj. Obs.": [
                 Counter(dataset[1][1]).most_common()[0][-1] for dataset in datasets
             ],
         }
@@ -23,7 +30,7 @@ def summarize_datasets(datasets):
 
     formatter = "{0:.%sf}" % 2
     summarized["IR"] = (
-        summarized["Maj. Instances"] / summarized["Min. Instances"]
+        summarized["Maj. Obs."] / summarized["Min. Obs."]
     ).apply(formatter.format)
     summarized["Classes"] = [dataset[1][1].unique().shape[0] for dataset in datasets]
 
