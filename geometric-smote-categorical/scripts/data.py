@@ -44,7 +44,7 @@ if __name__ == "__main__":
             ],
             axis=1,
         )
-        content.append((name, data, cat_feats))
+        content.append((name, data))
 
     # Save database
     datasets.content_ = content
