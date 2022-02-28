@@ -4,6 +4,7 @@ from copy import deepcopy
 from rich.progress import track
 
 import numpy as np
+import pandas as pd
 from sklearn.preprocessing._encoders import _BaseEncoder, OneHotEncoder
 from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
@@ -41,15 +42,46 @@ class OHECustom(_BaseEncoder):
             handle_unknown=handle_unknown,
         )
 
+    def _check_X_y(self, X, y):
+        if type(X) == pd.DataFrame:
+            self.is_pandas_ = (
+                True if not hasattr(self, "is_pandas_") else self.is_pandas_
+            )
+            self.columns_ = X.columns
+            X_ = X.copy().values
+        else:
+            self.is_pandas_ = (
+                False if not hasattr(self, "is_pandas_") else self.is_pandas_
+            )
+            X_ = X.copy()
+        return X_, y
+
     def fit(self, X, y=None):
-        # NOTE: X must be a numpy array
-        return self.ohe.fit(X[:, self.categorical_features], y)
+        X_, y = self._check_X_y(X, y)
+        return self.ohe.fit(X_[:, self.categorical_features], y)
 
     def transform(self, X):
-        # NOTE: X must be a numpy array
-        metric_data = X[:, ~self.categorical_features]
-        encoded_data = self.ohe.transform(X[:, self.categorical_features])
-        return np.concatenate([metric_data, encoded_data], axis=1).astype(np.float64)
+        X_, y = self._check_X_y(X, None)
+        if self.is_pandas_:
+            metric_data = pd.DataFrame(
+                X_[:, ~self.categorical_features],
+                columns=self.columns_[~self.categorical_features],
+            )
+            encoded_data = pd.DataFrame(
+                self.ohe.transform(X_[:, self.categorical_features]),
+                columns=self.ohe.get_feature_names_out(
+                    self.columns_[self.categorical_features]
+                ),
+            )
+            data = pd.concat([metric_data, encoded_data], axis=1)
+        else:
+            metric_data = X_[:, ~self.categorical_features]
+            encoded_data = self.ohe.transform(X_[:, self.categorical_features])
+            data = np.concatenate([metric_data, encoded_data], axis=1).astype(
+                np.float64
+            )
+
+        return data
 
     def fit_transform(self, X, y=None):
         self.fit(X, y)
@@ -83,9 +115,15 @@ if __name__ == "__main__":
     # Get objects
     datasets = load_datasets(DATA_PATH)
 
-    for dataset, oversampler in track(list(product(datasets, CONFIG["oversamplers"]))):
+    for dataset, oversampler in track(
+        list(product(datasets, CONFIG["oversamplers"])), description="Experiment"
+    ):
 
         categorical_features = dataset[1][0].columns.str.startswith("cat_")
+        unique_values = [
+            dataset[1][0][cat].unique()
+            for cat in dataset[1][0].columns[categorical_features]
+        ]
 
         # Set up dataset-specific params for oversampler
         oversampler = deepcopy(oversampler)
@@ -95,7 +133,11 @@ if __name__ == "__main__":
         # Set up one hot encoder
         ohe = (
             "OHE",
-            OHECustom(categorical_features=categorical_features, sparse=False),
+            OHECustom(
+                categorical_features=categorical_features,
+                categories=unique_values,
+                sparse=False,
+            ),
             {},
         )
 
@@ -127,4 +169,4 @@ if __name__ == "__main__":
             f'{dataset[0].replace(" ", "_").lower()}__'
             + f'{oversampler[0].replace("-", "").lower()}.pkl'
         )
-        experiment.results_.to_pickle(join(RESULTS_PATH, file_name))
+        pd.DataFrame(experiment.cv_results_).to_pickle(join(RESULTS_PATH, file_name))

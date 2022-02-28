@@ -25,6 +25,9 @@ if __name__ == "__main__":
 
         cat_feats = data.columns[data.columns.str.startswith("cat_")].tolist()
 
+        # Ensure categorical features are stored as string
+        data[cat_feats] = data[cat_feats].astype(str)
+
         if data.shape[0] > n_obs:
             data = data.sample(n=n_obs, random_state=rnd_seed)
 
