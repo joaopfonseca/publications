@@ -10,11 +10,11 @@ def summarize_datasets(datasets):
     summarized = pd.DataFrame(
         {
             "Dataset": [dataset[0] for dataset in datasets],
-            "Metric Feat.": [
+            "Metric": [
                 dataset[1][0].columns.str.startswith("cat_").sum()
                 for dataset in datasets
             ],
-            "Non-Metric Feat.": [
+            "Non-Metric": [
                 (~dataset[1][0].columns.str.startswith("cat_")).sum()
                 for dataset in datasets
             ],

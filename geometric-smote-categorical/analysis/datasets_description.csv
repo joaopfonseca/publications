@@ -1,4 +1,4 @@
-Dataset,Metric Feat.,Non-Metric Feat.,Obs.,Min. Obs.,Maj. Obs.,IR,Classes
+Dataset,Metric,Non-Metric,Obs.,Min. Obs.,Maj. Obs.,IR,Classes
 ABALONE,1,7,4139,15,689,45.93,18
 ADULT,8,6,5000,1268,3732,2.94,2
 ANNEALING,4,6,790,34,608,17.88,4

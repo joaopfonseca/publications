@@ -60,6 +60,24 @@ This is text~\cite{Chawla2002}.
 %    cluster is generated.}
 %\end{figure}
 
+ \begin{table}
+     \centering
+     \pgfplotstabletypeset[
+         col sep=comma,
+         string type,
+         every head row/.style={%
+             before row=\toprule,
+             after row=\midrule
+         },
+         every last row/.style={after row=\bottomrule},
+     ]{../analysis/datasets_description.csv}
+     \caption{\label{tab:datasets_description}
+         Description of the datasets collected after data preprocessing. The
+         sampling strategy is similar across datasets. Legend: (IR) Imbalance
+         Ratio
+     }
+\end{table}
+
 \bibliography{references}
 \bibliographystyle{ieeetr}
 
