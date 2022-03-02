@@ -1,0 +1,66 @@
+\documentclass[parskip=full]{scrartcl}
+
+\pdfoutput=1
+
+\title{Geometric SMOTENC \\ \LARGE{A geometrically enhanced drop-in
+replacement for SMOTENC}}
+
+\author{%
+	Joao Fonseca\(^{1*}\), Georgios Douzas\(^{1}\), Fernando Bacao\(^{1}\)
+	\\
+	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
+	\\
+	\small{*Corresponding Author}
+	\\
+	\\
+	\small{Postal Address: NOVA Information Management School, Campus de
+    Campolide, 1070--312 Lisboa, Portugal}
+	\\
+	\small{Telephone: +351 21 382 8610}
+}
+
+\usepackage{breakcites}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{%
+	a4paper,
+	left=18mm,
+	right=18mm,
+	top=8mm,
+}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{booktabs}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.14}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{hyperref}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This is an abstract.
+\end{abstract}
+
+\section{Introduction}
+
+This is text~\cite{Chawla2002}.
+
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=12cm, keepaspectratio]{../analysis/fig3}
+%    \captionbelow{An instance belonging to a minority class cluster and one of
+%    its 5-nearest neighbors are selected. An observation belonging to the same
+%    cluster is generated.}
+%\end{figure}
+
+\bibliography{references}
+\bibliographystyle{ieeetr}
+
+\end{document}
