@@ -6,7 +6,7 @@ experiments' results and visualizations reported in each paper is available
 (whenever possible) in the paper's directory.
 
 Additionally, contributions at the algorithm level are available in the
-package ``ml-research``. The ``ml-research`` package can be found
+package ``ml-research``, which can be found
 [here](https://github.com/joaopfonseca/ml-research).
 
 ## Publication List
@@ -20,32 +20,27 @@ package ``ml-research``. The ``ml-research`` package can be found
 - Crayton A, Fonseca J, Mehra K, Ng M, Ross J, Sandoval-Castañeda M, von Gnecht R. (2021). [Narratives and Needs: Analyzing Experiences of Cyclone Amphan Using Twitter Discourse](2020-amphan-preprint), in IJCAI 2021 Workshop on AI for Social Good. https://crcs.seas.harvard.edu/publications/narratives-and-needs-analyzing-experiences-cyclone-amphan-using-twitter-discourse
 - Douzas, G., Bacao, F., Fonseca, J., & Khudinyan, M. (2019). [Imbalanced Learning in Land Cover Classification: Improving Minority Classes’ Prediction Accuracy Using the Geometric SMOTE Algorithm](2019-lucas). Remote Sensing, 11(24), 3040. https://doi.org/10.3390/rs11243040
 
+## Reproducing a Project/Experiment 
+
+The typical project structure contains the scripts, data, results, analysis and content
+directories. Each of these are used as described below.
+
 ## Installation
 
-To install the basic project dependencies, first activate a Python 3 virtual
-environment and from the root of the project run the command:
+The installation of required packages is essential to reproduce every project.
+The requirements file may be located either in the project root or scripts
+directory. To install the required dependencies run the command:
 
     pip install -r requirements.txt
 
-
-## Project structure
-
-Every research project contains the scripts, data, results, analysis and content
-directories.
-
-## scripts
-
-It is the entry point every project. To install the required dependencies from
-the scripts directory run the command:
-
-    pip install -r requirements.txt
+## Scripts
 
 In order to generate the content of the publication in a reproducible format,
 various scripts are provided.
 
 **data.py**
 
-Download and save the datasets used for the experiments:
+Download, preprocess and save the datasets used for the experiments:
 
     python data.py
 
