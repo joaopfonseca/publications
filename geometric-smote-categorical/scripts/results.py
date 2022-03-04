@@ -10,7 +10,8 @@ from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import StratifiedKFold
-from imblearn.over_sampling import SMOTENC
+from imblearn.over_sampling import SMOTENC, RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
 
 from mlresearch.utils import load_datasets, generate_paths, check_pipelines
 from mlresearch.data_augmentation import GeometricSMOTE
@@ -92,6 +93,8 @@ CONFIG = {
     "oversamplers": [
         ("NONE", None, {}),
         ("SMOTENC", SMOTENC(categorical_features=None), {}),
+        ("RAND-OVER", RandomOverSampler(), {}),
+        ("RAND-UNDER", RandomUnderSampler(), {}),
         ("G-SMOTE", GeometricSMOTE(), {}),
     ],
     "classifiers": [
