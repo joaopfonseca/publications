@@ -1,4 +1,6 @@
-# Imbalanced Learning in Land Cover Classification, improving minority classes' prediction accuracy using the Geometric SMOTE algorithm
+# Imbalanced Learning in Land Cover Classification: Improving Minority Classes’ Prediction Accuracy Using the Geometric SMOTE Algorithm
+
+[Link to publication](https://doi.org/10.3390/rs11243040)
 
 ## Abstract
 
