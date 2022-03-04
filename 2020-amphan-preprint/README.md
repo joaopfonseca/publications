@@ -10,6 +10,7 @@ Authors:
 - Rachel von Gnechten
 
 Additional resources:
+- [Link to publication](https://crcs.seas.harvard.edu/publications/narratives-and-needs-analyzing-experiences-cyclone-amphan-using-twitter-discourse)
 - [ArXiv](https://arxiv.org/abs/2009.05560)
 - [Project's GitHub repository](https://github.com/ancilcrayton/solve-iwmi)
 
