@@ -1,5 +1,8 @@
 # Publications
 
+[![Lint](https://github.com/joaopfonseca/publications/actions/workflows/ci.yml/badge.svg)](https://github.com/joaopfonseca/publications/actions/workflows/ci.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 This repository contains the source code of most of the experiments developed
 in my research. The LaTeX and Python code for generating the paper,
 experiments' results and visualizations reported in each paper is available
