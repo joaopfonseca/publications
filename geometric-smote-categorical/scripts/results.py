@@ -95,8 +95,8 @@ class OHECustom(_BaseEncoder):
 CONFIG = {
     "oversamplers": [
         ("NONE", None, {}),
-        ("SMOTENC", SMOTENC(categorical_features=None), {}),
-        ("RAND-OVER", RandomOverSampler(), {"k_neighbors": [3, 5]}),
+        ("SMOTENC", SMOTENC(categorical_features=None), {"k_neighbors": [3, 5]}),
+        ("RAND-OVER", RandomOverSampler(), {}),
         ("RAND-UNDER", RandomUnderSampler(), {}),
         (
             "G-SMOTE",
@@ -104,8 +104,8 @@ CONFIG = {
             {
                 "k_neighbors": [3, 5],
                 "selection_strategy": ["combined", "minority", "majority"],
-                "truncation_factor": [-1.0, -0.5, 0.0, 0.25, 0.5, 0.75, 1.0],
-                "deformation_factor": [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0],
+                "truncation_factor": [-1.0, -0.5, 0.0, 0.5, 1.0],
+                "deformation_factor": [0.0, 0.25, 0.5, 0.75, 1.0],
             },
         ),
     ],
@@ -113,18 +113,15 @@ CONFIG = {
         ("CONSTANT", DummyClassifier(strategy="prior"), {}),
         (
             "LR",
-            LogisticRegression(),
-            [
-                {"penalty": ["none", "l2"], "solver": "lbfgs"},
-                {"penalty": ["l1", "l2"], "solver": "liblinear"},
-            ],
+            LogisticRegression(max_iter=10000),
+            {"penalty": ["none", "l1", "l2"], "solver": ["saga"]},
         ),
         ("KNN", KNeighborsClassifier(), {"n_neighbors": [3, 5]}),
         ("DT", DecisionTreeClassifier(), {"max_depth": [3, 6]}),
         (
             "RF",
             RandomForestClassifier(),
-            {"max_depth": [None, 3, 6], "n_estimators": [10, 50, 100]},
+            {"max_depth": [3, 6], "n_estimators": [50, 100]},
         ),
     ],
     "scoring": ["accuracy", "f1_macro", "geometric_mean_score_macro"],
