@@ -1,2 +1,1 @@
-geometric-smote
-ml-research
+ml-research==0.4.0
