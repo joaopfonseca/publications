@@ -11,7 +11,7 @@ from itertools import product
 import numpy as np
 import pandas as pd
 from rlearn.tools import select_results
-from mlresearch.utils import generate_paths, load_datasets
+from mlresearch.utils import generate_paths, load_datasets  # , load_plt_sns_configs
 
 
 def summarize_datasets(datasets):
@@ -45,6 +45,42 @@ def summarize_datasets(datasets):
     summarized["Classes"] = [dataset[1][1].unique().shape[0] for dataset in datasets]
 
     return summarized
+
+
+def calculate_wide_optimal(results):
+
+    mean_scoring_cols = results.columns[
+        results.columns.str.contains("mean_test")
+    ]
+
+    optimal = results[mean_scoring_cols]
+
+    # Calculate maximum score per group key
+    keys = ['Dataset', 'Oversampler', 'Classifier']
+    agg_measures = {score: max for score in optimal.columns}
+    optimal = optimal.groupby(keys).agg(agg_measures).reset_index()
+
+    # Format as long table
+    optimal = optimal.melt(
+        id_vars=keys, value_vars=mean_scoring_cols, var_name='Metric', value_name='Score'
+    )
+
+    # Cast to categorical columns
+    optimal_cols = keys + ['Metric']
+    for col in optimal_cols:
+        optimal[col] = pd.Categorical(optimal[col], optimal[col].unique())
+
+    # Sort values
+    optimal = optimal.sort_values(optimal_cols)
+
+    # Move oversamplers to columns
+    optimal = optimal.pivot_table(
+        index=['Dataset', 'Classifier', 'Metric'],
+        columns=['Oversampler'],
+        values='Score',
+    )
+
+    return optimal
 
 
 if __name__ == "__main__":
@@ -89,3 +125,5 @@ if __name__ == "__main__":
     results = select_results(
         results, oversamplers_names=OVERSAMPLERS, classifiers_names=CLASSIFIERS
     )
+    wide_optimal = calculate_wide_optimal(results)
+    wide_optimal.to_csv(join(ANALYSIS_PATH, "wide_optimal.csv"))
