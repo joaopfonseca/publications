@@ -15,6 +15,7 @@
 \usepackage{tabu}
 \usepackage{hyperref}
 \usepackage{lineno}
+\usepackage{soul} % Used to highlight text
 
 \journal{Knowledge-Based Systems}
 
@@ -49,15 +50,16 @@
     literature describes various methods to improve the effectiveness of this
     process, but there is little research developed around the usage of
     artificial data sources in AL\@. In this paper we propose a new framework
-    for AL, which allows for an effective use of artificial data. The proposed
+    for AL, which allows for an effective use of artificial data. \hl{Our}
     method implements a data augmentation policy that optimizes the generation
-    of artificial instances to improve the AL process.  We compare the
-    proposed method to the standard framework by using 4 different
-    classifiers, 2 AL-specific performance metrics and 3 classification
-    performance metrics over 10 different datasets. We show that the proposed
-    framework, using data augmentation, significantly improves the performance
-    of AL, both in terms of classification performance and data selection
-    efficiency. 
+    of artificial instances to improve the AL process. We compare the proposed
+    method to the standard framework \hl{as well as another active learning
+    method that uses data augmentation. The models' performance was tested}
+    using 4 different classifiers, 2 AL-specific performance metrics and 3
+    classification performance metrics over 10 different datasets. We show
+    that the proposed framework, using data augmentation, significantly
+    improves the performance of AL, both in terms of classification
+    performance and data selection efficiency. 
     
 \end{abstract}
 
@@ -564,12 +566,13 @@ within the AL framework, the generator, which was able to marginally reduce
 the variability previously identified. However, this modification was applied
 in a Land Use/Land Cover context which contains specific characteristics that
 are not necessarily found in other supervised learning problems. Specifically,
-high dimensional datasets containing target classes with little data
-variability (\textit{i.e.,} cohesive spectral signatures within classes) due
-to their geographical proximity. Furthermore, the implementation of the
-generator was done using a simple oversampling augmentation policy, which
-limits the possibility of employing other techniques with an undefined target
-amount of data generated at each iteration.
+\hl{these types of datasets are high dimensional and have limited data
+variability within each class} (\textit{i.e.,} cohesive spectral signatures
+within classes) due to their geographical proximity. Furthermore, the
+implementation of the generator was done using a simple oversampling
+augmentation policy, which limits the possibility of employing other
+techniques with an undefined target amount of data generated at each
+iteration.
  
 This paper provides a context-agnostic AL framework towards the integration of
 Data Augmentation within AL, with the following contributions:
