@@ -161,16 +161,16 @@ elements within the AL framework.
 
 In this study, we explore the effect of data augmentation in AL in a
 context-agnostic setting, along with two different data augmentation policies:
-fixed data augmentation (similar to oversampling strategies, where the amount of
-data generated for each class equals the amount of data belonging to the
-majority class) and non-constant data augmentation policies (where the amount of
-data generated exceeds the amount of data belonging to the majority class in
-varying quantities) between iterations. We start by conceptualizing the AL
-framework and each of its elements, as well as the modifications involved to
-implement data augmentation in the AL iterative process. We argue that simple,
-non-domain specific data augmentation heuristics are sufficient to improve the
-performance of AL implementations, without the need to resort to deep
-learning-based data augmentation algorithms.
+\hl{oversampling} (where the amount of data generated for each class equals
+the amount of data belonging to the majority class) and non-constant data
+augmentation policies (where the amount of data generated exceeds the amount
+of data belonging to the majority class in varying quantities) between
+iterations. We start by conceptualizing the AL framework and each of its
+elements, as well as the modifications involved to implement data augmentation
+in the AL iterative process. We argue that simple, non-domain specific data
+augmentation heuristics are sufficient to improve the performance of AL
+implementations, without the need to resort to deep learning-based data
+augmentation algorithms.
 
 When compared to the standard AL framework, the proposed framework contains
 two additional components: the Generator and the Hyperparameter Optimizer. We
@@ -180,7 +180,7 @@ optimized generation policy (explained in
 Section~\ref{sec:data_augmentation}). The hyperparameter optimization module
 is used to find the best data \hl{augmentation} policy at each iteration. We test the
 effectiveness of the proposed method in 10 datasets of different domains. We
-implement 3 AL frameworks (standard, constant data augmentation and varying
+implement 3 AL frameworks (standard, \hl{oversampling} and varying
 data augmentation) using 4 different classifiers, 3 different performance
 metrics and calculate 2 AL-specific performance metrics. 
 
@@ -193,62 +193,34 @@ experiment. Section~\ref{sec:results_discussion} presents the results obtained
 from the experiment, as well as a discussion of these results.
 Section~\ref{sec:conclusion} presents the conclusions drawn from this study.
  
-\section{Active Learning Methods}~\label{sec:active_learning_methods}
+\section{Background}
 
-\hl{AL} maximizes a classifier's performance while annotating as least
-observations as possible. It assumes that observations within the same dataset
-have a different contribution to the training of ML
-classifiers~\cite{Ren2021}. Consequently, the data annotation cost can be
-\hl{reduced with} the annotation of the most valuable observations within an
-unlabeled input space. The goal is to iteratively maximize the classification
-performance of ML algorithms while \hl{reducing} the\hl{ }amount of training
-data \hl{required} to reach a\hl{ }performance
-threshold~\cite{Shrivastava2021}. It allows the implementation of ML
-classifiers with a good performance and minimal effort when compared to
-\hl{the random selection of} data or labeling the entire unlabeled
-dataset~\cite{Ren2020}. Therefore, it addresses the labeling problem in
-scenarios with a limited budget \hl{or time}.
+\subsection{Active Learning}~\label{sec:active_learning_methods}
 
-AL methods \hl{are divided in} 2\hl{ }stages, initialization and
-iteration. Assuming the AL task is initialized without any
-previously labeled data, it is \hl{typically collected randomly across an
-unlabeled pool of data, which is then labeled by a
+\hl{This paper focuses on pool-based AL methods as defined
+in}~\cite{katz2021improved}. \hl{The goal of AL models is to maximize the
+performance of a classifier, $f_{c}$,  while annotating as least
+observations, $x_i$, as possible. They use a data pool, $\mathcal{D}$, where
+$\mathcal{D} = \mathcal{D}_{lab} \cup \mathcal{D}_{pool}$ and
+$|\mathcal{D}_{pool}| \gg |\mathcal{D}_{lab}|$.  $\mathcal{D}_{pool}$ and
+$\mathcal{D}_{lab}$ refer to the sets of unlabeled and labeled data,
+respectively.  Having a budget of $T$ iterations (where $t = 1, 2, \ldots, T$)
+and $n$ annotations per iteration, at iteration $t$, $f_c$ is trained using
+$\mathcal{D}_{lab}^t$ to produce, for each $x_i \in \mathcal{D}_{pool}^t$, an
+uncertainty score using an acquisition function $f_{acq}(x_i;f_c)$. These
+uncertainty scores are used to annotate the $n$
+observations with highest ucertainty from $\mathcal{D}_{pool}^t$ to form
+$\mathcal{D}_{new}^t$. The iteration ends with the update of
+$\mathcal{D}_{lab}^{t+1} = \mathcal{D}_{lab}^t \cup \mathcal{D}_{new}^t$ and
+$\mathcal{D}_{pool}^{t+1} = \mathcal{D}_{pool}^t \setminus
+\mathcal{D}_{new}^t$}~\cite{Su2020, Sverchkov2017}. \hl{This
+process is shown in Figure}~\ref{fig:al_iteration}.
+
+\hl{Before the start of the iterative process, assuming 
+$\mathcal{D}_{lab}^{t=0} = \emptyset$, the data used to populate
+$\mathcal{D}_{lab}^{t=1}$ is typically collected randomly from
+$\mathcal{D} = \mathcal{D}_{pool}^{t=0}$ and is labeled by a
 supervisor}~\cite{Fonseca2021, Yoo2019, Aghdam2019}\hl{.} 
-
-Once an initial training dataset is set up, the iterative process of AL takes
-place. An AL iteration is completed once a new batch of labeled data is added
-to the training dataset. A standard AL process is shown in
-Figure~\ref{fig:al_iteration} and is composed of the following
-steps~\cite{Su2020, Sverchkov2017}:
-
-\begin{enumerate}
-
-    \item Setting up a classification algorithm and uncertainty criterion. The
-        classifier is trained using the labeled dataset (\textit{i.e.,} the
-        Current Training Dataset), and is used to predict the class membership
-        probabilities of the observations found in the unlabeled dataset. The
-        class probabilities are passed into an Uncertainty Criterion, which
-        will return the classification uncertainty of the classification
-        algorithm for each unlabeled observation. The combination of the
-        classifier, along with the uncertainty criterion is sometimes referred
-        to as the Query/Acquisition function~\cite{Rosario2020}.
-
-    \item Selecting the top N observations. Since it is not possible to
-        determine a priori whether the classifier's prediction is correct or
-        not, the N observations with highest uncertainty may have been
-        unknowingly correctly classified. However, regardless of the
-        classification quality, these observations are expected to provide the
-        most meaningful information to train the classifier in the next
-        iteration.
-
-    \item Labeling the selected N observations and updating the current
-        training dataset with the new training observations. The selected
-        observations from the unlabeled dataset are presented to the
-        supervisor, which is responsible for manually labeling the
-        observations. The new (labeled) training observations are added to the
-        training dataset and the iteration is completed.
-
-\end{enumerate}
 
 \begin{figure}[H]
 	\centering
@@ -260,22 +232,9 @@ steps~\cite{Su2020, Sverchkov2017}:
     }~\label{fig:al_iteration}
 \end{figure}
 
-Two common challenges found in AL implementations is the consistency and
-efficiency of AL in practical scenarios~\cite{Kottke2017}. On the one hand,
-the consistency problem refers to the high variance in performance (regarding
-classification and data selection) over different initializations
-(\textit{i.e.,} different initial training datasets) of active learners. On
-the other hand, the efficiency problem refers to the maximization of the
-quality of the collected data over a run. Therefore, a good active learner is
-capable of having a consistent performance over different initializations
-while ensuring the production of high-performing classifiers with the least
-possible amount of data. There are various factors that may affect the
-consistency and efficiency of the AL framework: (1) Human error during data
-labeling~\cite{Li2020}, (2) Non-informative initial training
-dataset~\cite{Nguyen2004} and (3) Lack of an appropriate uncertainty
-criterion~\cite{Rosario2020}. AL research has typically been focused on the
-specification of uncertainty criteria, as well as domain-specific
-applications. Query functions can be divided into two different
+\hl{Research focused on AL} has typically been focused on the
+specification of \hl{$f_{acq}$ and} domain-specific
+applications. \hl{Acquisition} functions can be divided into two different
 categories~\cite{Gu2021, Kumar2020}: 
 
 \begin{enumerate}
@@ -306,9 +265,12 @@ prediction module in the AL framework to replace the uncertainty criterion.
 This model implements a second classifier to predict the expected loss of the
 unlabeled observations (using the actual losses collected during the training
 of the original classifier) and return the unlabeled observations with the
-highest expected loss. Although this contribution is specific to neural
-networks (and more specifically, to deep neural networks), they were able to
-significantly improve the efficiency of data selection in AL\@.
+highest expected loss. \hl{However}, this contribution is specific to neural
+networks (and more specifically, to deep neural networks)\hl{and was only tested
+for image classification}.
+
+\pagebreak
+
 In~\cite{Simeoni2020} the authors propose the usage of semi-supervised
 learning during both the initialization of the AL and the iterative process as
 well. However, this method was proposed specifically for deep learning
@@ -751,9 +713,9 @@ for the evaluation of classification performance. Other performance metrics
 like $Precision = \frac{TP}{TP+TN}$, $Recall = \frac{TP}{TP+FN}$ or
 $Specificity = \frac{TN}{TN + FP}$ are calculated as a function of True/False
 Positives (TP and FP) and True/False Negatives (TN and FN) and can be used at
-a per-class basis instead. In a multiple dataset with varying amount of target
-classes and meanings, comparing the performance of different models using
-these metrics becomes impractical.
+a per-class basis instead. In a multiple dataset \hl{scenario} with varying
+amount of target classes and meanings, comparing the performance of different
+models using these metrics becomes impractical.
  
 Based on the recommendations found in~\cite{Jeni2013, Kubat1997}, we used 2
 metrics found to be less sensitive to the class imbalance bias, along with OA
