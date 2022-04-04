@@ -214,15 +214,13 @@ $\mathcal{D}_{new}^t$. The iteration ends with the update of
 $\mathcal{D}_{lab}^{t+1} = \mathcal{D}_{lab}^t \cup \mathcal{D}_{new}^t$ and
 $\mathcal{D}_{pool}^{t+1} = \mathcal{D}_{pool}^t \setminus
 \mathcal{D}_{new}^t$}~\cite{Su2020, Sverchkov2017}. \hl{This
-process is shown in Figure}~\ref{fig:al_iteration}.
-
-\hl{Before the start of the iterative process, assuming 
-$\mathcal{D}_{lab}^{t=0} = \emptyset$, the data used to populate
-$\mathcal{D}_{lab}^{t=1}$ is typically collected randomly from
-$\mathcal{D} = \mathcal{D}_{pool}^{t=0}$ and is labeled by a
+process is shown in Figure}~\ref{fig:al_iteration}. \hl{Before the start of
+the iterative process, assuming $\mathcal{D}_{lab}^{t=0} = \emptyset$, the
+data used to populate $\mathcal{D}_{lab}^{t=1}$ is typically collected
+randomly from $\mathcal{D} = \mathcal{D}_{pool}^{t=0}$ and is labeled by a
 supervisor}~\cite{Fonseca2021, Yoo2019, Aghdam2019}\hl{.} 
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=.75\linewidth]{../analysis/al_iteration}
     \caption{%
@@ -239,21 +237,12 @@ categories~\cite{Gu2021, Kumar2020}:
 
 \begin{enumerate}
 
-    \item Informative-based query strategies. These strategies use the
+    \item Informative-based\hl{. }These strategies use the
         classifier's output to assess the importance of each observation
-        towards the performance of the classifier. These strategies focus on
-        quantifying the class uncertainty of the unlabeled observations.
-        Since these techniques do not account for the relationships between
-        the unlabeled observations and treats each observation
-        independently~\cite{Fu2013}.
+        towards the performance of the classifier~\cite{Fu2013}\hl{.}
 
-    \item Representative-based query strategies. These strategies estimate the
+    \item Representative-based\hl{. }These strategies estimate the
         optimal set of observations that will optimize the classifier's
-        performance. This strategy contains 3 main approaches: Density-based,
-        Diversity-based and Exploration of graph structures. Although this
-        method addresses the problem of sampling bias and redundant instance
-        selection, these strategies typically require more observations in
-        order to reach the desired classification
         performance~\cite{Kumar2020}.
 
 \end{enumerate}
@@ -269,6 +258,113 @@ highest expected loss. \hl{However}, this contribution is specific to neural
 networks (and more specifically, to deep neural networks)\hl{and was only tested
 for image classification}.
 
+\subsection{Data Augmentation}
+
+% TODO: add formal definition
+
+Data Augmentation methods expand the training dataset by introducing new and
+informative observations~\cite{Behpour2019}. The production of artificial data
+may be done via the introduction of perturbations on the
+input~\cite{Zhong2020}, feature~\cite{DeVries2017} or output
+space~\cite{Behpour2019}. \hl{Data Augmentation methods may be divided into
+two categories}~\cite{Shorten2019}:
+
+\begin{enumerate}
+    \item Heuristic approaches attempt to generate new and relevant
+        observations through the application a predefined procedure, usually
+        incorporating some degree of randomness~\cite{Kashefi2020}. Since
+        these methods typically occur in the input space, they require less
+        data and computational power when compared to Neural Network methods. 
+    \item Neural Network approaches, on the other hand, map the original input
+        space into a lower-dimensional representation, known as the feature
+        space~\cite{DeVries2017}. The generation of artificial data occurs in
+        the feature space and is reconstructed into the input space. Although
+        these methods allow the generation of less noisy data in
+        high-dimensional contexts and more plausible artificial data, they are
+        significantly more computationally intensive. 
+\end{enumerate}
+
+While some techniques may depend on the domain, others are domain-agnostic.
+For example, Random Erasing~\cite{Zhong2020}, Translation, Cropping and
+Flipping are \hl{examples of} image data-specific augmentation methods. Other
+methods, such as \hl{autoencoders}, may be considered domain agnostic\hl{.}
+
+\subsection{Data Augmentation in Active Learning
+}~\label{sec:data_augmentation_in_al}
+
+The standard AL model can be complemented with a data augmentation function,
+$f_{aug}(x_i;\tau)$, where $\tau$ defines the augmentation policy. In this
+context, $\tau$ refers to the transformation applied and its hyperparameters
+and $f_{aug}(x;\tau)$ produces a modified observation, $\tilde{x}$. This
+involves the usage of $\mathcal{D}_{train} = \mathcal{D}_{lab} \cup
+\mathcal{D}_{aug}$ 
+
+
+As found in Section~\ref{sec:active_learning_methods}, improvements proposed
+in the AL framework are mostly focused on modifications of the classifier or
+query strategy. The few recent AL contributions implementing data augmentation
+were all proposed either in the computer vision or natural language processing
+realm. 
+
+The method proposed
+in~\cite{Kim2021}, Look-Ahead Data Acquisition for Deep Active Learning,
+implement image data specific data augmentation to train a deep learning
+classifier. However, in this study, data augmentation is based on the
+unlabeled observations and occurs before the unlabeled data selection.
+In~\cite{Ma2020} the proposed AL method was designed specifically for image
+data classification, where a deep learning model was implemented as a
+classifier, but its architecture is not described. Other AL frameworks
+implementing data augmentation may also be found for Natural Language
+Processing applications~\cite{Quteineh2020, Li2021framework}. However, these
+methods were designed for specific within that domain and are not necessarily
+transferrable to other domains or tasks.
+
+
+
+% Pipelined approach
+A drop-in application of data augmentation in AL is described
+in~\cite{Fonseca2021}. In this study, the AL model proposed is
+applied for tabular data. 
+
+% Look ahead data augmentation
+Data Augmentation in AL has been recently explored for different
+domains~\cite{Kim2021, Quteineh2020, Li2021framework}.
+LADA~\cite{Kim2021}. They test two data augmentation methods, one using
+Spatial Transformer Networks~\cite{jaderberg2015spatial}, and another using
+the Mixup method.
+
+% VAE adversarial Active Learning (2019)
+The Variational Adversarial Active Learning model~\cite{sinha2019variational}
+
+% Task-aware Variational Adversarial Active Learning (2021)
+The Task-aware VAAL model~\cite{kim2021task} improves over the VAAL model
+via\ldots
+
+Related AL data augmentation
+{\bf Copy/pasted from the LADA paper:} "BayesianGenerative Active Deep Learning
+(BGADL) combines acquisition and augmentation in a pipelinedapproach [11];
+BGADL selects data instances viafacq, and BGADL augments the selected
+instancesviafaug, which is VAE-ACGAN. However, BGADL limits the vicinity to
+preserve the label validity.Also, a large number of labeled instances are
+demanded to train the generative model, VAE-ACGAN,of BGADL at every
+acquisition round. More importantly, BGADL does not consider the potentialgain
+from data augmentation in the process of acquisition."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \pagebreak
 
 In~\cite{Simeoni2020} the authors propose the usage of semi-supervised
@@ -281,90 +377,7 @@ the limitations of imbalanced learning. However, this method was implemented
 specifically in the Remote Sensing domain and used an oversampling strategy
 without consideration for the actual amount of artificial data generated,
 which may limit its performance.
- 
-\subsection{Query Strategies}
-
-A query strategy/function encompasses all the steps prior to the data labeling
-within an AL iteration. They focus on finding the observations'
-informativeness, representativeness or both~\cite{Gu2021, Kumar2020}.
-Representative query strategies are generally less efficient in data selection
-than Informative query strategies~\cite{Kumar2020}. However, recent research
-often use representative approaches alongside informative
-approaches~\cite{Gu2021, Samat2016}. Representative query strategies are
-explored via 3 main approaches~\cite{Kumar2020}: 
-
-\begin{enumerate}
-    \item Density-based, which select representative observations from high
-        density regions.~\cite{Huang2014, Li2012, Ienco2013} used a
-        density-based approach using clustering algorithms to select the
-        observations closest to the centroid of each cluster. 
-    \item Diversity-based, which select the N observations at each iteration
-        that maximize the diversity in the training data. The diversity-based
-        approach was developed to avoid the selection of redundant
-        observations in batch-mode learning~\cite{Brinker2003}.
-    \item Graph-based, which find the most representative nodes and edges of a
-        graph network~\cite{Jia2019}. Since these methods are specific to
-        graph network data, they have a more limited applicability.
-\end{enumerate}
-
-Informative query strategies, unlike representative query strategies, do not
-account for the structure of the unlabeled dataset. As a result, this type of
-strategy may lead to the inefficient selection of observations (\textit{i.e.,}
-redundant observations with similar profiles)~\cite{Kumar2020}. Research on
-more robust selection criteria attempts to address the efficiency problem.
-This is motivated by the importance of the selection criteria in AL's
-iterative process~\cite{Rosario2020}. Specifically, Settles~\cite{Settles2011}
-observed that in some datasets informative query strategies fail to outperform
-the random selection of observations. Generally, the Random Selection query
-method is used as a baseline. This method disregards the class membership
-probabilities produced by the classifier and returns N random points from the
-dataset without following any specific criteria.
-
-A frequently used query strategy is Uncertainty Sampling, originally proposed
-in~\cite{Lewis1994}. Using this method, the estimation of an observation's
-uncertainty is based on the target class with the highest probability ($p_a$,
-according to the classifier) and the uncertainty is calculated as $1-p_a$.
-However, since this method dismissed the classifier's predictions on the
-remaining labels, the Breaking Ties criterion was proposed to address this
-limitation for multiclass problems~\cite{Luo2005}. This method uses the two
-target classes with highest probability ($p_a$ and $p_b$, according to the
-classifier) and the uncertainty is calculated as $p_a - p_b$ (in this case,
-the lower the output value, the higher the uncertainty). Recent variants of
-the Breaking Ties criterion, such as the Modified Breaking Ties, attempted to
-fix some limitations of the original method~\cite{Liu2018, Li2012a}.
-
-Another common informative query strategy is the calculation of Shannon's
-Entropy. This metric measures the level of uncertainty
-based on the probabilities of a set of possible events. Its formula is given
-by $H(p)=-\sum_{i=0}^n{p_i\log_2{p_i}}$, having $p$ as the set of
-probabilities of all target classes. The application of the Entropy
-uncertainty criterion is also frequently applied in Deep Active
-Learning~\cite{Aghdam2019}. Other Entropy-based methods were also developed
-for more specific applications. For example, an ensemble querying approach
-known as Entropy Querying-by-Bagging uses the predictions of all estimators to
-find the maximum entropy of each observation~\cite{Abe1998}.
-
-The Query by Committee (QBC) strategy was developed to address ensemble
-classifiers. It is a disagreement based strategy attempts to maximize the
-information gain at each iteration by computing the disagreement of the
-predictions over the estimators that form the ensemble. The Entropy
-Querying-by-Bagging and Query-by-Boosting methods are also ensemble
-strategies. Query by boosting and bagging methods were found to achieve a good
-performance over various datasets~\cite{Melville2004}, while the performance
-between the two strategies appears to differ significantly across various
-scenarios~\cite{Bloodgood2018}.
-
-Other classifier-specific query strategies were also developed for different
-applications. However, these methods have the disadvantage of depending on the
-classifier being used. For example, Margin Sampling is a well studied strategy
-that uses a Support Vector Machine as its classifier in order to select the
-unlabeled observations closest to its decision boundaries~\cite{Kumar2020}.
-Although, since this method is known to lead to the excessive selection of
-observations in dense regions~\cite{Zhou2014}, it was improved in various
-ways. In~\cite{Zhou2014} the authors extend this strategy by applying the
-manifold-preserving graph reduction algorithm beyond the normal Margin
-Sampling method.
- 
+  
 \section{Data Augmentation Methods}~\label{sec:data_augmentation}
 
 Data Augmentation methods expand the training dataset by introducing new and
@@ -471,26 +484,7 @@ factors, which limit the area of the hypersphere. The difference between SMOTE
 and G-SMOTE is shown in Figure~\ref{fig:smote_vs_gsmote}.
 Reference~\cite{Douzas2019imbalanced} found that G-SMOTE outperforms various
 state-of-the-art oversamplers.
- 
-\subsection{Data Augmentation in Active Learning
-}~\label{sec:data_augmentation_in_al}
-
-As found in Section~\ref{sec:active_learning_methods}, the improvement of the
-AL framework found in the literature are mostly focused on modifications of
-the classifier or query strategy. However, a few recent AL applications
-implementing data augmentation were found. The method proposed
-in~\cite{Kim2021}, Look-Ahead Data Acquisition for Deep Active Learning,
-implement image data specific data augmentation to train a deep learning
-classifier. However, in this study, data augmentation is based on the
-unlabeled observations and occurs before the unlabeled data selection.
-In~\cite{Ma2020} the proposed AL method was designed specifically for image
-data classification, where a deep learning model was implemented as a
-classifier, but its architecture is not described. Other AL frameworks
-implementing data augmentation may also be found for Natural Language
-Processing applications~\cite{Quteineh2020, Li2021framework}. However, these
-methods were designed for specific within that domain and are not necessarily
-transferrable to other domains or tasks.
- 
+  
 \section{Proposed Method}~\label{sec:proposed_method}
 
 Based on the literature found on AL, most of the contributions and novel
