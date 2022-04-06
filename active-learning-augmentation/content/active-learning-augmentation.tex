@@ -258,7 +258,7 @@ highest expected loss. \hl{However}, this contribution is specific to neural
 networks (and more specifically, to deep neural networks)\hl{and was only tested
 for image classification}.
 
-\subsection{Data Augmentation}
+\subsection{Data Augmentation}~\label{sec:data_augmentation}
 
 % TODO: add formal definition
 
@@ -292,199 +292,85 @@ methods, such as \hl{autoencoders}, may be considered domain agnostic\hl{.}
 \subsection{Data Augmentation in Active Learning
 }~\label{sec:data_augmentation_in_al}
 
-The standard AL model can be complemented with a data augmentation function,
-$f_{aug}(x_i;\tau)$, where $\tau$ defines the augmentation policy. In this
-context, $\tau$ refers to the transformation applied and its hyperparameters
-and $f_{aug}(x;\tau)$ produces a modified observation, $\tilde{x}$. This
-involves the usage of $\mathcal{D}_{train} = \mathcal{D}_{lab} \cup
-\mathcal{D}_{aug}$ 
+\hl{The standard AL model can be complemented with a data augmentation
+function, $f_{aug}(x_i;\tau)$, where $\tau$ defines the augmentation policy.
+In this context, $\tau$ refers to the transformation applied and its
+hyperparameters and $f_{aug}(x;\tau): \mathcal{D} \rightarrow
+\mathcal{D}_{aug}(\mathcal{D})$ produces a modified observation,
+$\tilde{x} \in \mathcal{D}_{aug}(\mathcal{D})$ where
+$\mathcal{D}_{aug}(\mathcal{D})$ is the set of modified observations. This
+involves the usage of a new set of data, $\mathcal{D}_{train}^t =
+\mathcal{D}_{lab}^t \cup \mathcal{D}_{aug}^t$, to train the classifier.}
 
 
 As found in Section~\ref{sec:active_learning_methods}, improvements proposed
 in the AL framework are mostly focused on modifications of the classifier or
-query strategy. The few recent AL contributions implementing data augmentation
-were all proposed either in the computer vision or natural language processing
-realm. 
-
-The method proposed
-in~\cite{Kim2021}, Look-Ahead Data Acquisition for Deep Active Learning,
-implement image data specific data augmentation to train a deep learning
-classifier. However, in this study, data augmentation is based on the
-unlabeled observations and occurs before the unlabeled data selection.
-In~\cite{Ma2020} the proposed AL method was designed specifically for image
-data classification, where a deep learning model was implemented as a
-classifier, but its architecture is not described. Other AL frameworks
-implementing data augmentation may also be found for Natural Language
-Processing applications~\cite{Quteineh2020, Li2021framework}. However, these
-methods were designed for specific within that domain and are not necessarily
-transferrable to other domains or tasks.
-
-
+query strategy. Furthermore, the few recent AL contributions implementing data
+augmentation were all \hl{(except one) applied to} the computer vision or natural
+language processing (NLP) \hl{realm}. 
 
 % Pipelined approach
-A drop-in application of data augmentation in AL is described
-in~\cite{Fonseca2021}. In this study, the AL model proposed is
-applied for tabular data. 
+\hl{The only AL model found that uses data augmentation outside of the
+computer vision or NLP domains uses a pipelined
+approach}, described in~\cite{Fonseca2021}. In this study, the AL model
+proposed is applied for tabular data \hl{using an oversampling data
+augmentation policy (\textit{i.e.}, the artificial data was generated only to
+balance the target class frequencies)}.  
+
+the AL model proposed was applied
+in a Land Use/Land Cover context with specific characteristics that
+are not necessarily found in other supervised learning problems. Specifically,
+\hl{these types of datasets are high dimensional and have limited data
+variability within each class} (\textit{i.e.,} cohesive spectral signatures
+within classes) due to their geographical proximity. \hl{Furthermore, this method does not
+allow augmentation policy optimization (i.e., every hyperparameter has to be
+hard coded a priori).}
+
+\hl{The Bayesian Generative Active Deep Learning
+(BGDAL)}~\cite{tran2019bayesian} \hl{is another example of a pipelined
+combination of $f_{acq}$ and $f_{aug}$, applied image classification. BGDAL
+uses a Variational AutoEncoder (VAE) architecture to generate artificial
+observations. However, the proposed model is computationally expensive,
+requires a large data pool to train the VAE, and is not only dependent on the
+quality of the augmentations performed, but also on the performance of the
+discriminator and classifiers used.}
 
 % Look ahead data augmentation
-Data Augmentation in AL has been recently explored for different
-domains~\cite{Kim2021, Quteineh2020, Li2021framework}.
-LADA~\cite{Kim2021}. They test two data augmentation methods, one using
-Spatial Transformer Networks~\cite{jaderberg2015spatial}, and another using
-the Mixup method.
+The method proposed in~\cite{Kim2021}, Look-Ahead Data Acquisition for Deep
+Active Learning, implement data augmentation to train a
+deep learning classifier. However, \hl{adapting existing AL applications to
+use this approach is often impractical and implies the usage of image data,} 
+since the augmentations used \hl{are} image data specific and occur
+on the unlabeled observations\hl{,} before the unlabeled data selection.
 
 % VAE adversarial Active Learning (2019)
-The Variational Adversarial Active Learning model~\cite{sinha2019variational}
+\hl{The Variational Adversarial Active Learning (VAAL)
+model}~\cite{sinha2019variational} \hl{is a deep AL approach to image
+classification that uses as inputs the embeddings produced by a VAE into a
+secondary classifier, working as $f_{acq}$, to predict if $x_i \in
+\mathcal{D}$ belongs to $\mathcal{D}_{pool}$. The $n$ true positives with the
+highest certainty are labeled by the supervisor and $\mathcal{D}_{pool}$ and
+$\mathcal{D}_{lab}$ are updated as described in
+Section}~\ref{sec:active_learning_methods}. \hl{The Task-aware VAAL
+model}~\cite{kim2021task} \hl{extends the VAAL model by introducing a ranker,
+which consists of the Learning Loss module introduced in}~\cite{Yoo2019}.
+\hl{These models use data augmentation techniques to train the different
+neural network-based components of the proposed models. However, the AL
+components used are specific image classification, computationally expensive
+and the analysis of the effect of data augmentation in these AL models is not
+discussed.}
 
-% Task-aware Variational Adversarial Active Learning (2021)
-The Task-aware VAAL model~\cite{kim2021task} improves over the VAAL model
-via\ldots
+% Other applications
+In~\cite{Ma2020} the proposed AL method was designed specifically for image
+data classification, where a deep learning model was implemented as a
+classifier, but its architecture is not described\hl{, the augmentation policies
+used are unknown and the results reported correspond to single runs of the
+discussed model}. \hl{The remaining} AL \hl{models found} implementing data
+augmentation \hl{were introduced} for NLP applications, in~\cite{Quteineh2020,
+Li2021framework}. However, these methods were designed for specific
+\hl{applications} within that domain and are not necessarily transferable to
+other domains or tasks.
 
-Related AL data augmentation
-{\bf Copy/pasted from the LADA paper:} "BayesianGenerative Active Deep Learning
-(BGADL) combines acquisition and augmentation in a pipelinedapproach [11];
-BGADL selects data instances viafacq, and BGADL augments the selected
-instancesviafaug, which is VAE-ACGAN. However, BGADL limits the vicinity to
-preserve the label validity.Also, a large number of labeled instances are
-demanded to train the generative model, VAE-ACGAN,of BGADL at every
-acquisition round. More importantly, BGADL does not consider the potentialgain
-from data augmentation in the process of acquisition."
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\pagebreak
-
-In~\cite{Simeoni2020} the authors propose the usage of semi-supervised
-learning during both the initialization of the AL and the iterative process as
-well. However, this method was proposed specifically for deep learning
-applications. In~\cite{Fonseca2021}, the authors introduce the generator
-element in the AL framework (discussed in Section~\ref{sec:proposed_method})
-using an oversampling method, showing that this method effectively addresses
-the limitations of imbalanced learning. However, this method was implemented
-specifically in the Remote Sensing domain and used an oversampling strategy
-without consideration for the actual amount of artificial data generated,
-which may limit its performance.
-  
-\section{Data Augmentation Methods}~\label{sec:data_augmentation}
-
-Data Augmentation methods expand the training dataset by introducing new and
-informative observations~\cite{Behpour2019}. The production of artificial data
-may be done via the introduction of perturbations on the
-input~\cite{Zhong2020}, feature~\cite{DeVries2017} or output
-space~\cite{Behpour2019}. Data Augmentation methods may be divided into
-Heuristic and Neural Network-based approaches~\cite{Shorten2019}. In addition,
-they may also be distinguished based on its data generation policy, whether
-local (considers a local/specific subset of the dataset) or global (considers
-the overall distribution of the training dataset).
-Figure~\ref{fig:data_augmentation_taxonomy} shows the general taxonomy of
-Heuristic Data Augmentation methods. Finding the appropriate Data Augmentation
-method generally depends on the domain~\cite{DeVries2017}, although some
-studies discuss which methods are more appropriate according to the
-domain~\cite{Shorten2019, Iwana2021, Wong2016}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.55\linewidth]{../analysis/data_augmentation_taxonomy}
-    \caption{%
-        Schema containing a general Heuristic Data Augmentation taxonomy.
-    }~\label{fig:data_augmentation_taxonomy}
-\end{figure}
-
-Heuristic approaches attempt to generate new and relevant observations through
-the application a predefined procedure, usually incorporating some degree of
-randomness~\cite{Kashefi2020}. Since these methods typically occur in the
-input space, they require less data and computational power when compared to
-Neural Network methods. Neural Network approaches, on the other hand, map the
-original input space into a lower-dimensional representation, known as the
-feature space~\cite{DeVries2017}. The generation of artificial data occurs in
-the feature space and is reconstructed into the input space. Although these
-methods allow the generation of less noisy data in high-dimensional contexts
-and more plausible artificial data, they are significantly more
-computationally intensive. Considering the scope of this paper (the paper's
-contribution is described in Sections~\ref{sec:introduction}
-and~\ref{sec:proposed_method}), the computational power available for this
-experiment and the breadth of datasets used in our experimental procedure, we
-will focus on domain-agnostic heuristic data augmentation methods.
-
-While some techniques may depend on the domain, others are domain-agnostic.
-For example, Random Erasing~\cite{Zhong2020}, Translation, Cropping and
-Flipping are image data-specific augmentation methods. Other methods, such as
-most of the variants of the Synthetic Minority Oversampling TEchnique
-(SMOTE)~\cite{Chawla2002}, may be considered domain agnostic. However, SMOTE
-methods were originally developed as oversamplers, whose goal is to balance
-the class frequencies of the target variable in the training dataset and
-address the class imbalance bias~\cite{Fonseca2021ksmote}. Therefore,
-oversampling methods may be considered a subset of Data Augmentation. Data
-Augmentation strategies may follow varying augmentation strategies, which does
-not necessarily depend on the target class distribution. An example of the
-differences among general data augmentation and oversampling generation
-strategies is shown in Figure~\ref{fig:augmentation_strategies}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.6\linewidth]{../analysis/augmentation_strategies}
-    \caption{%
-        Examples of data augmentation Strategies. The salmon-colored bars
-        represent artificial data using the normal oversampling (center group) and
-        an example of augmentation (right group) strategies.
-    }~\label{fig:augmentation_strategies}
-\end{figure}
-
-The simplest approach found in the literature is randomly duplicating existing
-training observations. As a non-informed data generation method, although
-simple to implement, it increases the risk of overfitting and generally
-performs worse than other informed heuristic
-methods~\cite{Douzas2019imbalanced}.
-
-The SMOTE method generates artificial data via the linear interpolation
-between a random observation and one of its $k$-nearest neighbors (also
-randomly selected)~\cite{Chawla2002}. Although simple and effective, it also
-contains several limitations which motivated the development other variants,
-discussed below. Specifically, its selection mechanism does not consider the
-global structure of the dataset while its generation mechanism introduces
-little variability into the training dataset~\cite{Douzas2019}.
-Borderline-SMOTE (B-SMOTE)~\cite{Han2005} improves the selection mechanism by
-attributing a larger importance to the observations closer to the decision
-boundaries. The selected observations are used to run the SMOTE method in
-order to produce better defined decision boundaries. A more recent improvement
-of the selection mechanism is K-means SMOTE (K-SMOTE)~\cite{Douzas2018}. This
-method uses a clustering-based approach to overcome imbalances between and
-within classes, while considering the densities of each region of the input
-space.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.45\linewidth]{../analysis/smote_vs_gsmote}
-    \caption{%
-        Examples of data generation using SMOTE and G-SMOTE\@. In this
-        example, both G-SMOTE's deformation and truncation parameters assume
-        values around $0.5$.
-    }~\label{fig:smote_vs_gsmote}
-\end{figure}
-
-G-SMOTE~\cite{Douzas2019} modifies SMOTE's generation mechanism. Instead of
-generating an observation as a linear combination between 2 others, it
-generates observations within an hypersphere defined using the selected
-observation as its center and one of its nearest neighbors as its boundary.
-The hypersphere contains two hyperparameters, the truncation and deformation
-factors, which limit the area of the hypersphere. The difference between SMOTE
-and G-SMOTE is shown in Figure~\ref{fig:smote_vs_gsmote}.
-Reference~\cite{Douzas2019imbalanced} found that G-SMOTE outperforms various
-state-of-the-art oversamplers.
-  
 \section{Proposed Method}~\label{sec:proposed_method}
 
 Based on the literature found on AL, most of the contributions and novel
@@ -493,20 +379,11 @@ choice/architecture of the classifier or the improvement of the uncertainty
 criterion. In addition, the resulting classification performance of AL-trained
 classifiers is frequently inconsistent and marginally improve the
 classification performance when compared to classifiers trained over the full
-training set. Finally, in~\cite{Fonseca2021} the authors also found a
-significant variability of the data selection efficiency during different runs
-of the AL iterative process. In that study the authors proposed a new element
-within the AL framework, the generator, which was able to marginally reduce
-the variability previously identified. However, this modification was applied
-in a Land Use/Land Cover context which contains specific characteristics that
-are not necessarily found in other supervised learning problems. Specifically,
-\hl{these types of datasets are high dimensional and have limited data
-variability within each class} (\textit{i.e.,} cohesive spectral signatures
-within classes) due to their geographical proximity. Furthermore, the
-implementation of the generator was done using a simple oversampling
-augmentation policy, which limits the possibility of employing other
-techniques with an undefined target amount of data generated at each
-iteration.
+training set. \hl{In addition, there is also a} significant variability of the
+data selection efficiency during different runs of the AL iterative
+process~\cite{Fonseca2021}.  
+
+
  
 This paper provides a context-agnostic AL framework towards the integration of
 Data Augmentation within AL, with the following contributions:
@@ -548,7 +425,10 @@ to train the iteration's classifier in the following step.
 \end{figure}
 
 To show the effectiveness of data augmentation in an AL implementation, we
-implemented a simple modification of the G-SMOTE algorithm. This modification
+implemented a simple modification \hl{in the selection mechanism} of the
+G-SMOTE algorithm. % We use the uncertainties used 
+
+This modification
 facilitates the usage of G-SMOTE beyond its original oversampling purposes. In
 this paper, the data augmentation strategies used ensure the all the class
 frequencies are balanced. Furthermore, the amount of artificial data produced
