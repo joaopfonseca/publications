@@ -7,7 +7,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{enumitem}
-\usepackage[ruled,vlined]{algorithm2e}
+% \usepackage[ruled,vlined]{algorithm2e}
 \usepackage{booktabs}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.14}
@@ -15,6 +15,9 @@
 \usepackage{tabu}
 \usepackage{hyperref}
 \usepackage{lineno}
+% \usepackage{algorithm}
+\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
+% \usepackage[noend, ]{algpseudocode}
 \usepackage{soul} % Used to highlight text
 
 \journal{Knowledge-Based Systems}
@@ -402,18 +405,19 @@ Data Augmentation within AL, with the following contributions:
         comparing them with the standard AL framework.
 \end{enumerate}
 
-The proposed iterative process of the AL framework is depicted in
-Figure~\ref{fig:al_proposed}. The generator element becomes an additional
-source of data and is expected to introduce additional data variability into
-the training dataset. This should allow the classifier to generalize better
-and perform more consistently over unseen observations. However, in this
-scenario, the amount of data to generate per class at each iteration is
-unknown. Consequently, the hyperparameter tuning step was introduced to
-estimate the optimal data augmentation policy at each iteration. In our
-implementation, this step uses the current training dataset to perform an
-exhaustive search over specified parameters of the generator, tested over a
-5-fold cross validation method. The best augmentation policy found is used
-to train the iteration's classifier in the following step.
+The proposed\hl{ }AL framework is depicted in Figure~\ref{fig:al_proposed}.
+The generator element becomes an additional source of data and is expected to
+introduce additional data variability into the training dataset. This should
+allow the classifier to generalize better and perform more consistently over
+unseen observations. However, in this scenario, the amount of data to generate
+per class at each iteration is unknown. Consequently, the hyperparameter
+tuning step was introduced to estimate the optimal data augmentation policy at
+each iteration. In our implementation, this step uses the current training
+dataset to perform an exhaustive search over specified parameters of the
+generator, tested over a 5-fold cross validation method. The best augmentation
+policy found is used to train the iteration's classifier in the following
+step. \hl{This procedure is described in Algorithm}~\ref{alg:al-framework}.
+
 
 \begin{figure}[H]
 	\centering
@@ -426,13 +430,26 @@ to train the iteration's classifier in the following step.
 
 To show the effectiveness of data augmentation in an AL implementation, we
 implemented a simple modification \hl{in the selection mechanism} of the
-G-SMOTE algorithm. % We use the uncertainties used 
+G-SMOTE algorithm. \hl{We use the uncertainties produced by $f_{acq}$ to
+compute the probabilities of observations to be selected for augmentation, as
+an additional parameter. This modification is described in
+Algorithm}~\ref{alg:g-smote} 
+
+
+\begin{algorithm}
+    \SetKwInput{KwGiven}{Given}
+    \caption{Proposed Active Learning Framework}\label{alg:al-framework}
+    \DontPrintSemicolon% 
+    \KwGiven{$t > 1$}
+    \KwIn{$\mathcal{D}_{pool}^t$, $\mathcal{D}_{lab}^t$, $f_c$, $f_{acq}$}
+    \KwOut{$\mathcal{D}_{train}$}
+\end{algorithm}
 
 This modification
 facilitates the usage of G-SMOTE beyond its original oversampling purposes. In
 this paper, the data augmentation strategies used ensure the all the class
 frequencies are balanced. Furthermore, the amount of artificial data produced
-for each class is defined by the \textit{augmentation factor}, which
+for each class is defined by the \textit{augmentation factor}\hl{, $\alpha_{af}$}, which
 represents a percentage of the majority class $C_{maj}$ (\textit{e.g.,} an
 augmentation factor of $1.2$ will ensure there are $count(C_{maj}) \times 1.2$
 observations in every class). In this paper's experiment, the data generation
@@ -440,6 +457,64 @@ mechanism is similar to the one in~\cite{Fonseca2021}. This allows the direct
 comparison of the two frameworks and establish a causality of the performance
 variations to the data generation mechanism (\textit{i.e.,} augmentation vs
 normal oversampling) and hyperparameter tuning steps.
+
+\begin{algorithm}
+    \SetKwInput{KwGiven}{Given}
+    \SetKwProg{Fn}{Function}{ is}{end}
+    \caption{G-SMOTE Modified for Data Augmentation in Active
+    Learning}\label{alg:g-smote}
+    \DontPrintSemicolon% 
+    \KwGiven{$t \ge 1$, $\mathcal{D}_{lab}^t \ne \emptyset$,
+    $\mathcal{D}_{lab} = \mathcal{D}_{lab}^{min} \cup \mathcal{D}_{lab}^{maj}$, \textit{GSMOTE}}
+    \KwIn{$\mathcal{D}_{pool}^t$, $\mathcal{D}_{lab}^t$, $f_c^{t-1}$,
+    $f_{acq}$, $\tau$}
+    \KwOut{$\mathcal{D}_{train}^t$}
+
+    \Fn{DataSelection($\mathcal{D}_{lab}^t$, $f_{acq}$, $f_c^{t-1}$) :
+    $x_{center}$}{%
+        $U \leftarrow \emptyset$ \\ 
+        $P \leftarrow \emptyset$ \\ 
+        $p_s \sim \mathcal{U}(0, 1)$ \\
+        \ForAll{$x_i \in \mathcal{D}_{lab}^t$}{
+            $u_{x_i} \leftarrow f_{acq}(x_i; f_c^{t-1})$\\
+            $U \leftarrow U \cup \{u_{x_i}\}$
+        }
+        \ForAll{$u_{x_i} \in U$}{
+            $p_{x_i} \leftarrow \frac{u_{x_i}}{\sum{U}} + \sum{P}$ \\
+            $P \leftarrow P \cup \{p_{x_i}\}$
+        }
+        $i \leftarrow argmax(P < p_s)$ \\
+        \Return i-th element in $\mathcal{D}_{lab}^t$
+    }
+    \Begin{
+        $\mathcal{D}_{aug}^{min} \leftarrow \emptyset$ \\
+        $\mathcal{D}_{aug}^{maj} \leftarrow \emptyset$ \\
+        $\alpha_{af}, \alpha_{trunc}, \alpha_{def} \leftarrow \tau$ \\
+        $N \leftarrow count(C_{maj}) \times \alpha_{af}$ \\
+        
+        \ForAll{
+            $\mathcal{D}'_{aug} \in \{\mathcal{D}_{aug}^{min},
+            \mathcal{D}_{aug}^{maj}\}$, $\mathcal{D}'_{lab} \in \{\mathcal{D}_{lab}^{min},
+            \mathcal{D}_{lab}^{maj}\}$
+        }{
+            \While{
+                $|\mathcal{D}'_{aug}| < N$
+            }{
+                $x_{center} \leftarrow DataSelection(\mathcal{D}'_{lab},
+                f_{acq}, f_c^{t-1})$ \\
+                $x_{gen} \leftarrow GSMOTE(x_{center}, \mathcal{D}_{lab}^t, \alpha_{trunc},
+                \alpha_{def})$ \\
+                $\mathcal{D}'_{aug} \leftarrow \mathcal{D}'_{aug} \cup
+                \{x_{gen}\}$
+            }
+        }
+        $\mathcal{D}_{aug} \leftarrow \mathcal{D}_{aug}^{min} \cup \mathcal{D}_{aug}^{maj}$ \\
+        $\mathcal{D}_{train}^t \leftarrow \mathcal{D}_{lab}^t \cup
+        \mathcal{D}_{aug}$
+    }
+\end{algorithm}
+
+
 
 \begin{figure}[H]
 	\centering
