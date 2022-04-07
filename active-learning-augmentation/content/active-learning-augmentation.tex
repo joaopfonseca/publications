@@ -180,12 +180,13 @@ two additional components: the Generator and the Hyperparameter Optimizer. We
 implement \hl{a modified version of }Geometric Synthetic Minority Oversampling
 Technique (G-SMOTE)~\cite{Douzas2019} as a data augmentation method with an
 optimized generation policy (explained in
-Section~\ref{sec:data_augmentation}). The hyperparameter optimization module
-is used to find the best data \hl{augmentation} policy at each iteration. We test the
-effectiveness of the proposed method in 10 datasets of different domains. We
-implement 3 AL frameworks (standard, \hl{oversampling} and varying
-data augmentation) using 4 different classifiers, 3 different performance
-metrics and calculate 2 AL-specific performance metrics. 
+Section~\ref{sec:data_augmentation}). \hl{We also propose a} hyperparameter
+optimization module\hl{, which is} used to find the best data \hl{augmentation}
+policy at each iteration. We test the effectiveness of the proposed method in
+10 datasets of different domains. We implement 3 AL frameworks (standard,
+\hl{oversampling} and varying data augmentation) using 4 different
+classifiers, 3 different performance metrics and calculate 2 AL-specific
+performance metrics. 
 
 The rest of this manuscript is structured as follows:
 Section~\ref{sec:active_learning_methods} describes the state-of-the-art in
@@ -438,11 +439,60 @@ Algorithm}~\ref{alg:g-smote}
 
 \begin{algorithm}
     \SetKwInput{KwGiven}{Given}
-    \caption{Proposed Active Learning Framework}\label{alg:al-framework}
-    \DontPrintSemicolon% 
-    \KwGiven{$t > 1$}
-    \KwIn{$\mathcal{D}_{pool}^t$, $\mathcal{D}_{lab}^t$, $f_c$, $f_{acq}$}
-    \KwOut{$\mathcal{D}_{train}$}
+    \SetKwProg{Fn}{Function}{:}{end}
+    \caption{Proposed AL Framework (Single iteration)}\label{alg:al-framework}
+    \DontPrintSemicolon%
+    \KwGiven{$t \ge 1$, performance metric $f_{pm}$}
+    \KwIn{$\mathcal{D}_{pool}$, $\mathcal{D}_{lab}$, $f_c$, $f_{aug}$,
+    $f_{acq}$, $\tau_{grid}$, $k$, $n$}
+    \KwOut{$\mathcal{D}_{pool}$, $\mathcal{D}_{lab}$}
+
+    \Fn{ParameterTuning($f_c$, $f_{aug}$, $\tau_{grid}$, $\mathcal{D}_{lab}$,
+    $k$)}{
+        $p \leftarrow 0$ \\
+        $\tau \leftarrow \emptyset$ \\
+        $\{\mathcal{D}_{lab}^1, \ldots \mathcal{D}_{lab}^k\} \leftarrow
+        \mathcal{D}_{lab}$
+        \tcp*[f]{$\mathcal{D}_{lab}^n \cap \mathcal{D}_{lab}^m = \emptyset,
+        \forall (n, m) \in {1, \ldots, k}$} \\
+        \ForAll{$\tau' \in \tau_{grid}$}{
+            $p' \leftarrow \emptyset$ \\
+            \ForAll{
+                $\mathcal{D}_{lab}^i \in \{\mathcal{D}_{lab}^1, \ldots
+                \mathcal{D}_{lab}^k\}$
+            }{
+                $\mathcal{D}_{test}' \leftarrow \mathcal{D}_{lab}^i$ \\
+                $\mathcal{D}_{train}' \leftarrow \mathcal{D}_{lab} \setminus
+                \mathcal{D}_{lab}^i$ \\
+                $\mathcal{D}_{train}' \leftarrow f_{aug}(\mathcal{D}_{train}';
+                \tau')$ \\
+                \textbf{train} $f_c$ using $\mathcal{D}_{train}'$ \\
+                $p' \leftarrow p' \cup \{f_{pm}(f_c(\mathcal{D}_{test}))\}$
+            }
+            $p' \leftarrow \frac{\sum_{x_i \in p'}{x_i}}{k}$ \\
+            \If{$p' > p$}{
+                $p \leftarrow p'$ \\
+                $\tau \leftarrow \tau'$
+            }
+        }
+        \Return $\tau$
+    }
+
+    \Begin{
+        $\tau \leftarrow ParameterTuning(f_c, f_{aug}, \tau_{grid},
+        \mathcal{D}_{lab}, k)$ \\
+        $\mathcal{D}_{train} \leftarrow f_{aug}(\mathcal{D}_{lab}; \tau)$ \\
+        \textbf{train} $f_c$ using $\mathcal{D}_{train}$ \\
+        $\mathcal{D}_{new} = \arg\max_{\mathcal{D}_{pool}'\subset
+        \mathcal{D}_{pool}, |\mathcal{D}_{pool}'|=n} \sum_{x \in
+        \mathcal{D}_{pool}'}{f_{acq}(x; f_c)}$ \\
+        \textbf{annotate} $\mathcal{D}_{new}$ \\
+        $\mathcal{D}_{pool} \leftarrow \mathcal{D}_{pool} \setminus
+        \mathcal{D}_{new}$ \\
+        $\mathcal{D}_{lab} \leftarrow \mathcal{D}_{lab} \cup
+        \mathcal{D}_{new}$ \\
+    }
+
 \end{algorithm}
 
 This modification
@@ -460,9 +510,8 @@ normal oversampling) and hyperparameter tuning steps.
 
 \begin{algorithm}
     \SetKwInput{KwGiven}{Given}
-    \SetKwProg{Fn}{Function}{ is}{end}
-    \caption{G-SMOTE Modified for Data Augmentation in Active
-    Learning}\label{alg:g-smote}
+    \SetKwProg{Fn}{Function}{:}{end}
+    \caption{G-SMOTE Modified for Data Augmentation in AL}\label{alg:g-smote}
     \DontPrintSemicolon% 
     \KwGiven{$t \ge 1$, $\mathcal{D}_{lab}^t \ne \emptyset$,
     $\mathcal{D}_{lab} = \mathcal{D}_{lab}^{min} \cup \mathcal{D}_{lab}^{maj}$, \textit{GSMOTE}}
@@ -470,8 +519,7 @@ normal oversampling) and hyperparameter tuning steps.
     $f_{acq}$, $\tau$}
     \KwOut{$\mathcal{D}_{train}^t$}
 
-    \Fn{DataSelection($\mathcal{D}_{lab}^t$, $f_{acq}$, $f_c^{t-1}$) :
-    $x_{center}$}{%
+    \Fn{DataSelection($\mathcal{D}_{lab}^t$, $f_{acq}$, $f_c^{t-1}$)}{%
         $U \leftarrow \emptyset$ \\ 
         $P \leftarrow \emptyset$ \\ 
         $p_s \sim \mathcal{U}(0, 1)$ \\
