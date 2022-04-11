@@ -30,14 +30,19 @@ DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
 DATASETS_NAMES = [
     "baseball",
     "gas_drift",
+    "gesture_segmentation",
     "image_segmentation",
     "japanese_vowels",
     "mfeat_zernike",
     "mice_protein",
     "pendigits",
+    "steel_plates",
     "texture",
+    "usps",
     "vehicle",
+    "volkert",
     "waveform",
+    "wine_quality"
 ]
 
 DATASETS_MAPPING = dict(

@@ -54,16 +54,17 @@
     process, but there is little research developed around the usage of
     artificial data sources in AL\@. In this paper, we propose a new framework
     for AL, which allows \hl{the} effective use of artificial data. \hl{Our}
-    method implements a data augmentation policy that optimizes the generation
-    of artificial instances to improve the AL process. We compare the proposed
-    method to the standard framework \hl{as well as another active learning
-    method that uses data augmentation. The models' performance was tested}
-    using 4 different classifiers, 2 AL-specific performance metrics and 3
-    classification performance metrics over 10 different datasets. We show
-    that the proposed framework, using data augmentation, significantly
-    improves the performance of AL, both in terms of classification
-    performance and data selection efficiency. 
-    
+    method \hl{uses a hyperparameter optimization component to improve} the
+    generation of artificial instances \hl{during} the AL process \hl{as well
+    as an uncertainty-based data selection mechanism for data augmentation}. We
+    compare the proposed method to the standard framework \hl{along with
+    another active learning method that uses data augmentation. The models'
+    performance was tested} using 4 different classifiers, 2 AL-specific
+    performance metrics and 3 classification performance metrics over \hl{15}
+    different datasets. We show that the proposed framework, using data
+    augmentation, significantly improves the performance of AL, both in terms
+    of classification performance and data selection efficiency. 
+
 \end{abstract}
 
 %%Graphical abstract
@@ -182,7 +183,7 @@ optimized generation policy (explained in
 Section~\ref{sec:data_augmentation}). \hl{We also propose a} hyperparameter
 optimization module\hl{, which is} used to find the best data
 \hl{augmentation} policy at each iteration. We test the effectiveness of the
-proposed method in 10 datasets of different domains. We implement 3 AL
+proposed method in \hl{15} datasets of different domains. We implement 3 AL
 frameworks (standard, \hl{oversampling} and varying data augmentation) using 4
 different classifiers, 3 different performance metrics and calculate 2
 AL-specific performance metrics. 
@@ -398,7 +399,7 @@ of Data Augmentation within AL, with the following contributions:
     \item Implementation of data augmentation outside of the Deep AL realm,
         which was not previously found in the literature.
     \item Analysis of the impact of Data Augmentation and Oversampling in AL
-        over 10 different datasets of different domains, while comparing them
+        over \hl{15} different datasets of different domains, while comparing them
         with the standard AL framework.
 \end{enumerate}
 
@@ -615,8 +616,8 @@ dimensionality and number of target classes, all of them focused on
 classification tasks. The goal is to demonstrate the performance of the
 different AL frameworks in various scenarios and domains. The data
 preprocessing approach was similar across all datasets.
-Table~\ref{tab:datasets_description} describes the key properties of the 10
-preprocessed datasets where the experimental procedure was applied. 
+Table~\ref{tab:datasets_description} describes the key properties of the
+\hl{15} preprocessed datasets where the experimental procedure was applied. 
  
 \begin{table}[H]
     \centering
@@ -807,10 +808,10 @@ with the optimal Validation set score is used to estimate the AL's optimal
 classification performance over unseen data.
 
 The process shown in Figure~\ref{fig:experimental_procedure} is repeated over
-3 runs using different random seeds over the 10 different datasets collected.
-The final scores of each AL configuration and classifier correspond to the
-average of the 3 runs and 5-fold Cross\hl{-}Validation estimations
-(\textit{i.e.,} the mean score of 15 fits, across 10 datasets).
+3 runs using different random seeds over the \hl{15} different datasets
+collected. The final scores of each AL configuration and classifier correspond
+to the average of the 3 runs and 5-fold Cross\hl{-}Validation estimations
+(\textit{i.e.,} the mean score of 15 fits, across \hl{15} datasets).
 
 \begin{figure}[H]
 	\centering
@@ -936,7 +937,7 @@ performance and ensures higher data selection efficiency.
         every last row/.style={after row=\bottomrule},
     ]{../analysis/mean_std_aulc_ranks.csv}
     \caption{%
-        Mean rankings of the AULC metric over the different datasets (10),
+        Mean rankings of the AULC metric over the different datasets (\hl{15}),
         folds (5)\hl{,} and runs (3) used in the experiment. The proposed method
         always improves the results of the original framework and on average
         almost always improves the results of the oversampling framework.
@@ -944,10 +945,10 @@ performance and ensures higher data selection efficiency.
 \end{table}
  
 Table~\ref{tab:aulc_scores} shows the average AULC scores, grouped by
-classifier, Evaluation Metric\hl{,} and AL framework. The variation in
-performance across active learners is consistent with the mean rankings found
-in Table~\ref{tab:aulc_ranks}, while showing significant AULC score
-differences between the proposed AL method and the oversampling AL method.
+classifier, Evaluation Metric\hl{,} and AL framework. The 
+performance \hl{of the proposed method is almost always superior when
+considering F-score and G-mean. In some occasions, the average} AULC score
+\hl{is significantly improved when compared with} the oversampling AL method.
 
 \begin{table}
 	\centering
@@ -1002,9 +1003,9 @@ The DUR scores relative to the Standard AL method are shown in
 Figure~\ref{fig:dur}. A DUR below 1 means that the Proposed/Oversampling
 method requires less data than the Standard AL method to reach the same
 performance threshold. For example, running an AL simulation using the KNN
-classifier requires 69.6\% of the amount of data required by the Standard AL
+classifier requires \hl{80.7\%} of the amount of data required by the Standard AL
 method using the same classifier to reach an F-Score of 0.62 (\textit{i.e.,}
-requires 30.4\% less data).
+requires \hl{19.3\%} less data).
 
 \begin{figure}
 	\centering
@@ -1016,11 +1017,12 @@ requires 30.4\% less data).
     }~\label{fig:dur}
 \end{figure}
 
-The mean optimal classification scores of AL methods and Classifiers (fully
-labeled training set, without AL) is shown in
-Table~\ref{tab:optimal_mean_std_scores}. The proposed AL method produces
-classifiers that are almost always able to outperform classifiers using the
-full training set (\textit{i.e.,} the ones labeled as MP).
+The \hl{comparison of} mean optimal classification scores of AL methods
+\hl{with} Classifiers (\hl{using the entire} training set, without AL)
+is shown in Table~\ref{tab:optimal_mean_std_scores}. \hl{Aside for the case of
+overall accuracy, t}he proposed AL method
+produces classifiers that almost always outperform classifiers
+using the full training set (\textit{i.e.,} the ones labeled as MP).
 
 \begin{table}
     \centering
@@ -1084,8 +1086,8 @@ classifier or evaluation metric being considered.
 Table~\ref{tab:wilcoxon_test} contains the \textit{p-values} obtained with the
 Wilcoxon signed-rank test. The proposed method was able to outperform both the
 standard AL framework, as well as the AL framework using a normal oversampling
-policy proposed in~\cite{Fonseca2021} with statistical significance in 9 out
-of 10 datasets.
+policy with statistical significance in \hl{14 and 12 out of 15} datasets\hl{,
+respectively}.
 
 \begin{table}
 	\centering
@@ -1108,10 +1110,7 @@ of 10 datasets.
 
 The \textit{p-values} shown in Table~\ref{tab:holms_test} refer to the results
 of the Holm-Bonferroni test. The proposed method's superior performance was
-statistically significant for any combination of classifier and evaluation
-metric. Simultaneously, the proposed method established statistical
-significance in the 3 scenarios where the oversampling AL method failed to do
-so.
+statistically significant \hl{in 9 out of 12 cases}. 
 
 \begin{table}
 	\centering
@@ -1142,37 +1141,39 @@ at the expense of artificial data generation.
 % a different data generation strategy
 % - Superiority of AL proposed vs standard (AULC + statistical analysis)
 In Table~\ref{tab:aulc_ranks} we found that the proposed method was able to
-outperform the Standard AL framework in all scenarios. The mean rankings are
-consistent with the mean AULC scores found in Table~\ref{tab:aulc_scores},
-while showing significant performance differences between the proposed method
-and both the standard and oversampling methods. The Friedman test in
-Table~\ref{tab:friedman_test} showed that the difference in the performance of
-these AL frameworks \hl{are} statistically significant, regardless of the
-classifier or performance metric being used.
+outperform the Standard AL framework in all scenarios. \hl{With exception to
+the overall accuracy metric, t}he mean rankings are consistent with the mean
+AULC scores found in Table~\ref{tab:aulc_scores}, while showing performance
+\hl{improvements} between the proposed method and both the standard and
+oversampling methods. The Friedman test in Table~\ref{tab:friedman_test}
+showed that the difference in the performance of these AL frameworks \hl{are}
+statistically significant, regardless of the classifier or performance metric
+being used.
  
 % parameter optimization within the iterative process of an AL procedure
 % - Discuss consistency of results as compared with other methods (DUR metric)
-The proposed method showed more consistent data utilization requirements to
-most of the assessed G-mean score thresholds when compared to the remaining AL
-methods, as seen in Table~\ref{tab:optimal_data_utilization}. For example, to
-reach a G-mean Score of 0.9 using the KNN and LR classifiers, the average
-amount of data required with the Oversampling AL approach increased when
-compared to the Standard approach. However, the proposed method was able to
-decrease the amount of data required in both situations. The robustness of the
-Proposed method is clearer in Figure~\ref{fig:dur}. In most cases, this method
-was able \hl{to} outperform the Oversampling method. At the same time, the
-proposed method also addresses inconsistencies in situations where the
+The proposed method showed more consistent data utilization requirements
+\hl{in} most of the assessed G-mean score thresholds when compared to the
+remaining AL methods, as seen in Table~\ref{tab:optimal_data_utilization}. For
+example, to reach a G-mean Score of 0.9 using the KNN and LR classifiers, the
+average amount of data required with the Oversampling AL approach increased
+when compared to the Standard approach. However, the proposed method was able
+to decrease the amount of data required in both situations. The robustness of
+the Proposed method is clearer in Figure~\ref{fig:dur}. In most cases, this
+method was able \hl{to} outperform the Oversampling method. At the same time,
+the proposed method also addresses inconsistencies in situations where the
 Oversampling method was unable to outperform the standard method.
 
 % Data augmentation vs oversampling
 The statistical analyses found in Tables~\ref{tab:wilcoxon_test}
 and~\ref{tab:holms_test} showed that the proposed method's superiority was
-statistically significant in all datasets except one (Baseball) and
-established statistical significance when compared to the Standard AL method
-for all combinations of classifier and performance metric, including when the
-Oversampling AL method failed to do so. These results show that the Proposed
-method increased the reliability of the new AL framework and improved the
-quality of the final classifier while using less data.
+statistically significant in all datasets except \hl{three} (Baseball\hl{,
+Usps, and Volkert}) and established statistical significance when compared to
+the Standard AL method for all combinations of classifier and performance
+metric\hl{, with exception to three cases regarding the use of the overall
+accuracy metric}. These results show that the Proposed method increased the
+reliability of the new AL framework and improved the quality of the final
+classifier while using less data.
 
 % Usage of AL as a method to produce better performing classifiers, even in
 % settings with fully labeled data
@@ -1180,13 +1181,12 @@ Even though it was not the core purpose of this study, we found that the
 method proposed AL approach consistently outperformed the maximum performance
 threshold. Specifically, in Table~\ref{tab:optimal_mean_std_scores}, the
 performance of the classifiers originating from the proposed method was able
-to outperform classifiers trained using the full training dataset in all 12
-scenarios except one. This suggests that the selection of a meaningful
-training subset training dataset paired with data augmentation not only
-matches the classification performance of ML algorithms, as it also improves
-them. Even in a setting with fully labeled training data, the proposed method
-may be used as preprocessing method to further optimize classification
-performance.
+to outperform classifiers trained using the full training dataset in \hl{9 out
+of} 12 scenarios. This suggests that the selection of a meaningful training
+subset training dataset paired with data augmentation not only matches the
+classification performance of ML algorithms, as it also improves them. Even in
+a setting with fully labeled training data, the proposed method may be used as
+preprocessing method to further optimize classification performance.
 
 % Future work and limitations
 This study discussed the effect of data augmentation within the AL framework,
@@ -1221,12 +1221,12 @@ of labeled data. However, manually labeling data is often expensive, which
 makes the usage of AL particularly appealing to select the most informative
 observations and reduce the amount of required labeled data. On the other
 hand, the introduction of data variability in the training dataset can also be
-done via data augmentation. However, most, if not all, AL configurations using
-some form \hl{of} data augmentation are domain and/or task\hl{-}specific.
-These methods typically \hl{apply} deep learning approaches \hl{to} both
-classification and data augmentation. Consequently, they may not be applicable
-for other classification tasks or when the available computational power is
-insufficient.
+done via data augmentation. However, most, if not all, AL configurations
+\hl{that use} some form \hl{of} data augmentation are domain and/or
+task\hl{-}specific. These methods typically \hl{apply} deep learning
+approaches \hl{to} both classification and data augmentation. Consequently,
+they may not be applicable for other classification tasks or when the
+available computational power is insufficient.
 
 In this paper, we proposed a domain-agnostic AL framework that implements Data
 Augmentation and hyperparameter tuning. We found that a heuristic Data
@@ -1245,13 +1245,14 @@ observations that optimize the quality of the artificial data produced. The
 substitution of less informative labeled data with artificial data is
 especially useful in this context, since it allows the reduction of some of
 the user interaction necessary to reach a sufficiently informative dataset.
-In order to further improve the proposed method future work will (1) focus on
-the development of methods with varying data augmentation policies depending
-on the different input space regions, (2) develop augmentation-sensitive query
-functions capable of avoiding the unnecessary selection of similar
-observations from the unlabeled dataset and (3) better understand the gap
-between heuristic/input space data augmentation techniques and neural
-network/feature space data augmentation techniques in an AL context.
+In order to further improve the proposed method\hl{,} future work \hl{should}
+(1) focus on the development of methods with varying data augmentation
+policies depending on the different input space regions, (2) develop
+augmentation-sensitive query functions capable of avoiding the unnecessary
+selection of similar observations from the unlabeled dataset and (3) better
+understand the gap between heuristic/input space data augmentation techniques
+and neural network/feature space data augmentation techniques in an AL
+context.
 
 \section*{Declarations}
 

@@ -1,13 +1,13 @@
 Classifier,Evaluation Metric,Standard,Oversampling,Proposed
-DT,Accuracy,0.733 $\pm$ 0.092,0.732 $\pm$ 0.087,\textbf{0.740 $\pm$ 0.087}
-DT,F-score,0.695 $\pm$ 0.088,0.698 $\pm$ 0.090,\textbf{0.705 $\pm$ 0.092}
-DT,G-mean,0.804 $\pm$ 0.065,0.811 $\pm$ 0.060,\textbf{0.816 $\pm$ 0.062}
-KNN,Accuracy,0.816 $\pm$ 0.091,0.818 $\pm$ 0.088,\textbf{0.822 $\pm$ 0.091}
-KNN,F-score,0.775 $\pm$ 0.102,0.784 $\pm$ 0.108,\textbf{0.788 $\pm$ 0.111}
-KNN,G-mean,0.852 $\pm$ 0.084,0.866 $\pm$ 0.072,\textbf{0.869 $\pm$ 0.074}
-LR,Accuracy,0.802 $\pm$ 0.091,0.812 $\pm$ 0.088,\textbf{0.821 $\pm$ 0.086}
-LR,F-score,0.749 $\pm$ 0.112,0.773 $\pm$ 0.116,\textbf{0.784 $\pm$ 0.115}
-LR,G-mean,0.839 $\pm$ 0.093,0.870 $\pm$ 0.065,\textbf{0.875 $\pm$ 0.064}
-RF,Accuracy,0.861 $\pm$ 0.076,0.861 $\pm$ 0.075,\textbf{0.862 $\pm$ 0.077}
-RF,F-score,0.823 $\pm$ 0.105,0.827 $\pm$ 0.105,\textbf{0.829 $\pm$ 0.105}
-RF,G-mean,0.886 $\pm$ 0.077,\textbf{0.895 $\pm$ 0.063},\textbf{0.895 $\pm$ 0.065}
+DT,Accuracy,0.663 $\pm$ 0.149,0.658 $\pm$ 0.153,\textbf{0.664 $\pm$ 0.155}
+DT,F-score,0.610 $\pm$ 0.176,0.612 $\pm$ 0.179,\textbf{0.618 $\pm$ 0.181}
+DT,G-mean,0.744 $\pm$ 0.129,0.751 $\pm$ 0.127,\textbf{0.755 $\pm$ 0.129}
+KNN,Accuracy,\textbf{0.741 $\pm$ 0.160},0.730 $\pm$ 0.178,0.734 $\pm$ 0.179
+KNN,F-score,0.678 $\pm$ 0.208,0.684 $\pm$ 0.211,\textbf{0.687 $\pm$ 0.213}
+KNN,G-mean,0.786 $\pm$ 0.152,\textbf{0.804 $\pm$ 0.139},\textbf{0.804 $\pm$ 0.141}
+LR,Accuracy,\textbf{0.736 $\pm$ 0.152},0.723 $\pm$ 0.185,0.731 $\pm$ 0.184
+LR,F-score,0.644 $\pm$ 0.228,0.673 $\pm$ 0.220,\textbf{0.682 $\pm$ 0.221}
+LR,G-mean,0.767 $\pm$ 0.162,0.811 $\pm$ 0.134,\textbf{0.814 $\pm$ 0.136}
+RF,Accuracy,\textbf{0.789 $\pm$ 0.148},0.786 $\pm$ 0.153,0.785 $\pm$ 0.156
+RF,F-score,0.724 $\pm$ 0.214,\textbf{0.735 $\pm$ 0.204},\textbf{0.735 $\pm$ 0.205}
+RF,G-mean,0.818 $\pm$ 0.150,\textbf{0.834 $\pm$ 0.135},0.833 $\pm$ 0.135
