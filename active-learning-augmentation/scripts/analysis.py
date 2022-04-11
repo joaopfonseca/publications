@@ -42,7 +42,7 @@ DATASETS_NAMES = [
     "vehicle",
     "volkert",
     "waveform",
-    "wine_quality"
+    "wine_quality",
 ]
 
 DATASETS_MAPPING = dict(
