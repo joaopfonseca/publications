@@ -49,24 +49,25 @@ def summarize_datasets(datasets):
 
 def calculate_wide_optimal(results):
 
-    mean_scoring_cols = results.columns[
-        results.columns.str.contains("mean_test")
-    ]
+    mean_scoring_cols = results.columns[results.columns.str.contains("mean_test")]
 
     optimal = results[mean_scoring_cols]
 
     # Calculate maximum score per group key
-    keys = ['Dataset', 'Oversampler', 'Classifier']
+    keys = ["Dataset", "Oversampler", "Classifier"]
     agg_measures = {score: max for score in optimal.columns}
     optimal = optimal.groupby(keys).agg(agg_measures).reset_index()
 
     # Format as long table
     optimal = optimal.melt(
-        id_vars=keys, value_vars=mean_scoring_cols, var_name='Metric', value_name='Score'
+        id_vars=keys,
+        value_vars=mean_scoring_cols,
+        var_name="Metric",
+        value_name="Score",
     )
 
     # Cast to categorical columns
-    optimal_cols = keys + ['Metric']
+    optimal_cols = keys + ["Metric"]
     for col in optimal_cols:
         optimal[col] = pd.Categorical(optimal[col], optimal[col].unique())
 
@@ -75,9 +76,9 @@ def calculate_wide_optimal(results):
 
     # Move oversamplers to columns
     optimal = optimal.pivot_table(
-        index=['Dataset', 'Classifier', 'Metric'],
-        columns=['Oversampler'],
-        values='Score',
+        index=["Dataset", "Classifier", "Metric"],
+        columns=["Oversampler"],
+        values="Score",
     )
 
     return optimal
@@ -89,9 +90,7 @@ if __name__ == "__main__":
     datasets = load_datasets(data_dir=DATA_PATH)
 
     DATASETS = [dataset[0].lower().replace(" ", "_") for dataset in datasets]
-    OVERSAMPLERS = [
-        "NONE", "RAND-OVER", "RAND-UNDER", "SMOTENC", "G-SMOTE"
-    ]
+    OVERSAMPLERS = ["NONE", "RAND-OVER", "RAND-UNDER", "SMOTENC", "G-SMOTE"]
     CLASSIFIERS = [
         "LR",
         "KNN",
