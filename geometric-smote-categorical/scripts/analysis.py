@@ -44,7 +44,7 @@ def summarize_datasets(datasets):
     )
     summarized["Classes"] = [dataset[1][1].unique().shape[0] for dataset in datasets]
 
-    return summarized
+    return summarized.sort_values("Dataset")
 
 
 def calculate_wide_optimal(results):
