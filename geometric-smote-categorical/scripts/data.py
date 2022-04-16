@@ -8,9 +8,15 @@ DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
 
 if __name__ == "__main__":
 
+    rnd_seed = 5
+
     # Get data
     datasets = ContinuousCategoricalDatasets()
     datasets.download()
+
+    # Create imbalanced datasets
+    for ir in range(10, 101, 10):
+        datasets.imbalance_datasets(ir, random_state=rnd_seed)
 
     # Remove datasets that are too small
     min_obs = 500
@@ -19,7 +25,7 @@ if __name__ == "__main__":
     ]
 
     # Sample datasets
-    min_n_samples, n_obs, rnd_seed = 15, 5000, 5
+    min_n_samples, n_obs = 15, 5000
     content = []
     for name, data in filtered_content:
 
@@ -47,7 +53,13 @@ if __name__ == "__main__":
             ],
             axis=1,
         )
-        content.append((name, data))
+
+        # drop artificially imbalanced datasets if preprocessing changed its IR
+        counts = Counter(data.target).values()
+        if not name.endswith(")") or int(name.split(" ")[-1][1:-1]) == int(
+            max(counts) / min(counts)
+        ):
+            content.append((name, data))
 
     # Save database
     datasets.content_ = content
