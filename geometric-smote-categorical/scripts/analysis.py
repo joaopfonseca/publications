@@ -15,6 +15,7 @@ from mlresearch.utils import (
     generate_paths,
     load_datasets,
     make_bold,
+    generate_mean_std_tbl_bold,
 )  # , load_plt_sns_configs
 
 
@@ -23,7 +24,7 @@ def summarize_datasets(datasets):
 
     summarized = pd.DataFrame(
         {
-            "Dataset": [dataset[0] for dataset in datasets],
+            "Dataset": [dataset[0].title() for dataset in datasets],
             "Metric": [
                 dataset[1][0].columns.str.startswith("cat_").sum()
                 for dataset in datasets
@@ -48,7 +49,16 @@ def summarize_datasets(datasets):
     )
     summarized["Classes"] = [dataset[1][1].unique().shape[0] for dataset in datasets]
 
-    return summarized.sort_values("Dataset")
+    summarized["base_names"] = summarized["Dataset"].apply(lambda x: x.split(" (")[0])
+    summarized["ir_sort"] = summarized["IR"].astype(float)
+
+    summarized = summarized\
+        .groupby("base_names")\
+        .apply(lambda df: df.sort_values("ir_sort").reset_index(drop=True))\
+        .reset_index(drop=True)\
+        .drop(columns=["ir_sort", "base_names"])
+
+    return summarized
 
 
 def calculate_wide_optimal(results):
@@ -88,19 +98,12 @@ def calculate_wide_optimal(results):
     return optimal
 
 
-def format_table(df):
-    df = df.copy()
-    index_cols = list(df.index.names)
-    df.reset_index(inplace=True)
-
-    if "Metric" in df.columns:
-        df["Metric"] = df["Metric"].map(METRICS)
-
-    df = df.set_index(index_cols) if index_cols[0] is not None else df
-
-    df = df.apply(lambda row: make_bold(row, num_decimals=3), axis=1)
-
-    return df
+def calculate_mean_sem_rankings(wide_optimal):
+    ranks = wide_optimal\
+        .rank(axis=1, ascending=False)\
+        .reset_index()\
+        .groupby(["Classifier", "Metric"])
+    return ranks.mean(), ranks.sem(ddof=0)
 
 
 def save_longtable(df, path=None, caption=None, label=None):
@@ -116,6 +119,7 @@ def save_longtable(df, path=None, caption=None, label=None):
         .replace(r"\textbackslash ", "\\")
         .replace(r"\{", "{")
         .replace(r"\}", "}")
+        .replace(r"\$", "$")
     )
 
     if path is not None:
@@ -124,19 +128,43 @@ def save_longtable(df, path=None, caption=None, label=None):
         return wo_tex
 
 
+def format_table(df, with_sem=True, maximum=True, decimals=3):
+
+    if with_sem:
+        df = generate_mean_std_tbl_bold(*df, maximum=maximum, decimals=decimals)
+    else:
+        df = df.copy()
+        df = df.apply(
+            lambda row: make_bold(row, maximum=maximum, num_decimals=decimals),
+            axis=1
+        )
+
+    index_cols = list(df.index.names)
+    df.reset_index(inplace=True)
+
+    if "Metric" in df.columns:
+        df["Metric"] = df["Metric"].map(METRICS)
+
+    df.rename(columns=OVERSAMPLERS, inplace=True)
+    df = df.set_index(index_cols) if index_cols[0] is not None else df
+
+    return df
+
+
 if __name__ == "__main__":
     # define paths and basic variables
     DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
     datasets = load_datasets(data_dir=DATA_PATH)
 
     DATASETS = [dataset[0].lower().replace(" ", "_") for dataset in datasets]
-    OVERSAMPLERS = ["NONE", "RAND-OVER", "RAND-UNDER", "SMOTENC", "G-SMOTE"]
-    CLASSIFIERS = [
-        "LR",
-        "KNN",
-        "DT",
-        "RF",
-    ]
+    OVERSAMPLERS = {
+        "NONE": "NONE",
+        "RAND-OVER": "ROS",
+        "RAND-UNDER": "RUS",
+        "SMOTENC": "SMOTENC",
+        "G-SMOTE": "G-SMOTE"
+    }
+    CLASSIFIERS = ["LR", "KNN", "DT", "RF"]
     METRICS = {
         "mean_test_accuracy": "OA",
         "mean_test_f1_macro": "F-Score",
@@ -144,8 +172,8 @@ if __name__ == "__main__":
     }
     RESULTS_NAMES = [
         f"{dataset}__{oversampler.lower().replace('-', '')}.pkl"
-        for dataset, oversampler in product(DATASETS, OVERSAMPLERS)
-        if not dataset.endswith(")")
+        for dataset, oversampler in product(DATASETS, OVERSAMPLERS.keys())
+        if not dataset.endswith(")")  # Remove this line after getting the full results
     ]
 
     # datasets description
@@ -166,9 +194,12 @@ if __name__ == "__main__":
     # combine and select results
     results = pd.concat(results, axis=0, sort=True)
     results = select_results(
-        results, oversamplers_names=OVERSAMPLERS, classifiers_names=CLASSIFIERS
+        results, oversamplers_names=OVERSAMPLERS.keys(), classifiers_names=CLASSIFIERS
     )
     wide_optimal = calculate_wide_optimal(results)
+
+    # Get mean rankings
+    ranks = calculate_mean_sem_rankings(wide_optimal)
 
     # Save all tables to latex
     TBL_OUTPUTS = (
@@ -177,14 +208,23 @@ if __name__ == "__main__":
             datasets_description,
             (
                 "Description of the datasets collected after data preprocessing. The"
-                " sampling strategy is similar across datasets. Legend: (IR) Imbalance Ratio"
+                " sampling strategy is similar across datasets. Legend: (IR) Imbalance "
+                "Ratio"
             ),
         ),
         (
             "wide_optimal",
-            format_table(wide_optimal).reset_index(),
+            format_table(wide_optimal, with_sem=False).reset_index(),
             "Wide optimal results",
         ),
+        (
+            "mean_sem_ranks",
+            format_table(ranks, maximum=False, decimals=2).reset_index(),
+            (
+                "Mean rankings over the different datasets, folds and runs used in the "
+                "experiment."
+            )
+        )
     )
 
     for name, df, caption in TBL_OUTPUTS:
