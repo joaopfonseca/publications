@@ -11,7 +11,11 @@ from itertools import product
 import numpy as np
 import pandas as pd
 from rlearn.tools import select_results
-from mlresearch.utils import generate_paths, load_datasets  # , load_plt_sns_configs
+from mlresearch.utils import (
+    generate_paths,
+    load_datasets,
+    make_bold,
+)  # , load_plt_sns_configs
 
 
 def summarize_datasets(datasets):
@@ -84,6 +88,42 @@ def calculate_wide_optimal(results):
     return optimal
 
 
+def format_table(df):
+    df = df.copy()
+    index_cols = list(df.index.names)
+    df.reset_index(inplace=True)
+
+    if "Metric" in df.columns:
+        df["Metric"] = df["Metric"].map(METRICS)
+
+    df = df.set_index(index_cols) if index_cols[0] is not None else df
+
+    df = df.apply(lambda row: make_bold(row, num_decimals=3), axis=1)
+
+    return df
+
+
+def save_longtable(df, path=None, caption=None, label=None):
+
+    wo_tex = (
+        df.to_latex(
+            longtable=True,
+            caption=caption,
+            label=label,
+            index=False,
+            column_format="c" * df.shape[1],
+        )
+        .replace(r"\textbackslash ", "\\")
+        .replace(r"\{", "{")
+        .replace(r"\}", "}")
+    )
+
+    if path is not None:
+        open(path, "w").write(wo_tex)
+    else:
+        return wo_tex
+
+
 if __name__ == "__main__":
     # define paths and basic variables
     DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
@@ -97,15 +137,19 @@ if __name__ == "__main__":
         "DT",
         "RF",
     ]
+    METRICS = {
+        "mean_test_accuracy": "OA",
+        "mean_test_f1_macro": "F-Score",
+        "mean_test_geometric_mean_score_macro": "G-Mean",
+    }
     RESULTS_NAMES = [
         f"{dataset}__{oversampler.lower().replace('-', '')}.pkl"
         for dataset, oversampler in product(DATASETS, OVERSAMPLERS)
+        if not dataset.endswith(")")
     ]
 
     # datasets description
-    summarize_datasets(datasets).to_csv(
-        join(ANALYSIS_PATH, "datasets_description.csv"), index=False
-    )
+    datasets_description = summarize_datasets(datasets)
 
     # load results
     results = []
@@ -125,4 +169,23 @@ if __name__ == "__main__":
         results, oversamplers_names=OVERSAMPLERS, classifiers_names=CLASSIFIERS
     )
     wide_optimal = calculate_wide_optimal(results)
-    wide_optimal.to_csv(join(ANALYSIS_PATH, "wide_optimal.csv"))
+
+    # Save all tables to latex
+    TBL_OUTPUTS = (
+        (
+            "datasets_description",
+            datasets_description,
+            (
+                "Description of the datasets collected after data preprocessing. The"
+                " sampling strategy is similar across datasets. Legend: (IR) Imbalance Ratio"
+            ),
+        ),
+        (
+            "wide_optimal",
+            format_table(wide_optimal).reset_index(),
+            "Wide optimal results",
+        ),
+    )
+
+    for name, df, caption in TBL_OUTPUTS:
+        save_longtable(df, join(ANALYSIS_PATH, f"{name}.tex"), caption, f"tbl:{name}")
