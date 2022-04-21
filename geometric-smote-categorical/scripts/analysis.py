@@ -106,6 +106,13 @@ def calculate_mean_sem_rankings(wide_optimal):
     return ranks.mean(), ranks.sem(ddof=0)
 
 
+def calculate_mean_sem_scores(wide_optimal):
+    scores = wide_optimal\
+        .reset_index()\
+        .groupby(["Classifier", "Metric"])
+    return scores.mean(), scores.sem(ddof=0)
+
+
 def save_longtable(df, path=None, caption=None, label=None):
 
     wo_tex = (
@@ -148,21 +155,32 @@ def format_table(df, with_sem=True, maximum=True, decimals=3):
     df.rename(columns=OVERSAMPLERS, inplace=True)
     df = df.set_index(index_cols) if index_cols[0] is not None else df
 
+    # reorder oversamplers
+    if df.columns.isin(OVERSAMPLERS.values()).sum() == len(OVERSAMPLERS):
+        ovs_cols = df.columns.isin(OVERSAMPLERS.values())
+        df_index = df.loc[:, ~ovs_cols]
+        df_ovs = df.loc[:, OVERSAMPLERS.values()]
+        df = pd.concat([df_index, df_ovs], axis=1)
+
     return df
 
 
 if __name__ == "__main__":
-    # define paths and basic variables
+
+    # Define paths and basic variables
     DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
     datasets = load_datasets(data_dir=DATA_PATH)
 
-    DATASETS = [dataset[0].lower().replace(" ", "_") for dataset in datasets]
+    DATASETS = [
+        dataset[0].lower().replace(" ", "_") for dataset in datasets
+        if dataset[0].lower().split(" ")[0] != "thyroid"
+    ]
     OVERSAMPLERS = {
+        "G-SMOTE": "G-SMOTE",
         "NONE": "NONE",
+        "SMOTENC": "SMOTENC",
         "RAND-OVER": "ROS",
         "RAND-UNDER": "RUS",
-        "SMOTENC": "SMOTENC",
-        "G-SMOTE": "G-SMOTE"
     }
     CLASSIFIERS = ["LR", "KNN", "DT", "RF"]
     METRICS = {
@@ -173,7 +191,12 @@ if __name__ == "__main__":
     RESULTS_NAMES = [
         f"{dataset}__{oversampler.lower().replace('-', '')}.pkl"
         for dataset, oversampler in product(DATASETS, OVERSAMPLERS.keys())
-        if not dataset.endswith(")")  # Remove this line after getting the full results
+    ]
+
+    # Filter datasets that are too easy to solve
+    datasets = [
+        dataset for dataset in datasets
+        if dataset[0].lower().replace(" ", "_") in DATASETS
     ]
 
     # datasets description
@@ -201,6 +224,9 @@ if __name__ == "__main__":
     # Get mean rankings
     ranks = calculate_mean_sem_rankings(wide_optimal)
 
+    # Get mean scores
+    scores = calculate_mean_sem_scores(wide_optimal)
+
     # Save all tables to latex
     TBL_OUTPUTS = (
         (
@@ -223,6 +249,14 @@ if __name__ == "__main__":
             (
                 "Mean rankings over the different datasets, folds and runs used in the "
                 "experiment."
+            )
+        ),
+        (
+            "mean_sem_scores",
+            format_table(scores, maximum=True, decimals=2).reset_index(),
+            (
+                "Mean scores over the different datasets, folds and runs used"
+                " in the experiment"
             )
         )
     )
