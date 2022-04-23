@@ -10,7 +10,10 @@ from collections import Counter
 from itertools import product
 import numpy as np
 import pandas as pd
+from scipy.stats import wilcoxon, ttest_rel
+from statsmodels.stats.multitest import multipletests
 from rlearn.tools import select_results
+from rlearn.tools.reporting import _extract_pvalue
 from mlresearch.utils import (
     generate_paths,
     load_datasets,
@@ -111,6 +114,100 @@ def calculate_mean_sem_scores(wide_optimal):
         .reset_index()\
         .groupby(["Classifier", "Metric"])
     return scores.mean(), scores.sem(ddof=0)
+
+
+def apply_wilcoxon_test(wide_optimal, dep_var, OVRS_NAMES, alpha):
+    """Performs a Wilcoxon signed-rank test"""
+    pvalues = []
+    for ovr in OVRS_NAMES:
+        mask = np.repeat(True, len(wide_optimal))
+
+        pvalues.append(
+            wilcoxon(
+                wide_optimal.loc[mask, ovr], wide_optimal.loc[mask, dep_var]
+            ).pvalue
+        )
+    wilcoxon_results = pd.DataFrame(
+        {
+            "Oversampler": OVRS_NAMES,
+            "p-value": pvalues,
+            "Significance": np.array(pvalues) < alpha,
+        }
+    )
+    return wilcoxon_results
+
+
+def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"):
+    """Generate the statistical results of the experiment."""
+
+    # Get results
+    results = wide_optimal.copy()
+
+    # Calculate rankings
+    ranks = results.rank(axis=1, ascending=0).reset_index()
+
+    # Friedman test
+    friedman_test = (
+        ranks.groupby(["Classifier", "Metric"])
+        .apply(_extract_pvalue)
+        .reset_index()
+        .rename(columns={0: "p-value"})
+    )
+
+    friedman_test["Significance"] = friedman_test["p-value"] < alpha
+    friedman_test["p-value"] = friedman_test["p-value"].apply(
+        lambda x: "{:.1e}".format(x)
+    )
+
+    # Wilcoxon signed rank test
+    # Optimal proposed method vs oversampling framework
+    wilcoxon_test = []
+    for dataset in results.reset_index().Dataset.unique():
+        wilcoxon_results = apply_wilcoxon_test(
+            results[(results.reset_index()["Dataset"] == dataset).values],
+            "G-SMOTE",
+            ["NONE", "RAND-OVER", "RAND-UNDER", "SMOTENC"],
+            alpha,
+        ).drop(columns="Significance")
+        wilcoxon_results["Dataset"] = dataset.replace("_", " ").title()
+        wilcoxon_test.append(
+            wilcoxon_results.pivot("Dataset", "Oversampler", "p-value")
+        )
+
+    wilcoxon_test = pd.concat(wilcoxon_test, axis=0)
+    wilcoxon_test = wilcoxon_test.reset_index()
+
+    # Holms test
+    # Optimal proposed framework vs baseline framework
+    ovrs_names = results.columns.to_list()
+    ovrs_names.remove(control_method)
+
+    # Define empty p-values table
+    pvalues = pd.DataFrame()
+
+    # Populate p-values table
+    for name in ovrs_names:
+        pvalues_pair = results.groupby(["Classifier", "Metric"])[
+            [name, control_method]
+        ].apply(lambda df: ttest_rel(df[name], df[control_method])[1])
+        pvalues_pair = pd.DataFrame(pvalues_pair, columns=[name])
+        pvalues = pd.concat([pvalues, pvalues_pair], axis=1)
+
+    # Corrected p-values
+    holms_test = pd.DataFrame(
+        pvalues.apply(
+            lambda col: multipletests(col, method="holm")[1], axis=1
+        ).values.tolist(),
+        columns=ovrs_names,
+    )
+    holms_test = holms_test.set_index(pvalues.index).reset_index()
+
+    # Return statistical analyses
+    statistical_results_names = ("friedman_test", "wilcoxon_test", "holms_test")
+    statistical_results = zip(
+        statistical_results_names, (friedman_test, wilcoxon_test, holms_test)
+    )
+    return statistical_results
 
 
 def save_longtable(df, path=None, caption=None, label=None):
@@ -227,6 +324,13 @@ if __name__ == "__main__":
     # Get mean scores
     scores = calculate_mean_sem_scores(wide_optimal)
 
+    # Get statistical analyses
+    friedman_, wilcoxon_, holms_ = [
+        stat[1] for stat in generate_statistical_results(
+            wide_optimal, alpha=0.05, control_method="NONE"
+        )
+    ]
+
     # Save all tables to latex
     TBL_OUTPUTS = (
         (
@@ -257,6 +361,15 @@ if __name__ == "__main__":
             (
                 "Mean scores over the different datasets, folds and runs used"
                 " in the experiment"
+            )
+        ),
+        (
+            "friedman_test",
+            friedman_,
+            (
+                "Results for Friedman test. Statistical significance is tested at a "
+                "level of $\alpha = 0.05$. The null hypothesis is that there is no "
+                "difference in the classification outcome across oversamplers."
             )
         )
     )
