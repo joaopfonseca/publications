@@ -62,17 +62,49 @@ This is text~\cite{Chawla2002}.
 
 \section{Related Work}~\label{sec:related_work}
 
+\section{Motivation}~\label{sec:motivation}
+
 \section{Proposed Method}~\label{sec:proposed_method}
 
 \section{Methodology}~\label{sec:methodology}
 
-\section{Results and Discussion}~\label{sec:results_and_discussion}
-
-\subsection{Results}~\label{sec:results}
+\subsection{Experimental Data}~\label{sec:experimental_data}
 
 \input{../analysis/datasets_description.tex}
 
+\subsection{Evaluation Measures}~\label{sec:evaluation_measures}
+
+\subsection{Machine Learning Algorithms}~\label{sec:ml_algorithms}
+
+\subsection{Experimental Procedure}~\label{sec:experimental_procedure}
+
+\subsection{Software Implementation}~\label{sec:software_implementation}
+
+\section{Results and Discussion}~\label{sec:results_and_discussion}
+
+In this section we present the experimental results. We focus on the
+comparison of classification performance using oversamplers whose generation
+mechanism is compatible with datasets containing both continuous and
+categorical features.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Summmarize the analysis you did
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Results}~\label{sec:results}
+
+Table~\ref{tbl:mean_sem_ranks} presents the mean rankings of cross validation
+scores across the different combinations of oversamplers, metrics and
+classifiers. These results were calculated by assigning a ranking score for
+each oversampler from 1 (best) to 4 (worst) for each dataset, metric and
+classifier, based on the results reported in Table~\ref{tbl:wide_optimal} (See
+Appendix).
+
 \input{../analysis/mean_sem_ranks.tex}
+
+Table~\ref{tbl:mean_sem_scores} presents the mean cross validation scores.
+With exception to the OA metric, G-SMOTENC either outperformed or matched the
+the remaining oversamplers.
 
 \input{../analysis/mean_sem_scores.tex}
 
