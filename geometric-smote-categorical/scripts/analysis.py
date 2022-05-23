@@ -116,6 +116,14 @@ def calculate_mean_sem_scores(wide_optimal):
     return scores.mean(), scores.sem(ddof=0)
 
 
+def make_bold_stat_signif(value, sig_level=0.05):
+    """Make bold the lowest or highest value(s)."""
+
+    val = "{%.1e}" % value
+    val = "\\textbf{%s}" % val if value <= sig_level else val
+    return val
+
+
 def apply_wilcoxon_test(wide_optimal, dep_var, OVRS_NAMES, alpha):
     """Performs a Wilcoxon signed-rank test"""
     pvalues = []
@@ -140,8 +148,8 @@ def apply_wilcoxon_test(wide_optimal, dep_var, OVRS_NAMES, alpha):
 def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"):
     """Generate the statistical results of the experiment."""
 
-    # Get results
-    results = wide_optimal.copy()
+    # Get results and drop OA
+    results = wide_optimal.query("Metric != 'mean_test_accuracy'").copy()
 
     # Calculate rankings
     ranks = results.rank(axis=1, ascending=0).reset_index()
@@ -158,6 +166,7 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
     friedman_test["p-value"] = friedman_test["p-value"].apply(
         lambda x: "{:.1e}".format(x)
     )
+    friedman_test["Metric"] = friedman_test["Metric"].apply(lambda x: METRICS[x])
 
     # Wilcoxon signed rank test
     # Optimal proposed method vs oversampling framework
@@ -201,6 +210,7 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
         columns=ovrs_names,
     )
     holms_test = holms_test.set_index(pvalues.index).reset_index()
+    holms_test["Metric"] = holms_test["Metric"].apply(lambda x: METRICS[x])
 
     # Return statistical analyses
     statistical_results_names = ("friedman_test", "wilcoxon_test", "holms_test")
@@ -333,7 +343,7 @@ if __name__ == "__main__":
     # Get statistical analyses
     friedman_, wilcoxon_, holms_ = [
         stat[1] for stat in generate_statistical_results(
-            wide_optimal, alpha=0.05, control_method="NONE"
+            wide_optimal, alpha=0.05, control_method="G-SMOTE"
         )
     ]
 
@@ -374,27 +384,34 @@ if __name__ == "__main__":
             friedman_,
             (
                 "Results for Friedman test. Statistical significance is tested at a "
-                "level of $\alpha = 0.05$. The null hypothesis is that there is no "
+                r"level of $\alpha = 0.05$. The null hypothesis is that there is no "
                 "difference in the classification outcome across oversamplers."
             )
         ),
         (
             "wilcoxon_test",
-            wilcoxon_,
+            wilcoxon_
+            .set_index("Dataset")
+            .applymap(lambda x: make_bold_stat_signif(x, sig_level=.05))
+            .reset_index(),
             (
-                "Results for Wilcoxon signed-rank method. Statistical significance is tested at a "
-                "level of $\alpha = 0.05$. The null hypothesis is that the performance of the "
-                "proposed oversampler is similar to the remaining oversamplers."
+                "Results for Wilcoxon signed-rank method. Statistical significance is "
+                r"tested at a level of $\alpha = 0.05$. The null hypothesis is that the "
+                "performance of the proposed oversampler is similar to the remaining "
+                "oversamplers."
             )
         ),
         (
             "holms_test",
-            holms_,
+            holms_
+            .set_index(["Classifier", "Metric"])
+            .applymap(lambda x: make_bold_stat_signif(x, sig_level=.05))
+            .reset_index(),
             (
-                "Adjusted p-values the Holm-Bonferroni test. Statistical significance is"
-                " tested at a level of $\alpha = 0.05$. The null hypothesis is that "
-                "the benchmark methods do not perform better than the control method "
-                "(G-SMOTENC)."
+                "Adjusted p-values using the Holm-Bonferroni test. Statistical "
+                r"significance is tested at a level of $\alpha = 0.05$. The null "
+                "hypothesis is that the benchmark methods perform similarly "
+                "compared to the control method (G-SMOTENC)."
             )
         ),
     )
