@@ -211,6 +211,12 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
 
 
 def save_longtable(df, path=None, caption=None, label=None):
+    """
+    Exports a pandas dataframe to longtable format.
+
+    This function replaces ``df.to_latex`` when there are latex commands in
+    the table.
+    """
 
     wo_tex = (
         df.to_latex(
@@ -273,7 +279,7 @@ if __name__ == "__main__":
         if dataset[0].lower().split(" ")[0] != "thyroid"
     ]
     OVERSAMPLERS = {
-        "G-SMOTE": "G-SMOTE",
+        "G-SMOTE": "G-SMOTENC",
         "NONE": "NONE",
         "SMOTENC": "SMOTENC",
         "RAND-OVER": "ROS",
@@ -371,7 +377,26 @@ if __name__ == "__main__":
                 "level of $\alpha = 0.05$. The null hypothesis is that there is no "
                 "difference in the classification outcome across oversamplers."
             )
-        )
+        ),
+        (
+            "wilcoxon_test",
+            wilcoxon_,
+            (
+                "Results for Wilcoxon signed-rank method. Statistical significance is tested at a "
+                "level of $\alpha = 0.05$. The null hypothesis is that the performance of the "
+                "proposed oversampler is similar to the remaining oversamplers."
+            )
+        ),
+        (
+            "holms_test",
+            holms_,
+            (
+                "Adjusted p-values the Holm-Bonferroni test. Statistical significance is"
+                " tested at a level of $\alpha = 0.05$. The null hypothesis is that "
+                "the benchmark methods do not perform better than the control method "
+                "(G-SMOTENC)."
+            )
+        ),
     )
 
     for name, df, caption in TBL_OUTPUTS:

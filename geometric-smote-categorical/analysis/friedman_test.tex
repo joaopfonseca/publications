@@ -1,0 +1,32 @@
+\begin{longtable}{cccc}
+\caption{Results for Friedman test. Statistical significance is tested at a level of $lpha = 0.05$. The null hypothesis is that there is no difference in the classification outcome across oversamplers.}
+\label{tbl:friedman_test}\\
+\toprule
+Classifier &                               Metric & p-value &  Significance \\
+\midrule
+\endfirsthead
+\caption[]{Results for Friedman test. Statistical significance is tested at a level of $lpha = 0.05$. The null hypothesis is that there is no difference in the classification outcome across oversamplers.} \\
+\toprule
+Classifier &                               Metric & p-value &  Significance \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{{Continued on next page}} \\
+\midrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+        DT &                   mean\_test\_accuracy & 8.5e-12 &          True \\
+        DT &                   mean\_test\_f1\_macro & 3.6e-10 &          True \\
+        DT & mean\_test\_geometric\_mean\_score\_macro & 3.4e-10 &          True \\
+       KNN &                   mean\_test\_accuracy & 3.7e-10 &          True \\
+       KNN &                   mean\_test\_f1\_macro & 1.5e-08 &          True \\
+       KNN & mean\_test\_geometric\_mean\_score\_macro & 2.5e-08 &          True \\
+        LR &                   mean\_test\_accuracy & 1.4e-10 &          True \\
+        LR &                   mean\_test\_f1\_macro & 1.7e-07 &          True \\
+        LR & mean\_test\_geometric\_mean\_score\_macro & 6.9e-10 &          True \\
+        RF &                   mean\_test\_accuracy & 2.4e-14 &          True \\
+        RF &                   mean\_test\_f1\_macro & 9.8e-11 &          True \\
+        RF & mean\_test\_geometric\_mean\_score\_macro & 6.7e-09 &          True \\
+\end{longtable}

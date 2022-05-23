@@ -1,0 +1,32 @@
+\begin{longtable}{cccccc}
+\caption{Adjusted p-values the Holm-Bonferroni test. Statistical significance is tested at a level of $lpha = 0.05$. The null hypothesis is that the benchmark methods do not perform better than the control method (G-SMOTENC).}
+\label{tbl:holms_test}\\
+\toprule
+Classifier &                               Metric &      G-SMOTE &    RAND-OVER &  RAND-UNDER &      SMOTENC \\
+\midrule
+\endfirsthead
+\caption[]{Adjusted p-values the Holm-Bonferroni test. Statistical significance is tested at a level of $lpha = 0.05$. The null hypothesis is that the benchmark methods do not perform better than the control method (G-SMOTENC).} \\
+\toprule
+Classifier &                               Metric &      G-SMOTE &    RAND-OVER &  RAND-UNDER &      SMOTENC \\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{{Continued on next page}} \\
+\midrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+        DT &                   mean\_test\_accuracy & 1.648031e-01 & 9.608128e-07 &    0.000003 & 1.371459e-06 \\
+        DT &                   mean\_test\_f1\_macro & 2.043336e-04 & 8.040421e-01 &    0.002443 & 1.452723e-01 \\
+        DT & mean\_test\_geometric\_mean\_score\_macro & 4.476644e-07 & 1.742971e-05 &    0.000375 & 1.036473e-05 \\
+       KNN &                   mean\_test\_accuracy & 4.622858e-05 & 5.759339e-06 &    0.000008 & 1.982851e-05 \\
+       KNN &                   mean\_test\_f1\_macro & 8.534464e-04 & 7.155936e-02 &    0.021107 & 7.155936e-02 \\
+       KNN & mean\_test\_geometric\_mean\_score\_macro & 1.306020e-05 & 5.700709e-04 &    0.000570 & 2.476249e-05 \\
+        LR &                   mean\_test\_accuracy & 2.924409e-04 & 7.602412e-05 &    0.000019 & 2.924409e-04 \\
+        LR &                   mean\_test\_f1\_macro & 3.591368e-03 & 1.036683e-02 &    0.009460 & 3.591368e-03 \\
+        LR & mean\_test\_geometric\_mean\_score\_macro & 1.306117e-07 & 2.833456e-07 &    0.000005 & 2.833456e-07 \\
+        RF &                   mean\_test\_accuracy & 1.733936e-02 & 5.073912e-05 &    0.000001 & 1.751144e-05 \\
+        RF &                   mean\_test\_f1\_macro & 1.362126e-06 & 6.970889e-05 &    0.466845 & 6.970889e-05 \\
+        RF & mean\_test\_geometric\_mean\_score\_macro & 3.053280e-06 & 1.067822e-05 &    0.000025 & 1.067822e-05 \\
+\end{longtable}
