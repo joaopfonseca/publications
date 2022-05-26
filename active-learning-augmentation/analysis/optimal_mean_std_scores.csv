@@ -1,4 +1,4 @@
-Classifier,Evaluation Metric,MP,Standard,Oversampling,Proposed
+Classifier,Metric,MP,Standard,Oversampling,Proposed
 DT,Accuracy,\textbf{0.732 $\pm$ 0.155},0.726 $\pm$ 0.157,0.721 $\pm$ 0.167,0.727 $\pm$ 0.168
 DT,F-score,0.682 $\pm$ 0.194,0.679 $\pm$ 0.193,0.679 $\pm$ 0.197,\textbf{0.684 $\pm$ 0.200}
 DT,G-mean,0.792 $\pm$ 0.138,0.791 $\pm$ 0.136,0.797 $\pm$ 0.134,\textbf{0.800 $\pm$ 0.137}

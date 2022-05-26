@@ -1,4 +1,4 @@
-Dataset,Features,Instances,Minority instances,Majority instances,IR,Classes
+Dataset,Feat.,Inst.,Min. inst.,Maj. inst.,IR,Classes
 Image Segmentation,14,1155,165,165,1.0,7
 Mfeat Zernike,47,1994,198,200,1.01,10
 Texture,40,1824,165,166,1.01,11

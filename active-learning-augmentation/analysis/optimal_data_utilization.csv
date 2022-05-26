@@ -1,4 +1,4 @@
-G-mean Score,Classifier,Standard,Oversampling,Proposed
+G-mean,Classifier,Standard,Oversampling,Proposed
 0.60,DT,19.8\%,\textbf{18.9\%},19.3\%
 0.60,KNN,18.4\%,\textbf{11.8\%},12.8\%
 0.60,LR,23.0\%,\textbf{9.7\%},\textbf{9.7\%}
