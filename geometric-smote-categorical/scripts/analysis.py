@@ -19,7 +19,8 @@ from mlresearch.utils import (
     load_datasets,
     make_bold,
     generate_mean_std_tbl_bold,
-)  # , load_plt_sns_configs
+    load_plt_sns_configs
+)
 
 
 def summarize_datasets(datasets):
@@ -220,6 +221,28 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
     return statistical_results
 
 
+def plot_performance(wide_optimal, datasets):
+    """Plots performance over varying dataset parameters"""
+    load_plt_sns_configs()
+
+    data_summarized = summarize_datasets(datasets).set_index("Dataset")
+    feature = "IR"
+
+    wo_ranks = wide_optimal\
+        .query("Metric != 'mean_test_accuracy'")\
+        .rank(axis=1, ascending=False)\
+        .reset_index()\
+        .set_index("Dataset")\
+        .join(data_summarized[feature].astype(float))
+
+    ranks_avg = wo_ranks\
+        .mean()\
+        .reset_index(drop=True)
+
+    # ranks_std = wo_ranks.std(ddof=0)
+
+
+
 def save_longtable(df, path=None, caption=None, label=None):
     """
     Exports a pandas dataframe to longtable format.
@@ -346,6 +369,8 @@ if __name__ == "__main__":
             wide_optimal, alpha=0.05, control_method="G-SMOTE"
         )
     ]
+
+    # Get performance to IR analysis - DRAFT!!!
 
     # Save all tables to latex
     TBL_OUTPUTS = (
