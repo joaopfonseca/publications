@@ -20,7 +20,7 @@ from mlresearch.utils import (
     load_datasets,
     make_bold,
     generate_mean_std_tbl_bold,
-    load_plt_sns_configs
+    load_plt_sns_configs,
 )
 
 
@@ -57,11 +57,12 @@ def summarize_datasets(datasets):
     summarized["base_names"] = summarized["Dataset"].apply(lambda x: x.split(" (")[0])
     summarized["ir_sort"] = summarized["IR"].astype(float)
 
-    summarized = summarized\
-        .groupby("base_names")\
-        .apply(lambda df: df.sort_values("ir_sort").reset_index(drop=True))\
-        .reset_index(drop=True)\
+    summarized = (
+        summarized.groupby("base_names")
+        .apply(lambda df: df.sort_values("ir_sort").reset_index(drop=True))
+        .reset_index(drop=True)
         .drop(columns=["ir_sort", "base_names"])
+    )
 
     return summarized
 
@@ -104,17 +105,16 @@ def calculate_wide_optimal(results):
 
 
 def calculate_mean_sem_rankings(wide_optimal):
-    ranks = wide_optimal\
-        .rank(axis=1, ascending=False)\
-        .reset_index()\
+    ranks = (
+        wide_optimal.rank(axis=1, ascending=False)
+        .reset_index()
         .groupby(["Classifier", "Metric"])
+    )
     return ranks.mean(), ranks.sem()
 
 
 def calculate_mean_sem_scores(wide_optimal):
-    scores = wide_optimal\
-        .reset_index()\
-        .groupby(["Classifier", "Metric"])
+    scores = wide_optimal.reset_index().groupby(["Classifier", "Metric"])
     return scores.mean(), scores.sem()
 
 
@@ -231,37 +231,62 @@ def plot_consistency(wide_optimal, datasets, savepath):
     data_summarized["M/NM ratio"] = (
         data_summarized["Metric"] / data_summarized["Non-Metric"]
     )
-    data_summarized["E(F-Score)"] = wide_optimal\
-        .query("Metric == 'mean_test_f1_macro'")\
-        .reset_index()\
-        .groupby("Dataset").mean().mean(1)
+    data_summarized["E(F-Score)"] = (
+        wide_optimal.query("Metric == 'mean_test_f1_macro'")
+        .reset_index()
+        .groupby("Dataset")
+        .mean()
+        .mean(1)
+    )
 
     features = ["IR", "Classes", "M/NM ratio", "E(F-Score)"]
 
     # Plot each feature
     fig, axes = plt.subplots(2, 2, sharey=True, figsize=(7, 5))
     for feature, ax in zip(features, axes.flatten()):
-        wo_ranks = wide_optimal\
-            .query("Metric != 'mean_test_accuracy'")\
-            .rank(axis=1, ascending=False)\
-            .reset_index()\
-            .set_index("Dataset")\
-            .join(data_summarized[feature].astype(float))\
+        wo_ranks = (
+            wide_optimal.query("Metric != 'mean_test_accuracy'")
+            .rank(axis=1, ascending=False)
+            .reset_index()
+            .set_index("Dataset")
+            .join(data_summarized[feature].astype(float))
             .groupby(feature)
+        )
 
         ranks_avg = wo_ranks.mean()
         ranks_std = wo_ranks.sem()
 
+        # Populate axes
         for ovs in ranks_avg.columns:
-            ranks_avg[ovs].plot(ax=ax, alpha=.7)
+            ranks_avg[ovs].plot(ax=ax, alpha=0.7)
             ax.fill_between(
                 ranks_avg.index,
                 ranks_avg[ovs] - ranks_std[ovs],
                 ranks_avg[ovs] + ranks_std[ovs],
-                alpha=0.15
+                alpha=0.15,
             )
 
-    ax.legend(ax.lines, ranks_avg.columns, bbox_to_anchor=(1, .85), loc="lower left")
+    # Add missing information to plot
+    ax.legend(
+        ax.lines,
+        ranks_avg.columns,
+        bbox_to_anchor=(1, 0.85),
+        loc="lower left",
+        frameon=False,
+    )
+    fig.text(
+        0.06,
+        0.5,
+        "Mean rankings",
+        rotation="vertical",
+        fontsize=10,
+        horizontalalignment="center",
+        verticalalignment="center",
+    )
+
+    # Format plot
+    plt.gca().invert_yaxis()
+    plt.subplots_adjust(hspace=0.3)
     fig.savefig(
         savepath,
         format="pdf",
@@ -305,8 +330,7 @@ def format_table(df, with_sem=True, maximum=True, decimals=3):
     else:
         df = df.copy()
         df = df.apply(
-            lambda row: make_bold(row, maximum=maximum, num_decimals=decimals),
-            axis=1
+            lambda row: make_bold(row, maximum=maximum, num_decimals=decimals), axis=1
         )
 
     index_cols = list(df.index.names)
@@ -335,7 +359,8 @@ if __name__ == "__main__":
     datasets = load_datasets(data_dir=DATA_PATH)
 
     DATASETS = [
-        dataset[0].lower().replace(" ", "_") for dataset in datasets
+        dataset[0].lower().replace(" ", "_")
+        for dataset in datasets
         if dataset[0].lower().split(" ")[0] != "thyroid"
     ]
     OVERSAMPLERS = {
@@ -358,7 +383,8 @@ if __name__ == "__main__":
 
     # Filter datasets that are too easy to solve
     datasets = [
-        dataset for dataset in datasets
+        dataset
+        for dataset in datasets
         if dataset[0].lower().replace(" ", "_") in DATASETS
     ]
 
@@ -392,16 +418,17 @@ if __name__ == "__main__":
 
     # Get statistical analyses
     friedman_, wilcoxon_, holms_ = [
-        stat[1] for stat in generate_statistical_results(
+        stat[1]
+        for stat in generate_statistical_results(
             wide_optimal, alpha=0.05, control_method="G-SMOTE"
         )
     ]
 
     # Get visualization for consistency analysis
     plot_consistency(
-        wide_optimal,
+        wide_optimal.rename(columns=OVERSAMPLERS),
         datasets,
-        join(ANALYSIS_PATH, "consistency_analysis_plot.pdf")
+        join(ANALYSIS_PATH, "consistency_analysis_plot.pdf"),
     )
 
     # Save all tables to latex
@@ -426,7 +453,7 @@ if __name__ == "__main__":
             (
                 "Mean rankings over the different datasets, folds and runs used in the "
                 "experiment."
-            )
+            ),
         ),
         (
             "mean_sem_scores",
@@ -434,7 +461,7 @@ if __name__ == "__main__":
             (
                 "Mean scores over the different datasets, folds and runs used"
                 " in the experiment"
-            )
+            ),
         ),
         (
             "friedman_test",
@@ -443,33 +470,31 @@ if __name__ == "__main__":
                 "Results for Friedman test. Statistical significance is tested at a "
                 r"level of $\alpha = 0.05$. The null hypothesis is that there is no "
                 "difference in the classification outcome across oversamplers."
-            )
+            ),
         ),
         (
             "wilcoxon_test",
-            wilcoxon_
-            .set_index("Dataset")
-            .applymap(lambda x: make_bold_stat_signif(x, sig_level=.05))
+            wilcoxon_.set_index("Dataset")
+            .applymap(lambda x: make_bold_stat_signif(x, sig_level=0.05))
             .reset_index(),
             (
                 "Results for Wilcoxon signed-rank method. Statistical significance is "
                 r"tested at a level of $\alpha = 0.05$. The null hypothesis is that the "
                 "performance of the proposed oversampler is similar to the remaining "
                 "oversamplers."
-            )
+            ),
         ),
         (
             "holms_test",
-            holms_
-            .set_index(["Classifier", "Metric"])
-            .applymap(lambda x: make_bold_stat_signif(x, sig_level=.05))
+            holms_.set_index(["Classifier", "Metric"])
+            .applymap(lambda x: make_bold_stat_signif(x, sig_level=0.05))
             .reset_index(),
             (
                 "Adjusted p-values using the Holm-Bonferroni test. Statistical "
                 r"significance is tested at a level of $\alpha = 0.05$. The null "
                 "hypothesis is that the benchmark methods perform similarly "
                 "compared to the control method (G-SMOTENC)."
-            )
+            ),
         ),
     )
 
