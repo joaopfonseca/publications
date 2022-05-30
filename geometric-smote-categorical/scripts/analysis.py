@@ -10,6 +10,7 @@ from collections import Counter
 from itertools import product
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from scipy.stats import wilcoxon, ttest_rel
 from statsmodels.stats.multitest import multipletests
 from rlearn.tools import select_results
@@ -107,14 +108,14 @@ def calculate_mean_sem_rankings(wide_optimal):
         .rank(axis=1, ascending=False)\
         .reset_index()\
         .groupby(["Classifier", "Metric"])
-    return ranks.mean(), ranks.sem(ddof=0)
+    return ranks.mean(), ranks.sem()
 
 
 def calculate_mean_sem_scores(wide_optimal):
     scores = wide_optimal\
         .reset_index()\
         .groupby(["Classifier", "Metric"])
-    return scores.mean(), scores.sem(ddof=0)
+    return scores.mean(), scores.sem()
 
 
 def make_bold_stat_signif(value, sig_level=0.05):
@@ -221,26 +222,52 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
     return statistical_results
 
 
-def plot_performance(wide_optimal, datasets):
-    """Plots performance over varying dataset parameters"""
+def plot_consistency(wide_optimal, datasets, savepath):
+    """Plots performance consistency over varying dataset parameters."""
     load_plt_sns_configs()
 
+    # Extract features to plot
     data_summarized = summarize_datasets(datasets).set_index("Dataset")
-    feature = "IR"
-
-    wo_ranks = wide_optimal\
-        .query("Metric != 'mean_test_accuracy'")\
-        .rank(axis=1, ascending=False)\
+    data_summarized["M/NM ratio"] = (
+        data_summarized["Metric"] / data_summarized["Non-Metric"]
+    )
+    data_summarized["E(F-Score)"] = wide_optimal\
+        .query("Metric == 'mean_test_f1_macro'")\
         .reset_index()\
-        .set_index("Dataset")\
-        .join(data_summarized[feature].astype(float))
+        .groupby("Dataset").mean().mean(1)
 
-    ranks_avg = wo_ranks\
-        .mean()\
-        .reset_index(drop=True)
+    features = ["IR", "Classes", "M/NM ratio", "E(F-Score)"]
 
-    # ranks_std = wo_ranks.std(ddof=0)
+    # Plot each feature
+    fig, axes = plt.subplots(2, 2, sharey=True, figsize=(7, 5))
+    for feature, ax in zip(features, axes.flatten()):
+        wo_ranks = wide_optimal\
+            .query("Metric != 'mean_test_accuracy'")\
+            .rank(axis=1, ascending=False)\
+            .reset_index()\
+            .set_index("Dataset")\
+            .join(data_summarized[feature].astype(float))\
+            .groupby(feature)
 
+        ranks_avg = wo_ranks.mean()
+        ranks_std = wo_ranks.sem()
+
+        for ovs in ranks_avg.columns:
+            ranks_avg[ovs].plot(ax=ax, alpha=.7)
+            ax.fill_between(
+                ranks_avg.index,
+                ranks_avg[ovs] - ranks_std[ovs],
+                ranks_avg[ovs] + ranks_std[ovs],
+                alpha=0.15
+            )
+
+    ax.legend(ax.lines, ranks_avg.columns, bbox_to_anchor=(1, .85), loc="lower left")
+    fig.savefig(
+        savepath,
+        format="pdf",
+        bbox_inches="tight",
+    )
+    plt.close()
 
 
 def save_longtable(df, path=None, caption=None, label=None):
@@ -370,7 +397,12 @@ if __name__ == "__main__":
         )
     ]
 
-    # Get performance to IR analysis - DRAFT!!!
+    # Get visualization for consistency analysis
+    plot_consistency(
+        wide_optimal,
+        datasets,
+        join(ANALYSIS_PATH, "consistency_analysis_plot.pdf")
+    )
 
     # Save all tables to latex
     TBL_OUTPUTS = (
