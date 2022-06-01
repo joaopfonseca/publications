@@ -6,7 +6,7 @@
 replacement for SMOTENC}}
 
 \author{%
-	Joao Fonseca\(^{1*}\), Georgios Douzas\(^{1}\), Fernando Bacao\(^{1}\)
+	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
 	\\
 	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
 	\\
@@ -52,14 +52,6 @@ replacement for SMOTENC}}
 
 This is text~\cite{Chawla2002}.
 
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=12cm, keepaspectratio]{../analysis/fig3}
-%    \captionbelow{An instance belonging to a minority class cluster and one of
-%    its 5-nearest neighbors are selected. An observation belonging to the same
-%    cluster is generated.}
-%\end{figure}
-
 \section{Related Work}~\label{sec:related_work}
 
 \section{Motivation}~\label{sec:motivation}
@@ -69,6 +61,20 @@ This is text~\cite{Chawla2002}.
 \section{Methodology}~\label{sec:methodology}
 
 \subsection{Experimental Data}~\label{sec:experimental_data}
+
+The datasets used in this experiment were extracted from the
+\href{https://archive.ics.uci.edu}{UC Irvine Machine Learning Repository}. All
+of the datasets are publicly available and cover a range of different domains.
+The selection of datasets was done to ensure that all datasets are imbalanced
+and contained non-metric features (\textit{i.e.}, whether ordinal, nominal or
+binary). These datasets will be used to show how the performance of different
+classifiers varies according to the used over/undersampling method.
+
+At an initial stage, all datasets were preprocessed manually with minimal
+manipulations, to avoid the application of preprocessing methods beyond the
+scope of this paper. This step was conducted to remove features and/or
+observations with missing values and identifying the non-metric features. The
+second stage of our
 
 \input{../analysis/datasets_description.tex}
 
@@ -114,10 +120,23 @@ The statistical analysis was developed using exclusively imbalance-appropriate
 metrics: F-Score and G-Mean. 
 
 \input{../analysis/friedman_test.tex}
+
 \input{../analysis/wilcoxon_test.tex}
+
 \input{../analysis/holms_test.tex}
 
 \subsection{Discussion}~\label{sec:discussion}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{../analysis/consistency_analysis_plot}
+    \captionbelow{Average ranking of oversamplers over different
+    characteristics of the datasets used in the experiment. Legend: IR ---
+Imbalance Ratio, Classes --- Number of classes in the dataset, M/NM ratio ---
+ratio between the number of metric and non-metric features, E$($F-Score$)$ ---
+Mean F-Score of dataset across all combinations of classifiers and
+oversamplers.}
+\end{figure}
 
 \section{Conclusion}~\label{sec:conclusion}
 
