@@ -60,6 +60,12 @@ This is text~\cite{Chawla2002}.
 
 \section{Methodology}~\label{sec:methodology}
 
+$C_{maj}$ set of majority class observations (most common class found in the
+target variable)
+
+$C_{min}$ set of minority class observations (least common class found in the
+target variable)
+
 \subsection{Experimental Data}~\label{sec:experimental_data}
 
 The datasets used in this experiment were extracted from the
@@ -74,17 +80,73 @@ At an initial stage, all datasets were preprocessed manually with minimal
 manipulations, to avoid the application of preprocessing methods beyond the
 scope of this paper. This step was conducted to remove features and/or
 observations with missing values and identifying the non-metric features. The
-second stage of our
+second stage of our preprocessing was done systematically. The resulting
+datasets are shown in Table~\ref{tbl:datasets_description}.
 
 \input{../analysis/datasets_description.tex}
 
+The second part of the data preprocessing pipeline starts with the generation
+of artificially imbalanced datasets with different Imbalance Ratios (IR). For
+each original dataset, we create its more imbalanced versions at intervals of
+10, while ensuring that $|C_{min}| \ge 15$. The sampling strategy was
+determined for class $n \in \{1,\ldots,n,\ldots,m\}$ as a linear interpolation using $|C_{maj}|$ and
+$|C_{min}'|=\frac{|C_{maj}|}{IR}$, as shown in equation~\ref{eq:sampling}.
+
+\begin{equation}~\label{eq:sampling}
+    |C_n|^{imb} =
+    \frac{\frac{|C_{maj}|}{IR}-|C_{maj}|}{|\{1,\ldots,n,\ldots,m\}|-1}.|C_n|+|C_{max}|
+\end{equation}
+
+The new, artificially imbalanced dataset, is formed by randomly removing
+observations from each $C_n$ such that $C_n' \subseteq C_n , |C_n'| =
+|C_n|^{imb}$. The artificially imbalanced datasets are marked with its
+imbalance ratio as a suffix in Table~\ref{tbl:datasets_description}.
+
+The datasets (both original and artificially imbalanced versions) are then
+filtered to ensure all datasets have a minimum of 500 observations.  The
+remaining datasets whose number of observations is larger than 5000 are
+randomly sampled to match this number of observations. Afterwards, for each
+remaining dataset we remove all observations from target classes whose
+frequency is lower than 15 observations. Finally, the continuous and discrete
+features are scaled to ensure a common range between all features. 
+
 \subsection{Evaluation Measures}~\label{sec:evaluation_measures}
+
+Although the typical performance metrics, \textit{e.g.}, Overall Accuracy
+(OA), are intuitive to interpret, they are often inappropriate to measure a
+classifier's performance in an imbalanced learning context
+\textbf{[CITATION]}. For example, to estimate an event that occurs in 1\% of
+the dataset, a constant classifier would obtain an OA of 0.99 and still be
+unusable. However, this metric is still reported in some of our results to
+maintain a metric that is easier to interpret.
+
+More recent surveys have found the Geometric-mean (G-mean), F1-score
+(F-score), sensitivity and specificity to be commonly used performance metrics
+in imbalanced learning contexts~\cite{rout2018handling}. This finding is
+consistent with other well-known recommendations on the usage of performance
+metrics~\cite{jeni2013facing}.  
 
 \subsection{Machine Learning Algorithms}~\label{sec:ml_algorithms}
 
 \subsection{Experimental Procedure}~\label{sec:experimental_procedure}
 
 \subsection{Software Implementation}~\label{sec:software_implementation}
+
+The algorithmic implementation of G-SMOTENC was written using the Python
+programming language and is available in the open-source package
+\href{https://github.com/joaopfonseca/ml-research}{ML-Research}~\cite{fonseca2021increasing},
+along with other utilities used to produce the experiment and outputs used in
+Section~\ref{sec:results_and_discussion}. In addition, the packages
+\href{https://github.com/scikit-learn/scikit-learn/}{Scikit-Learn}~\cite{scikit-learn},
+\href{https://github.com/scikit-learn-contrib/imbalanced-learn}{Imbalanced-Learn}~\cite{JMLR:v18:16-365}
+and \href{https://github.com/georgedouzas/research-learn/}{Research-Learn}
+were also used in the experimental procedure to get the implementations of the
+classifiers, benchmark over/undersamplers and run the experimental procedure.
+The Latex code, Python scripts (including data pulling and preprocessing,
+experiment setup and results' analysis), as well as the datasets used are
+available in this \href{https://github.com/joaopfonseca/publications}{GitHub
+repository}.
+ 
 
 \section{Results and Discussion}~\label{sec:results_and_discussion}
 
@@ -94,7 +156,7 @@ mechanism is compatible with datasets containing both continuous and
 categorical features.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Summmarize the analysis you did
+% Summarize the analysis you did
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Results}~\label{sec:results}
