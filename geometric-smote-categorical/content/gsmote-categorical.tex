@@ -120,13 +120,25 @@ the dataset, a constant classifier would obtain an OA of 0.99 and still be
 unusable. However, this metric is still reported in some of our results to
 maintain a metric that is easier to interpret.
 
-More recent surveys have found the Geometric-mean (G-mean), F1-score
-(F-score), sensitivity and specificity to be commonly used performance metrics
-in imbalanced learning contexts~\cite{rout2018handling}. This finding is
-consistent with other well-known recommendations on the usage of performance
-metrics~\cite{jeni2013facing}.  
+More recent surveys have found the Geometric-mean ($\textit{G-mean} =
+\sqrt{\overline{Sensitivity} \times \overline{Specificity}}$), F1-score
+($\textit{F-score}=2\times\frac{\overline{Precision} \times
+\overline{Recall}}{\overline{Precision} + \overline{Recall}}$), $Sensitivity =
+\frac{TP}{FN+TP}$ and $Specificity = \frac{TN}{TN + FP}$ to be commonly used
+performance metrics in imbalanced learning contexts~\cite{rout2018handling}.
+These metrics are calculated as a function of the number of False/True
+Positives (FP and TP) and False/True Negatives (FN and TN), having
+$Precision = \frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$.
+This finding is consistent with other well-known recommendations on the usage
+of performance metrics~\cite{jeni2013facing}. This led us to adopt, along with
+OA, both F-score and G-mean as the main performance metrics for this study. 
 
 \subsection{Machine Learning Algorithms}~\label{sec:ml_algorithms}
+
+The classifiers used in the experimental procedure based on popularity,
+performance consistency and type of classifier. We use four classical ML
+classifiers from different families of classification (tree-based, nearest
+neighbors-based, ensemble-based and a linear model). A Decision Tree classifier
 
 \subsection{Experimental Procedure}~\label{sec:experimental_procedure}
 
