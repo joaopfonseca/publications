@@ -11,7 +11,7 @@ from itertools import product
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import wilcoxon, ttest_rel
+from scipy.stats import ttest_rel
 from statsmodels.stats.multitest import multipletests
 from rlearn.tools import select_results
 from rlearn.tools.reporting import _extract_pvalue
@@ -126,27 +126,6 @@ def make_bold_stat_signif(value, sig_level=0.05):
     return val
 
 
-def apply_wilcoxon_test(wide_optimal, dep_var, OVRS_NAMES, alpha):
-    """Performs a Wilcoxon signed-rank test"""
-    pvalues = []
-    for ovr in OVRS_NAMES:
-        mask = np.repeat(True, len(wide_optimal))
-
-        pvalues.append(
-            wilcoxon(
-                wide_optimal.loc[mask, ovr], wide_optimal.loc[mask, dep_var]
-            ).pvalue
-        )
-    wilcoxon_results = pd.DataFrame(
-        {
-            "Oversampler": OVRS_NAMES,
-            "p-value": pvalues,
-            "Significance": np.array(pvalues) < alpha,
-        }
-    )
-    return wilcoxon_results
-
-
 def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"):
     """Generate the statistical results of the experiment."""
 
@@ -169,24 +148,6 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
         lambda x: "{:.1e}".format(x)
     )
     friedman_test["Metric"] = friedman_test["Metric"].apply(lambda x: METRICS[x])
-
-    # Wilcoxon signed rank test
-    # Optimal proposed method vs oversampling framework
-    wilcoxon_test = []
-    for dataset in results.reset_index().Dataset.unique():
-        wilcoxon_results = apply_wilcoxon_test(
-            results[(results.reset_index()["Dataset"] == dataset).values],
-            "G-SMOTE",
-            ["NONE", "RAND-OVER", "RAND-UNDER", "SMOTENC"],
-            alpha,
-        ).drop(columns="Significance")
-        wilcoxon_results["Dataset"] = dataset.replace("_", " ").title()
-        wilcoxon_test.append(
-            wilcoxon_results.pivot("Dataset", "Oversampler", "p-value")
-        )
-
-    wilcoxon_test = pd.concat(wilcoxon_test, axis=0)
-    wilcoxon_test = wilcoxon_test.reset_index()
 
     # Holms test
     # Optimal proposed framework vs baseline framework
@@ -215,10 +176,8 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
     holms_test["Metric"] = holms_test["Metric"].apply(lambda x: METRICS[x])
 
     # Return statistical analyses
-    statistical_results_names = ("friedman_test", "wilcoxon_test", "holms_test")
-    statistical_results = zip(
-        statistical_results_names, (friedman_test, wilcoxon_test, holms_test)
-    )
+    statistical_results_names = ("friedman_test", "holms_test")
+    statistical_results = zip(statistical_results_names, (friedman_test, holms_test))
     return statistical_results
 
 
@@ -417,7 +376,7 @@ if __name__ == "__main__":
     scores = calculate_mean_sem_scores(wide_optimal)
 
     # Get statistical analyses
-    friedman_, wilcoxon_, holms_ = [
+    friedman_, holms_ = [
         stat[1]
         for stat in generate_statistical_results(
             wide_optimal, alpha=0.05, control_method="G-SMOTE"
@@ -469,19 +428,7 @@ if __name__ == "__main__":
             (
                 "Results for Friedman test. Statistical significance is tested at a "
                 r"level of $\alpha = 0.05$. The null hypothesis is that there is no "
-                "difference in the classification outcome across oversamplers."
-            ),
-        ),
-        (
-            "wilcoxon_test",
-            wilcoxon_.set_index("Dataset")
-            .applymap(lambda x: make_bold_stat_signif(x, sig_level=0.05))
-            .reset_index(),
-            (
-                "Results for Wilcoxon signed-rank method. Statistical significance is "
-                r"tested at a level of $\alpha = 0.05$. The null hypothesis is that the "
-                "performance of the proposed oversampler is similar to the remaining "
-                "oversamplers."
+                "difference in the classification outcome across resamplers."
             ),
         ),
         (
