@@ -1,3 +1,10 @@
+"""
+Extract the database.
+"""
+
+# Author: João Fonseca <jpfonseca@novaims.unl.pt>
+# License: MIT
+
 from collections import Counter
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler

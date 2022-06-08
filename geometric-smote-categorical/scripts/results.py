@@ -1,3 +1,10 @@
+"""
+Generate the main experimental results.
+"""
+
+# Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
+# License: MIT
+
 from os import listdir
 from os.path import join
 from itertools import product
