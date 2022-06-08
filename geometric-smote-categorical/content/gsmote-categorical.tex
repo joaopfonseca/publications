@@ -56,15 +56,25 @@ This is text~\cite{Chawla2002}.
 
 \section{Motivation}~\label{sec:motivation}
 
-\section{Proposed Method}~\label{sec:proposed_method}
-
-\section{Methodology}~\label{sec:methodology}
-
 $C_{maj}$ set of majority class observations (most common class found in the
 target variable)
 
 $C_{min}$ set of minority class observations (least common class found in the
 target variable)
+
+
+\section{Proposed Method}~\label{sec:proposed_method}
+
+\section{Methodology}~\label{sec:methodology}
+
+This section describes how the evaluation of G-SMOTENC was performed.  We
+describe the datasets used in the experiment, their source and preprocessing
+steps carried out in Section~\ref{sec:experimental_data}. We describe the
+resampling and classifications methods used for comparing the performance of
+G-SMOTENC with other relevant oversampling and undersampling mthods in
+Section~\ref{sec:ml_algorithms}. The performance metrics used are defined in
+Section~\ref{sec:performance_metrics}. Finally, the experimental procedure is
+described in Section~\ref{sec:experimental_procedure}.
 
 \subsection{Experimental Data}~\label{sec:experimental_data}
 
@@ -108,9 +118,64 @@ remaining datasets whose number of observations is larger than 5000 are
 randomly sampled to match this number of observations. Afterwards, for each
 remaining dataset we remove all observations from target classes whose
 frequency is lower than 15 observations. Finally, the continuous and discrete
-features are scaled to ensure a common range between all features. 
+features are scaled to the range $[0,1]$ to ensure a common range between all
+features. 
 
-\subsection{Evaluation Measures}~\label{sec:evaluation_measures}
+\subsection{Machine Learning Algorithms}~\label{sec:ml_algorithms}
+
+The choice of classifiers used in the experimental procedure were based on
+their type (tree-based, nearest neighbors-based, linear model and
+ensemble-based), popularity and consistency in performance. We used Decision
+Tree (DT), a K-Nearest Neighbors (KNN) classifier, a Logistic
+Regression (LR) and a Random Forest (RF).
+
+Given the lack of existing oversamplers that address imbalanced learning
+problems with mixed data types, the amount of benchmark methods used is also
+limited. We used the well known methods that are compatible with this type of
+datasets: SMOTENC, Random Undersampling (RUS) and Random Oversampling (ROS).
+Table~\ref{tbl:grid} shows the hyperparameters used for the parameter search
+described in Section~\ref{sec:experimental_procedure}.
+
+\begin{table}
+	\centering
+    \caption{\label{tbl:grid}
+        Hyperparameter definition for the classifiers and resamplers used in
+        the experiment.
+    }
+	\begin{tabular}{lll}
+		\toprule
+		Classifier      &                                  &                                \\
+		\midrule
+        DT              & min.\ samples split              & 2                              \\
+                        & criterion                        & gini                           \\
+                        & max depth                        & 3, 6                           \\
+		LR              & maximum iterations               & 10000                          \\
+                        & multi-class                      & One-vs-All                     \\
+		                & solver                           & saga                           \\
+                        & penalty                          & None, L1, L2                   \\
+		KNN             & \# neighbors                     & 3, 5                           \\
+                        & weights                          & uniform                        \\
+                        & metric                           & euclidean                      \\
+		RF              & min.\ samples split              & 2                              \\
+		                & \# estimators                    & 50, 100                        \\
+		                & Max depth                        & 3, 6                           \\
+                        & criterion                        & gini                           \\
+		\toprule
+		Resampler       &                                  &                                \\
+		\midrule
+		SMOTENC         & \# neighbors                     & 3, 5                           \\
+		G-SMOTENC       & \# neighbors                     & 3, 5                           \\
+                        & deformation factor               & 0.0, 0.25, 0.5, 0.75, 1.0      \\
+                        & truncation factor                & -1.0, -0.5, 0.0, 0.5, 1.0      \\
+                        & selection strategy               & ``combined'',
+                        ``minority'', ``majority''\\
+		RUS             & replacement                      & False                          \\
+		ROS             & (no applicable parameters)       &                                \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{Performance Metrics}~\label{sec:performance_metrics}
 
 Although the typical performance metrics, \textit{e.g.}, Overall Accuracy
 (OA), are intuitive to interpret, they are often inappropriate to measure a
@@ -133,14 +198,34 @@ This finding is consistent with other well-known recommendations on the usage
 of performance metrics~\cite{jeni2013facing}. This led us to adopt, along with
 OA, both F-score and G-mean as the main performance metrics for this study. 
 
-\subsection{Machine Learning Algorithms}~\label{sec:ml_algorithms}
-
-The classifiers used in the experimental procedure based on popularity,
-performance consistency and type of classifier. We use four classical ML
-classifiers from different families of classification (tree-based, nearest
-neighbors-based, ensemble-based and a linear model). A Decision Tree classifier
-
 \subsection{Experimental Procedure}~\label{sec:experimental_procedure}
+
+The experimental procedure was applied similarly to all combinations of
+resamplers, classifiers and hyperparameter combinations across all datasets.
+The evaluation of the models' performance was tested using a 5-fold Cross
+Validation (CV) approach. The mean performance in the test set is calculated
+over the 5 folds and 3 different runs of the experimental procedure for each
+combination resampling/classifier hyperparameters. For each dataset, results
+of the hyperparameters that optimize the performance of a resampler/classifier
+are selected. These results were then used for analysis and are shown in
+Table~\ref{tbl:wide_optimal} (see Appendix).
+Figure~\ref{fig:experimental_procedure} shows a diagram of the experimental
+procedure described.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.8\linewidth]{../analysis/experimental_procedure}
+    \caption{Experimental procedure used in this study.
+    }~\label{fig:experimental_procedure}
+\end{figure}
+
+A CV run consists of a stratified partitioning (\textit{i.e.}, each partition
+contains the same relative frequencies of target labels) of the dataset into
+five parts. A given resampler/classifier combination with a specific set of
+hyperparameters is fit and tested five times, using one of the partitions as a
+test set and the remaining ones as training set. The estimated performance
+consists of the average classification performance across the five different
+test sets. 
 
 \subsection{Software Implementation}~\label{sec:software_implementation}
 
@@ -167,9 +252,11 @@ comparison of classification performance using oversamplers whose generation
 mechanism is compatible with datasets containing both continuous and
 categorical features.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Summarize the analysis you did
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The analysis of our experimental results were developed in two stages: (1)
+analysis of mean ranking and absolute performance and (2) statistical
+analysis. In Section~\ref{sec:discussion} we discuss the main insights
+extracted by analysing the results reported in Sections~\ref{sec:results}
+and~\ref{sec:statistical_analysis}.
 
 \subsection{Results}~\label{sec:results}
 
@@ -177,7 +264,7 @@ Table~\ref{tbl:mean_sem_ranks} presents the mean rankings of cross validation
 scores across the different combinations of oversamplers, metrics and
 classifiers. These results were calculated by assigning a ranking score for
 each oversampler from 1 (best) to 4 (worst) for each dataset, metric and
-classifier, based on the results reported in Table~\ref{tbl:wide_optimal} (See
+classifier, based on the results reported in Table~\ref{tbl:wide_optimal} (see
 Appendix).
 
 \input{../analysis/mean_sem_ranks.tex}
@@ -190,10 +277,18 @@ the remaining oversamplers.
 
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
 
-The statistical analysis was developed using exclusively imbalance-appropriate
-metrics: F-Score and G-Mean. 
+Based on the literature found, in Section~\ref{sec:performance_metrics} we
+explained that OA, although easily interpretable, is not an appropriate
+performance metric for imbalanced learning problems. Therefore, the
+statistical analysis was developed using the two imbalance-appropriate metrics
+used in the study: F-Score and G-Mean. The statistical analysis started with
+the assessment of a statistically significant difference in performance across
+resampling methods using a Friedman test~\cite{friedman1937use}. The results
+of this test are shown in Table~\ref{tbl:friedman_test}.
 
 \input{../analysis/friedman_test.tex}
+
+
 
 \input{../analysis/wilcoxon_test.tex}
 
@@ -204,12 +299,13 @@ metrics: F-Score and G-Mean.
 \begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/consistency_analysis_plot}
-    \captionbelow{Average ranking of oversamplers over different
-    characteristics of the datasets used in the experiment. Legend: IR ---
-Imbalance Ratio, Classes --- Number of classes in the dataset, M/NM ratio ---
-ratio between the number of metric and non-metric features, E$($F-Score$)$ ---
-Mean F-Score of dataset across all combinations of classifiers and
-oversamplers.}
+    \caption{Average ranking of oversamplers over different characteristics of
+        the datasets used in the experiment. Legend: IR --- Imbalance Ratio,
+        Classes --- Number of classes in the dataset, M/NM ratio --- ratio
+        between the number of metric and non-metric features, E$($F-Score$)$
+        --- Mean F-Score of dataset across all combinations of classifiers and
+        oversamplers.
+    }~\label{fig:consistency_analysis}
 \end{figure}
 
 \section{Conclusion}~\label{sec:conclusion}
