@@ -50,9 +50,29 @@ replacement for SMOTENC}}
 
 \section{Introduction}~\label{sec:introduction}
 
+% the problem of imbalanced learning
+
+% existing approaches to address imbalanced learning
+
+% prevalence of categorical features in practical classification settings
+
+% why encoding features with more sophisticated approaches is not a
+% straightforward task
+
+% why typical methods cannot be used on datasets with mixed data types
+
+% oversampling (and resampling in general) on datasets with mixed data types
+% is a largely unexplored problem
+
+% the proposed method
+
+% structure of the paper
+
 This is text~\cite{Chawla2002}.
 
 \section{Related Work}~\label{sec:related_work}
+
+SMOTE-ENC~\cite{mukherjee2021smote}
 
 \section{Motivation}~\label{sec:motivation}
 
@@ -277,20 +297,34 @@ the remaining oversamplers.
 
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
 
-Based on the literature found, in Section~\ref{sec:performance_metrics} we
+To conduct an appropriate statistical analysis in an experiment with multiple
+datasets, it is necessary to use methods that account for the multiple
+comparison problem. Based on the recommendations found in~\cite{Demsar2006},
+we applied the Friedman test along with the Holm-Bonferroni test for a
+post-hoc analysis.
+
+In Section~\ref{sec:performance_metrics} we
 explained that OA, although easily interpretable, is not an appropriate
 performance metric for imbalanced learning problems. Therefore, the
 statistical analysis was developed using the two imbalance-appropriate metrics
 used in the study: F-Score and G-Mean. The statistical analysis started with
 the assessment of a statistically significant difference in performance across
 resampling methods using a Friedman test~\cite{friedman1937use}. The results
-of this test are shown in Table~\ref{tbl:friedman_test}.
+of this test are shown in Table~\ref{tbl:friedman_test}. The null hypothesis
+is rejected in all cases.
 
 \input{../analysis/friedman_test.tex}
+
+We performed a Holm-Bonferroni test to understand whether the difference in
+performance of G-SMOTENC is statistically significant to the remaining
+resampling methods. The results of this test are shown in
+Table~\ref{tbl:holms_test}. The null hypothesis was rejected in 27 out of 32 tests.
 
 \input{../analysis/holms_test.tex}
 
 \subsection{Discussion}~\label{sec:discussion}
+
+The results reported in Section~\ref{sec:results} show that\ldots
 
 \begin{figure}
 	\centering
@@ -305,6 +339,8 @@ of this test are shown in Table~\ref{tbl:friedman_test}.
 \end{figure}
 
 \section{Conclusion}~\label{sec:conclusion}
+
+This is a conclusion.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
