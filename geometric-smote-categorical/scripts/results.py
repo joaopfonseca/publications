@@ -23,9 +23,11 @@ from sklearn.model_selection import StratifiedKFold
 from imblearn.over_sampling import SMOTENC, RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
 
+from mlresearch.metrics import SCORERS
 from mlresearch.utils import load_datasets, generate_paths, check_pipelines
 from mlresearch.data_augmentation import GeometricSMOTE
 from rlearn.model_selection import ModelSearchCV
+from benchmarks import MySMOTENC
 
 
 class OHECustom(_BaseEncoder):
@@ -115,6 +117,7 @@ CONFIG = {
                 "deformation_factor": [0.0, 0.25, 0.5, 0.75, 1.0],
             },
         ),
+        ("MySMOTENC", MySMOTENC(categorical_features=None), {"k_neighbors": [3, 5]}),
     ],
     "classifiers": [
         ("CONSTANT", DummyClassifier(strategy="prior"), {}),
@@ -131,7 +134,11 @@ CONFIG = {
             {"max_depth": [3, 6], "n_estimators": [50, 100]},
         ),
     ],
-    "scoring": ["accuracy", "f1_macro", "geometric_mean_score_macro"],
+    "scoring": {
+        "accuracy": SCORERS["accuracy"],
+        "f1_macro": SCORERS["f1_macro"],
+        "geometric_mean_score_macro": SCORERS["geometric_mean_score_macro"],
+    },
     "n_splits": 5,
     "n_runs": 3,
     "random_state": 42,
