@@ -2,8 +2,8 @@
 
 \pdfoutput=1
 
-\title{Geometric SMOTENC \\ \LARGE{A geometrically enhanced drop-in
-replacement for SMOTENC}}
+\title{Geometric SMOTENC \\ \LARGE{A Geometrically Enhanced SMOTE-based Method
+for Datasets with Nominal and Continuous Features}}
 
 \author{%
 	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
@@ -40,6 +40,14 @@ replacement for SMOTENC}}
 \usepackage{hyperref}
 \date{}
 
+\definecolor{hypecol}{HTML}{0875b7}
+\hypersetup{%
+    colorlinks,
+    linkcolor={hypecol},
+    citecolor={hypecol},
+    urlcolor={hypecol}
+}
+
 \begin{document}
 
 \maketitle
@@ -68,9 +76,51 @@ replacement for SMOTENC}}
 
 % structure of the paper
 
-This is text~\cite{Chawla2002}.
+Synthetic Minority Oversampling Technique (SMOTE)~\cite{Chawla2002}.
 
 \section{Related Work}~\label{sec:related_work}
+
+This study focuses on multiclass classification problems. A classification
+problem contains $n$ classes, having $C_{maj}$ as the set of majority class
+observations (\textit{i.e.}, observations belonging to the most common target
+class) and $C_{min}$ as the set of minority class observations (\textit{i.e.},
+observations belonging to the least common target class). Typically, an
+oversampling algorithm will generate synthetic data in order to ensure
+$|C_{min}'|=|C_{maj}|=|C_i|, i \in \{1, \ldots, n\}$.
+
+Since the proposal of SMOTE, several other methods were built upon SMOTE to
+improve the quality of the data generated. The process of generating synthetic
+data using SMOTE-based algorithms can be divided into two distinct phases
+\textbf{[CITATION]}:
+
+\begin{enumerate}
+    \item Data selection. A synthetic observation, $x^s$, is generated based
+        on two existing observations. A SMOTE-based algorithm employs a given
+        heuristic to select a non-majority class observation as the center
+        observation, $x^c$, and one of its nearest neighbors, $x^{nn}$,
+        selected randomly. For the case of SMOTE, $x^c$ is randomly selected
+        from each non-majority class.
+    \item Data generation. Once $x^c$ and $x^{nn}$ have been selected, $x^s$
+        is generated based on a transformation between the two selected
+        observations. In the case of SMOTE, this transformation is 
+        a linear interpolation between the two obervations: $x^s = \alpha x^c
+        + (1-\alpha) x^{nn}, \alpha \sim \mathcal{U}(0, 1)$.
+\end{enumerate}
+
+Modifications to the SMOTE algorithm can be distinguished according to the
+phase where the modifications were applied. For the case of oversampling on
+datasets with mixed data types, this distinction is especially relevant since
+various oversampling methods modify SMOTE's selection mechanism, all of which
+based on euclidean distance.
+
+% Algorithms that modify the selection mechanism
+
+
+However, the usage of these methods becomes a problem on datasets with mixed
+data types since distance computations are no longer valid. 
+
+As discussed in Section~\ref{sec:introduction}, research on resampling methods
+with mixed data types is 
 
 SMOTE-ENC~\cite{mukherjee2021smote}
 
@@ -116,20 +166,21 @@ datasets are shown in Table~\ref{tbl:datasets_description}.
 \input{../analysis/datasets_description.tex}
 
 The second part of the data preprocessing pipeline starts with the generation
-of artificially imbalanced datasets with different Imbalance Ratios (IR). For
+of artificially imbalanced datasets with different Imbalance Ratios
+($IR=\frac{|C_{maj}|}{|C_{min}|}$). For
 each original dataset, we create its more imbalanced versions at intervals of
 10, while ensuring that $|C_{min}| \ge 15$. The sampling strategy was
 determined for class $n \in \{1,\ldots,n,\ldots,m\}$ as a linear interpolation using $|C_{maj}|$ and
-$|C_{min}'|=\frac{|C_{maj}|}{IR}$, as shown in equation~\ref{eq:sampling}.
+$|C_{min}'|=\frac{|C_{maj}|}{IR_{new}}$, as shown in equation~\ref{eq:sampling}.
 
 \begin{equation}~\label{eq:sampling}
-    |C_n|^{imb} =
-    \frac{\frac{|C_{maj}|}{IR}-|C_{maj}|}{|\{1,\ldots,n,\ldots,m\}|-1}.|C_n|+|C_{max}|
+    |C_i|^{imb} =
+    \min(\frac{|C_{min}'|-|C_{maj}|}{n-1}.|C_i|+|C_{max}|, |C_i|)
 \end{equation}
 
-The new, artificially imbalanced dataset, is formed by randomly removing
-observations from each $C_n$ such that $C_n' \subseteq C_n , |C_n'| =
-|C_n|^{imb}$. The artificially imbalanced datasets are marked with its
+The new, artificially imbalanced dataset, is formed by sampling observations
+without replacement from each $C_i$ such that $C_i' \subseteq C_i , |C_i'| =
+|C_i|^{imb}$. The artificially imbalanced datasets are marked with its
 imbalance ratio as a suffix in Table~\ref{tbl:datasets_description}.
 
 The datasets (both original and artificially imbalanced versions) are then
