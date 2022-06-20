@@ -117,8 +117,8 @@ ADASYN~\cite{he2008adasyn}, K-means SMOTE~\cite{douzas2018improving} and
 LR-SMOTE~\cite{liang2020lr} modify the data selection mechanism and show
 promising results in imbalanced learning~\cite{fonseca2021improving}. However,
 all of these algorithms select $x^c$ using procedures that include calculating
-each observation's k-nearest neighbors or using clustering methods, none of
-which is prepared to handle categorical data.
+each observation's k-nearest neighbors or clustering methods, none of which is
+prepared to handle categorical data.
 
 Modifications to SMOTE's generation mechanism are less common. A few
 oversampling methods, such as Geometric-SMOTE~\cite{douzas2019geometric}
@@ -148,9 +148,19 @@ case of ROS), which can lead to overfitting~\cite{park2021combined,
 batista2004study}, or randomly removing majority class observations (in the
 case of RUS), which may lead to underfitting~\cite{bansal2021analysis}.
 
-Recently a new SMOTE-based oversampling method for datasets with mixed data
-types, SMOTE-ENC~\cite{mukherjee2021smote}, was proposed. This method modifies
-the encoding mechanism for categorical features
+Only two oversampling algorithms capable of handling nominal and continuous
+features were found. Recently, a new SMOTE-based oversampling method for
+datasets with mixed data types, SMOTE-ENC~\cite{mukherjee2021smote}, was
+proposed. This method modifies the encoding mechanism for categorical features
+used in the SMOTENC algorithm to account for categorical features' change of
+association with minority classes. The Multivariate Normal Distribution-based
+Oversampling for Numerical and Categorical features
+(MNDO-NC)~\cite{ambai2019multivariate} uses the original MNDO
+method~\cite{ambai2018mndo} along with the SMOTENC mechanism to find the
+values of the categorical features for the synthetic observation. However, the
+results reported in the paper showed that MNDO-NC was consistently
+outperformed by SMOTENC, which led us to discard this approach from further
+consideration.
 
 \section{Motivation}~\label{sec:motivation}
 
@@ -165,7 +175,7 @@ target variable)
 
 \section{Methodology}~\label{sec:methodology}
 
-This section describes how the evaluation of G-SMOTENC was performed.  We
+This section describes how the evaluation of G-SMOTENC was performed. We
 describe the datasets used in the experiment, their source and preprocessing
 steps carried out in Section~\ref{sec:experimental_data}. We describe the
 resampling and classifications methods used for comparing the performance of
@@ -230,10 +240,10 @@ Regression (LR) and a Random Forest (RF).
 
 Given the lack of existing oversamplers that address imbalanced learning
 problems with mixed data types, the amount of benchmark methods used is also
-limited. We used the well known methods that are compatible with this type of
-datasets: SMOTENC, Random Undersampling (RUS) and Random Oversampling (ROS).
-Table~\ref{tbl:grid} shows the hyperparameters used for the parameter search
-described in Section~\ref{sec:experimental_procedure}.
+limited. We used the well known methods and one state-of-the-art oversampling
+method that are compatible with this type of datasets: SMOTENC, RUS, ROS and
+SMOTE-ENC.  Table~\ref{tbl:grid} shows the hyperparameters used for the
+parameter search described in Section~\ref{sec:experimental_procedure}.
 
 \begin{table}
 	\centering
@@ -243,7 +253,7 @@ described in Section~\ref{sec:experimental_procedure}.
     }
 	\begin{tabular}{lll}
 		\toprule
-		Classifier      &                                  &                                \\
+		Classifier      & Parameter                        & Values                         \\
 		\midrule
         DT              & min.\ samples split              & 2                              \\
                         & criterion                        & gini                           \\
@@ -260,9 +270,10 @@ described in Section~\ref{sec:experimental_procedure}.
 		                & Max depth                        & 3, 6                           \\
                         & criterion                        & gini                           \\
 		\toprule
-		Resampler       &                                  &                                \\
+		Resampler       & Parameter                        & Values                         \\
 		\midrule
 		SMOTENC         & \# neighbors                     & 3, 5                           \\
+		SMOTE-ENC       & \# neighbors                     & 3, 5                           \\
 		G-SMOTENC       & \# neighbors                     & 3, 5                           \\
                         & deformation factor               & 0.0, 0.25, 0.5, 0.75, 1.0      \\
                         & truncation factor                & -1.0, -0.5, 0.0, 0.5, 1.0      \\
@@ -338,6 +349,8 @@ Section~\ref{sec:results_and_discussion}. In addition, the packages
 and \href{https://github.com/georgedouzas/research-learn/}{Research-Learn}
 were also used in the experimental procedure to get the implementations of the
 classifiers, benchmark over/undersamplers and run the experimental procedure.
+The original SMOTE-ENC implementation was retrieved from the
+\href{https://github.com/Mimimkh/SMOTE-ENC-code}{authors' GitHub repository}.
 The Latex code, Python scripts (including data pulling and preprocessing,
 experiment setup and results' analysis), as well as the datasets used are
 available in this \href{https://github.com/joaopfonseca/publications}{GitHub
