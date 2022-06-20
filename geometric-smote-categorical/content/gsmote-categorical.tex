@@ -2,8 +2,8 @@
 
 \pdfoutput=1
 
-\title{Geometric SMOTENC \\ \LARGE{A Geometrically Enhanced SMOTE-based Method
-for Datasets with Nominal and Continuous Features}}
+% or ?
+\title{Geometric SMOTE for Imbalanced Datasets with Nominal and Continuous Features}
 
 \author{%
 	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
@@ -108,21 +108,49 @@ data using SMOTE-based algorithms can be divided into two distinct phases
 \end{enumerate}
 
 Modifications to the SMOTE algorithm can be distinguished according to the
-phase where the modifications were applied. For the case of oversampling on
-datasets with mixed data types, this distinction is especially relevant since
-various oversampling methods modify SMOTE's selection mechanism, all of which
-based on euclidean distance.
+phase where the modifications were applied. This distinction is especially
+relevant for the case of oversampling on datasets with mixed data types, since
+it raises the challenge of computing meaningful distances and k-nearest
+neighbors among observations. For example, State-of-the-art oversampling
+methods, such as Borderline-SMOTE~\cite{han2005borderline},
+ADASYN~\cite{he2008adasyn}, K-means SMOTE~\cite{douzas2018improving} and
+LR-SMOTE~\cite{liang2020lr} modify the data selection mechanism and show
+promising results in imbalanced learning~\cite{fonseca2021improving}. However,
+all of these algorithms select $x^c$ using procedures that include calculating
+each observation's k-nearest neighbors or using clustering methods, none of
+which is prepared to handle categorical data.
 
-% Algorithms that modify the selection mechanism
-
-
-However, the usage of these methods becomes a problem on datasets with mixed
-data types since distance computations are no longer valid. 
+Modifications to SMOTE's generation mechanism are less common. A few
+oversampling methods, such as Geometric-SMOTE~\cite{douzas2019geometric}
+achieve such modification and have shows promising results in previous
+research~\cite{douzas2019imbalanced}. However, this method is also unable to
+handle datasets with categorical data. This limitation is especially true for
+methods combining modifications in the selection and generation mechanisms, as
+is the case of the Geometric Self-Organizing Maps Oversampling
+algorithm~\cite{douzas2021g}.
 
 As discussed in Section~\ref{sec:introduction}, research on resampling methods
-with mixed data types is 
+with mixed data types is scarce. The original paper proposing SMOTE also
+proposed SMOTE for Nominal and Continuous (SMOTENC), an adaptation of SMOTE
+handle datasets with nominal and continuous features~\cite{Chawla2002}. To
+determine the k-nearest neighbors of $x^c$, the nominal features encoded by
+multiplying the one-hot encoded categorical features by the median of the
+standard deviations of the continuous features. Once $x^c$ and $x^{nn}$ have
+been determined, the values of the continuous features in $x^s$ are generated
+using the SMOTE generation mechanism, while the categorical features are given
+the most common values occurring in the k-nearest neighbors.
 
-SMOTE-ENC~\cite{mukherjee2021smote}
+Alternatively to SMOTE-based methods, some non-informed over and undersampling
+methods may also be used for datasets with nominal and continuous features,
+specifically Random Oversampling (ROS) and Random Undersampling (RUS). These
+methods consist in randomly duplicating minority class observations (in the
+case of ROS), which can lead to overfitting~\cite{park2021combined,
+batista2004study}, or randomly removing majority class observations (in the
+case of RUS), which may lead to underfitting~\cite{bansal2021analysis}.
+
+Recently a new SMOTE-based oversampling method for datasets with mixed data
+types, SMOTE-ENC~\cite{mukherjee2021smote}, was proposed. This method modifies
+the encoding mechanism for categorical features
 
 \section{Motivation}~\label{sec:motivation}
 
