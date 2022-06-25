@@ -121,13 +121,20 @@ each observation's k-nearest neighbors or clustering methods, none of which is
 prepared to handle categorical data.
 
 Modifications to SMOTE's generation mechanism are less common. A few
-oversampling methods, such as Geometric-SMOTE~\cite{douzas2019geometric}
-achieve such modification and have shows promising results in previous
-research~\cite{douzas2019imbalanced}. However, this method is also unable to
-handle datasets with categorical data. This limitation is especially true for
-methods combining modifications in the selection and generation mechanisms, as
-is the case of the Geometric Self-Organizing Maps Oversampling
-algorithm~\cite{douzas2021g}.
+oversampling methods, such as Safe-level SMOTE~\cite{bunkhumpornpat2009safe}
+and Geometric-SMOTE~\cite{douzas2019geometric} achieve such modifications and
+have shown promising results~\cite{douzas2019imbalanced}. However, these
+methods is also unable to handle datasets with categorical data. This
+limitation is especially true for methods combining modifications in the
+selection and generation mechanisms, as is the case of the Geometric
+Self-Organizing Maps Oversampling algorithm~\cite{douzas2021g}. Other methods
+attempt to replace the SMOTE data generation mechanism altogether using
+different Generative Adversarial Networks (GAN)
+architectures~\cite{salazar2021generative, koivu2020synthetic, jo2022obgan}.
+However, these models are not only computationally expensive to train but also
+sensitive to the training initialization, ensuring a balanced training of the
+two networks involved is difficult, and tuning their hyperparameters is often
+challenging or unfeasible~\cite{gonog2019review}. 
 
 As discussed in Section~\ref{sec:introduction}, research on resampling methods
 with mixed data types is scarce. The original paper proposing SMOTE also
@@ -156,22 +163,234 @@ used in the SMOTENC algorithm to account for categorical features' change of
 association with minority classes. The Multivariate Normal Distribution-based
 Oversampling for Numerical and Categorical features
 (MNDO-NC)~\cite{ambai2019multivariate} uses the original MNDO
-method~\cite{ambai2018mndo} along with the SMOTENC mechanism to find the
-values of the categorical features for the synthetic observation. However, the
-results reported in the paper showed that MNDO-NC was consistently
+method~\cite{ambai2018mndo} along with the SMOTENC encoding mechanism to find
+the values of the categorical features for the synthetic observation. However,
+the results reported in the paper showed that MNDO-NC was consistently
 outperformed by SMOTENC, which led us to discard this approach from further
 consideration.
 
 \section{Motivation}~\label{sec:motivation}
 
-$C_{maj}$ set of majority class observations (most common class found in the
-target variable)
+- There is no method available in the literature that addresses mixed data
+  types while modifying the generation mechanism
 
-$C_{min}$ set of minority class observations (least common class found in the
-target variable)
+- SMOTENC increases the possibility of near duplicates. This phenomenon was
+  already visible with the original SMOTE oversampler. The generation of
+  synthetic observations containing categorical features populated by
+  majority voting further amplifies this effect. Therefore, increasing the
+  diversity of the synthetic data generated becomes particularly relevant.
+
+- The selection mechanism of Geometric-SMOTE has shown effective results in
+  reducing the generation of noisy observations. This mechanism is not
+  present in any of the relevant oversamplers discussed.
 
 
 \section{Proposed Method}~\label{sec:proposed_method}
+
+We propose G-SMOTENC to handle both nominal and continuous features.  This an
+extension of the original G-SMOTE oversampler, which affects both its
+selection and generation mechanisms. Due to the novelty of the work, these
+modifications are based on the SMOTENC mechanism. However, this method can be
+extended with further modifications to the categorical data encoding and
+selection mechanisms in future work. The G-SMOTENC algorithm aims to address
+the limitations described in Section~\ref{sec:motivation}.
+
+Similarly to G-SMOTE being an extension of SMOTE, G-SMOTENC is also an
+extension of SMOTENC since any method or ML pipeline using the SMOTENC
+generation mechanism can replace it by G-SMOTENC without any further
+modifications. The proposed method is described in pseudo-code in
+Algorithm~\ref{alg:gsmotenc}. The functions $SelectionMechanism$ and
+$GenerationMechanism$ are described in Algorithms~\ref{alg:selection}
+and~\ref{alg:generation}, respectively.
+
+\begin{algorithm}
+    \SetKwProg{Fn}{Function}{:}{end}
+    \SetKwInput{KwGiven}{Given}
+    \caption{G-SMOTENC.}\label{alg:gsmotenc}
+    \DontPrintSemicolon%
+    
+    % START
+    \KwGiven{Dataset with binary target classes $C_{min}$ and $C_{maj}$}
+    \KwIn{$C_{maj}, C_{min}, \alpha_{sel}, \alpha_{trunc}, \alpha_{def}$}
+    \KwOut{$C^{gen}$}
+
+    \Begin{
+        $N \leftarrow |C_{maj}| - |C_{min}|$ \\
+        $C^{gen} \leftarrow \emptyset$\\
+        \While{$|C^{gen}| < N$}{
+            $x^c, x^{nn}, X^{nn} \leftarrow SelectionMechanism(C_{maj},
+            C_{min}, \alpha_{sel})$\\
+            $x^{gen} \leftarrow GenerationMechanism(x^c, x^{nn}, X^{nn},
+            \alpha_{trunc}, \alpha_{def})$\\
+            $C^{gen} \leftarrow C^{gen} \cup \{x^{gen}\}$
+        }
+    }
+\end{algorithm}
+
+\subsection{Selection Mechanism}
+
+The data selection mechanism is preceded by the numerical encoding of the
+categorical features. It mixes the selection mechanisms of SMOTENC and
+G-SMOTENC, as shown in Algorithm~\ref{alg:selection}.
+
+\begin{algorithm}[ht]
+    \SetKwProg{Fn}{Function}{:}{end}
+    \SetKwInput{KwGiven}{Given}
+    \caption{G-SMOTENC's selection mechanism.}\label{alg:selection}
+    \DontPrintSemicolon%
+    
+    % START
+    \KwIn{$C_{maj}, C_{min}, \alpha_{sel}$}
+    \KwOut{$x^c, x^{nn}$, $X^{nn}$}
+
+    \Fn{CatEncoder($C_{maj}$, $C_{min}$)}{
+        $S \leftarrow $ Standard deviations of the continuous features in $C_{min}$\\
+        $\sigma_{med} \leftarrow median(S)$\\
+        \ForAll{$i \in \{maj, min\}$}{
+            \ForAll{$f \in C_i^T$}{
+                \If{f is categorical}{
+                    $f' \leftarrow OneHotEncode(f) \times \sigma_{med} / 2$ \\
+                    $C_i' \leftarrow (C_i^T \setminus f)^T$\\
+                    $C_i' \leftarrow (C_i'^T \cup f')^T$
+                }
+            }
+        }
+        \Return $C_{maj}'$, $C_{min}'$
+    }
+
+    \Fn{Surface($\alpha_{sel}$, $x^c$, $C_{maj}$, $C_{min}$)}{
+        \If{$\alpha_{sel} = minority$}{
+            $x^{nn} \in C_{min, k}$ 
+            \tcp*[f]{One of the $k$-nearest neighbors of $x^c$ from
+            $C_{min}$}\\
+            $X^{nn} \leftarrow C_{min, k}$
+        }
+        \If{$\alpha_{sel} = majority$}{
+            $x^{nn} \in C_{maj, 1}$ 
+            \tcp*[f]{Nearest neighbor of $x^c$ from $C_{min}$}\\
+            $X^{nn} \leftarrow C_{maj, 1}$
+        }
+        \If{$\alpha_{sel}$ = combined}{
+            $x^{nn}_{min} \in C_{min, k}$ \\
+            $x^{nn}_{maj} \in C_{maj, 1}$ \\
+            $x^{nn} \leftarrow argmin(||x^{nn}_{min}-x^c||,
+            ||x^{nn}_{maj}-x^c||)$\\
+            $X^{nn} \leftarrow C_{min, k} \cup C_{maj, 1}$
+        }
+        \Return $x^{nn}, X^{nn}$ \tcp*[f]{$X^{nn}$ is the set of $k$-nearest neighbors}\\
+    }
+
+    \Begin{
+        $C_{maj}', C_{min}' \leftarrow CatEncoder(C_{maj}, C_{min})$ \\
+        $x^c \in C_{min}'$ \tcp*[f]{Randomly select $x^c$ from $C_{min}'$}\\
+        $x^{nn}, X^{nn} \leftarrow Surface(\alpha_{sel}, x^c, C_{maj}', C_{min}')$\\
+        Reverse encoding of nominal features in $x^c$, $x^{nn}$ and $X^{nn}$
+    }
+\end{algorithm}
+
+The selection mechanism uses the minority, majority and combined mechanisms
+(introduced by G-SMOTE). However, the nominal features in the minority and
+majority class observations, $C_{maj}$ and $C_{min}$ are first encoded using a
+one-hot encoding approach and replacing the constant 1 with the median of the
+standard deviations of the continuous features in $C_{min}$ divided by 2. The
+nearest-neighbors ($X^{nn}$) of $x^c$ are determined based on $\alpha_{sel}$,
+which are passed on to the generation mechanism to determine the nominal
+features' values of $x^{gen}$ in the generation mechanism. Simultaneously,
+$x^{nn}$ is randomly selected from $X^{nn}$ and will be used to generate
+$x^{gen}$'s continuous features' values.
+
+\subsection{Generation Mechanism}
+
+G-SMOTENC's generation mechanism is shown in Algorithm~\ref{alg:generation}.
+It divides the generation of $x^{gen}$ into two parts: (1) generation of
+continuous feature values and (2) generation of nominal feature values. At
+this stage, the nominal features from $x^c$ and $x^{nn}$ are discarded.
+Afterwards, the continuous features are generated using G-SMOTE's generation
+mechanism; within a hypersphere formed using the truncation and deformation
+hyperparameters ($\alpha_{trunc}$ and $\alpha_{def}$, respectively).  Finally,
+the nominal feature values are generated by the mode of each feature within
+the observations in $X^{nn}$.
+
+\begin{algorithm}
+    \SetKwInput{KwGiven}{Given}
+    \SetKwProg{Fn}{Function}{:}{end}
+    \caption{G-SMOTENC's generation mechanism.}\label{alg:generation}
+    \DontPrintSemicolon%
+
+    % START
+    \KwIn{$x^c, x^{nn}, X^{nn}, \alpha_{trunc}, \alpha_{def}$}
+    \KwOut{$x^s$}
+
+    \Fn{Hyperball()}{
+        $v_i \sim \mathcal{N}(0, 1)$\\
+        $r \sim \mathcal{U}(0, 1)$\\
+        $x^{gen} \leftarrow r^{1/p}\frac{(v_1, \ldots, v_p)}{||(v_1, \ldots,
+        v_p)||}$\\
+        \Return $x^{gen}$
+    }
+
+    \Fn{Vectors($x^c, x^{nn}, x^{gen}$)}{
+        $e^{//} \leftarrow \frac{x^{nn}-x^c}{||x^{nn}-x^c||}$\\
+        $x^{//} \leftarrow (x^{gen} \cdot e^{//})e^{//}$\\
+        $x^{\perp} \leftarrow x^{gen} - x^{//}$\\
+        \Return $x^{//}, x^{\perp}$
+    }
+
+    \Fn{Truncate($x^c, x^{nn}, x^{gen}, x^{//}, \alpha_{trunc}$)}{
+        \If{$|\alpha_{trunc} - x^{//}| > 1$}{
+            $x^{gen} \leftarrow x^{gen} - 2x^{//}$
+        }
+        \Return $x^{gen}$
+    }
+
+    \Fn{Deform($x^{gen}, x^{\perp}, \alpha_{def}$)}{
+        \Return $x^{gen} - \alpha_{def}x^{\perp}$
+    }
+
+    \Fn{Translate($x^c, x^{gen}, R$)}{
+        \Return $x^c + R x^{gen}$
+    }
+
+    \Fn{GenNominal($X^{nn}$)}{
+        $x^{gen}_{nom} = \emptyset $\\
+        \ForAll{$f \in (X^{nn})^T$}{
+            \If{f is categorical}{
+                $x^{gen}_{nom} \cup \{mode(f)\}$\tcp*[f]{Ties are decided with
+                random selection}\\
+            }
+        }
+        \Return $x^{gen}_{nom}$
+    }
+
+    \Begin{
+        Discard nominal features from $x^c$ and $x^{nn}$\\
+        $x^{gen} \leftarrow Hyperball()$\\
+        $x^{//}, x^{\perp} \leftarrow Vectors(x^c, x^{nn}, x^{gen})$\\
+        $x^{gen} \leftarrow Truncate(x^c, x^{nn}, x^{gen}, x^{//}, \alpha_{trunc})$\\
+        $x^{gen} \leftarrow Deform(x^{gen}, x^{\perp}, \alpha_{def})$\\
+        $x^{gen} \leftarrow Translate(x^c, x^{gen},
+        ||x^{nn}_{cont}-x^c||)$\\
+        $x^{gen}_{nom} \leftarrow GenNominal(X^{nn})$\\
+        $x^{gen} \leftarrow x^{gen} \cup x^{gen}_{nom}$
+    }
+
+\end{algorithm}
+
+In total, G-SMOTENC contains 3 hyperparameters: the selection strategy
+($\alpha_{sel}$), the truncation factor ($\alpha_{trunc}$) and the deformation
+factor ($\alpha_{def}$). Figure~\ref{fig:gsmote} depicts the effect of those
+hyperparameters in the data selection and generation phases. For an in-depth
+definition of the hyperparameters mentioned the reader may follow reference
+\cite{douzas2019geometric}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{../analysis/g-smote}
+    \caption{A visual depiction of G-SMOTENC. In this example,
+        $\alpha_{trunc}$ is approximately 0.5 and $\alpha_{def}$ is
+        approximately 0.4.
+    }~\label{fig:gsmote}
+\end{figure}
 
 \section{Methodology}~\label{sec:methodology}
 
@@ -205,11 +424,12 @@ datasets are shown in Table~\ref{tbl:datasets_description}.
 
 The second part of the data preprocessing pipeline starts with the generation
 of artificially imbalanced datasets with different Imbalance Ratios
-($IR=\frac{|C_{maj}|}{|C_{min}|}$). For
-each original dataset, we create its more imbalanced versions at intervals of
-10, while ensuring that $|C_{min}| \ge 15$. The sampling strategy was
-determined for class $n \in \{1,\ldots,n,\ldots,m\}$ as a linear interpolation using $|C_{maj}|$ and
-$|C_{min}'|=\frac{|C_{maj}|}{IR_{new}}$, as shown in equation~\ref{eq:sampling}.
+($IR=\frac{|C_{maj}|}{|C_{min}|}$). For each original dataset, we create its
+more imbalanced versions at intervals of 10, while ensuring that $|C_{min}|
+\ge 15$. The sampling strategy was determined for class $n \in
+\{1,\ldots,n,\ldots,m\}$ as a linear interpolation using $|C_{maj}|$ and
+$|C_{min}'|=\frac{|C_{maj}|}{IR_{new}}$, as shown in
+equation~\ref{eq:sampling}.
 
 \begin{equation}~\label{eq:sampling}
     |C_i|^{imb} =
@@ -430,9 +650,18 @@ The results reported in Section~\ref{sec:results} show that\ldots
     }~\label{fig:consistency_analysis}
 \end{figure}
 
+
+The results from this experiment expose some well-known limitations of SMOTE
+which become particularly evident with SMOTENC. Specifically, the loss of data
+variability and in some occasions the near-duplication of observations reveal
+that the performance of SMOTENC is comparable to ROS' performance.
+
 \section{Conclusion}~\label{sec:conclusion}
 
 This is a conclusion.
+
+Future work should focus on more sophisticated encoding mechanisms for the
+categorical features.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}

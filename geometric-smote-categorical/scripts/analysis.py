@@ -328,7 +328,7 @@ if __name__ == "__main__":
         "SMOTENC": "SMOTENC",
         "RAND-OVER": "ROS",
         "RAND-UNDER": "RUS",
-        "MySMOTENC": "SMOTE-ENC"
+        "MySMOTENC": "SMOTE-ENC",
     }
     CLASSIFIERS = ["LR", "KNN", "DT", "RF"]
     METRICS = {
