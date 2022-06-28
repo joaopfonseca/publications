@@ -59,15 +59,54 @@
 \section{Introduction}~\label{sec:introduction}
 
 % the problem of imbalanced learning
+There are various Machine Learning (ML) tasks that deal with highly imbalanced
+datasets, such as fraud transactions detection, fault detection and medical
+diagnosis~\cite{tyagi2020sampling}. In these situations, predicting false
+positives is often a more acceptable error, since the class of interest is
+often the minority class~\cite{vuttipittayamongkol2021class}. However,
+standard ML classifiers induce a bias in favor of the classes with highest
+frequency and limits the predictive power on lower frequency
+classes~\cite{lopez2013insight, das2018handling}. This effect is known, in the
+ML community, as Imbalanced Learning. 
 
 % existing approaches to address imbalanced learning
+Imbalanced learning involves a dataset with two or more target classes with
+uneven class frequencies, where the minority class is defined as the class
+with the least amount of observations and the majority is the class with the
+highest amount of observations \textbf{[CITATION]}. There are 3 main
+approaches to deal with imbalanced learning~\cite{fernandez2013analysing}: (1)
+Cost-sensitive solutions attribute a higher misclassification costs to
+minority class observations to minimize higher cost errors, (2) Algorithmic
+level solutions modify ML classifiers to improve the learning of the minority
+class and (3) Resampling solutions generate synthetic minority class
+observations and/or remove majority class observations to balance the training
+dataset.
+
+Since it is an external approach to imbalanced learning, the later method
+becomes particularly useful. It dismisses the required domain knowledge to
+build cost matrix and the technical complexity/knowledge of applying an
+imbalanced learning-specific classifier. Resampling can be done via
+undersampling, oversampling or hybrid approaches~\cite{tarekegn2021review}. In
+this paper, we will focus on oversampling approaches.
 
 % prevalence of categorical features in practical classification settings
+Currently, the presence of nominal features in imbalanced learning tasks limit
+the options available to deal with class imbalance. Even though it is possible
+to use encoding methods such as one-hot or ordinal encoding to convert nominal
+features into numerical, applying a distance metric on nominal data is
+questionable since the data is unordered~\cite{lumijarvi2004comparison}. In
+this case, one possible approach is to use models that are able to handle
+different scales (\textit{e.g.}, Decision Tree). However, this assumption may
+be limitative since there are few ML algorithms where this condition is
+verified. Another possible approach is transforming the variables to meet
+scale assumptions~\cite{lumijarvi2004comparison}. This has been
+explored in the Synthetic Minority Oversampling Technique for Nominal and
+Continuous features (SMOTENC)~\cite{Chawla2002} (explained in
+Section~\ref{sec:related_work}).
 
-% why encoding features with more sophisticated approaches is not a
-% straightforward task
-
-% why typical methods cannot be used on datasets with mixed data types
+% % why typical methods cannot be used on datasets with mixed data types
+% In the presence of datasets with mixed-data types, the usage of most
+% well-known resampling algorithms becomes unfeasible.
 
 % oversampling (and resampling in general) on datasets with mixed data types
 % is a largely unexplored problem
@@ -75,18 +114,25 @@
 % the proposed method
 
 % structure of the paper
+The rest of this paper is structured as follows:
+Section~\ref{sec:related_work} describes the related work and its limitations,
+Section~\ref{sec:motivation} discusses the gaps in the current
+State-of-the-art this paper aims to address, Section~\ref{sec:proposed_method}
+describes the proposed method (G-SMOTENC), Section~\ref{sec:methodology} lays
+out the methodology used to test G-SMOTENC,
+Section~\ref{sec:results_and_discussion} shows and discusses the results
+obtained in the experiment and Section~\ref{sec:conclusion} presents the
+conclusions drawn from this study.
 
-Synthetic Minority Oversampling Technique (SMOTE)~\cite{Chawla2002}.
 
 \section{Related Work}~\label{sec:related_work}
 
-This study focuses on multiclass classification problems. A classification
-problem contains $n$ classes, having $C_{maj}$ as the set of majority class
-observations (\textit{i.e.}, observations belonging to the most common target
-class) and $C_{min}$ as the set of minority class observations (\textit{i.e.},
-observations belonging to the least common target class). Typically, an
-oversampling algorithm will generate synthetic data in order to ensure
-$|C_{min}'|=|C_{maj}|=|C_i|, i \in \{1, \ldots, n\}$.
+A classification problem contains $n$ classes, having $C_{maj}$ as the set of
+majority class observations (\textit{i.e.}, observations belonging to the most
+common target class) and $C_{min}$ as the set of minority class observations
+(\textit{i.e.}, observations belonging to the least common target class).
+Typically, an oversampling algorithm will generate synthetic data in order to
+ensure $|C_{min}'|=|C_{maj}|=|C_i|, i \in \{1, \ldots, n\}$.
 
 Since the proposal of SMOTE, several other methods were built upon SMOTE to
 improve the quality of the data generated. The process of generating synthetic
@@ -94,16 +140,16 @@ data using SMOTE-based algorithms can be divided into two distinct phases
 \textbf{[CITATION]}:
 
 \begin{enumerate}
-    \item Data selection. A synthetic observation, $x^s$, is generated based
+    \item Data selection. A synthetic observation, $x^{gen}$, is generated based
         on two existing observations. A SMOTE-based algorithm employs a given
         heuristic to select a non-majority class observation as the center
         observation, $x^c$, and one of its nearest neighbors, $x^{nn}$,
         selected randomly. For the case of SMOTE, $x^c$ is randomly selected
         from each non-majority class.
-    \item Data generation. Once $x^c$ and $x^{nn}$ have been selected, $x^s$
+    \item Data generation. Once $x^c$ and $x^{nn}$ have been selected, $x^{gen}$
         is generated based on a transformation between the two selected
         observations. In the case of SMOTE, this transformation is 
-        a linear interpolation between the two obervations: $x^s = \alpha x^c
+        a linear interpolation between the two obervations: $x^{gen} = \alpha x^c
         + (1-\alpha) x^{nn}, \alpha \sim \mathcal{U}(0, 1)$.
 \end{enumerate}
 
@@ -140,12 +186,13 @@ As discussed in Section~\ref{sec:introduction}, research on resampling methods
 with mixed data types is scarce. The original paper proposing SMOTE also
 proposed SMOTE for Nominal and Continuous (SMOTENC), an adaptation of SMOTE
 handle datasets with nominal and continuous features~\cite{Chawla2002}. To
-determine the k-nearest neighbors of $x^c$, the nominal features encoded by
-multiplying the one-hot encoded categorical features by the median of the
-standard deviations of the continuous features. Once $x^c$ and $x^{nn}$ have
-been determined, the values of the continuous features in $x^s$ are generated
-using the SMOTE generation mechanism, while the categorical features are given
-the most common values occurring in the k-nearest neighbors.
+determine the k-nearest neighbors of $x^c$, the distance is calculated by
+incorporating into the Euclidean distance the median of the standard
+deviations of the continuous features for every categorical feature with
+different values. Once $x^c$ and $x^{nn}$ have been determined, the values of
+the continuous features in $x^{gen}$ are generated using the SMOTE generation
+mechanism, while the categorical features are given the most common values
+occurring in the k-nearest neighbors.
 
 Alternatively to SMOTE-based methods, some non-informed over and undersampling
 methods may also be used for datasets with nominal and continuous features,
@@ -319,7 +366,7 @@ the observations in $X^{nn}$.
 
     % START
     \KwIn{$x^c, x^{nn}, X^{nn}, \alpha_{trunc}, \alpha_{def}$}
-    \KwOut{$x^s$}
+    \KwOut{$x^{gen}$}
 
     \Fn{Hyperball()}{
         $v_i \sim \mathcal{N}(0, 1)$\\
@@ -376,9 +423,9 @@ the observations in $X^{nn}$.
 
 \end{algorithm}
 
-In total, G-SMOTENC contains 3 hyperparameters: the selection strategy
-($\alpha_{sel}$), the truncation factor ($\alpha_{trunc}$) and the deformation
-factor ($\alpha_{def}$). Figure~\ref{fig:gsmote} depicts the effect of those
+G-SMOTENC contains 3 hyperparameters: the selection strategy ($\alpha_{sel}$),
+the truncation factor ($\alpha_{trunc}$) and the deformation factor
+($\alpha_{def}$). Figure~\ref{fig:gsmote} depicts the effect of those
 hyperparameters in the data selection and generation phases. For an in-depth
 definition of the hyperparameters mentioned the reader may follow reference
 \cite{douzas2019geometric}.
@@ -507,13 +554,14 @@ parameter search described in Section~\ref{sec:experimental_procedure}.
 
 \subsection{Performance Metrics}~\label{sec:performance_metrics}
 
-Although the typical performance metrics, \textit{e.g.}, Overall Accuracy
-(OA), are intuitive to interpret, they are often inappropriate to measure a
-classifier's performance in an imbalanced learning context
-\textbf{[CITATION]}. For example, to estimate an event that occurs in 1\% of
-the dataset, a constant classifier would obtain an OA of 0.99 and still be
-unusable. However, this metric is still reported in some of our results to
-maintain a metric that is easier to interpret.
+The choice of the performance metric plays a critical role in the assessment
+of effect on classification tasks. The typical performance metrics,
+\textit{e.g.}, Overall Accuracy (OA), are intuitive to interpret but are often
+inappropriate to measure a classifier's performance in an imbalanced learning
+context~\cite{sun2009classification}. For example, to estimate an event that
+occurs in 1\% of the dataset, a constant classifier would obtain an OA of 0.99
+and still be unusable. However, this metric is still reported in some of our
+results to maintain a metric that is easier to interpret.
 
 More recent surveys have found the Geometric-mean ($\textit{G-mean} =
 \sqrt{\overline{Sensitivity} \times \overline{Specificity}}$), F1-score
