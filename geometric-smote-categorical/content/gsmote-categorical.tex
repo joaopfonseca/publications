@@ -2,7 +2,6 @@
 
 \pdfoutput=1
 
-% or ?
 \title{Geometric SMOTE for Imbalanced Datasets with Nominal and Continuous Features}
 
 \author{%
@@ -53,7 +52,29 @@
 \maketitle
 
 \begin{abstract}
-    This is an abstract.
+
+    The development of classifiers with imbalanced datasets can be dealt with
+    in 3 different ways. One of these, artificial data generation, is a more
+    general approach when opposed to algorithmic modifications or
+    cost-sensitive solutions. Since the proposal of the Synthetic Minority
+    Oversampling TEchnique (SMOTE), various SMOTE variants and neural
+    network-based oversampling methods have been developed. However, the
+    available options to oversample datasets with both nominal and continuous
+    features are limited. In this paper, we propose Geometric SMOTE for
+    Nominal and Continuous features (G-SMOTENC), consisting of a combination
+    between G-SMOTE and SMOTENC. Our method uses SMOTENC's encoding and
+    generation mechanism for nominal features, while using G-SMOTE's data
+    selection mechanism to determine the center observation and k-nearest
+    neighbors and generation mechanism for continuous features. The
+    G-SMOTENC's performance is compared against SMOTENC's along with 2 other
+    baseline methods, a State-of-the-art oversampling method and no
+    oversampling. Our experimental results, performed over 20 datasets with
+    varying imbalance ratios, number of metric and non-metric features and
+    target classes, show a significant improvement in the quality of the
+    generated data when using G-SMOTENC as the oversampling method. An open
+    source implementation of G-SMOTENC is made available in the Python
+    programming language.
+
 \end{abstract}
 
 \section{Introduction}~\label{sec:introduction}
@@ -104,25 +125,36 @@ explored in the Synthetic Minority Oversampling Technique for Nominal and
 Continuous features (SMOTENC)~\cite{Chawla2002} (explained in
 Section~\ref{sec:related_work}).
 
-% % why typical methods cannot be used on datasets with mixed data types
-% In the presence of datasets with mixed-data types, the usage of most
-% well-known resampling algorithms becomes unfeasible.
-
-% oversampling (and resampling in general) on datasets with mixed data types
-% is a largely unexplored problem
+% why typical methods cannot be used on datasets with mixed data types
+In the presence of datasets with mixed-data types, the usage of most
+well-known resampling algorithms becomes unfeasible. This happens because
+these methods consider exclusively continuous data; they have not been adapted
+to also nominal features as well. Specifically, since the proposal of SMOTE,
+various other SMOTE-variants have been developed to address some of its
+limitations, but little significant work has been developed to resample
+datasets with both nominal and continuous features. 
 
 % the proposed method
+In this paper, we propose Geometric SMOTE for Nominal and Continuous features
+(G-SMOTENC). It generates the continuous feature values of a synthetic
+observation within a truncated hyper-spheroid its nominal feature values using
+the most common value of its nearest neighbors. In addition, G-SMOTENC uses
+G-SMOTE's data selection strategy, along with SMOTENC's approach to find the
+center observation's nearest neighbors. G-SMOTENC is a generalization of both
+SMOTENC and G-SMOTE~\cite{douzas2019geometric}. Specifically, with the correct
+hyperparameters, G-SMOTENC can mimic the behavior of SMOTE, SMOTENC or
+G-SMOTE\@. It is implemented in the
+\href{https://github.com/joaopfonseca/ml-research}{open source Python
+library ``ML-Research''} and is fully compatible with Scikit-Learn ecosystem.
 
 % structure of the paper
 The rest of this paper is structured as follows:
 Section~\ref{sec:related_work} describes the related work and its limitations,
-Section~\ref{sec:motivation} discusses the gaps in the current
-State-of-the-art this paper aims to address, Section~\ref{sec:proposed_method}
-describes the proposed method (G-SMOTENC), Section~\ref{sec:methodology} lays
-out the methodology used to test G-SMOTENC,
-Section~\ref{sec:results_and_discussion} shows and discusses the results
-obtained in the experiment and Section~\ref{sec:conclusion} presents the
-conclusions drawn from this study.
+Section~\ref{sec:proposed_method} describes the proposed
+method (G-SMOTENC), Section~\ref{sec:methodology} lays out the methodology
+used to test G-SMOTENC, Section~\ref{sec:results_and_discussion} shows and
+discusses the results obtained in the experiment and
+Section~\ref{sec:conclusion} presents the conclusions drawn from this study.
 
 
 \section{Related Work}~\label{sec:related_work}
@@ -216,22 +248,6 @@ the results reported in the paper showed that MNDO-NC was consistently
 outperformed by SMOTENC, which led us to discard this approach from further
 consideration.
 
-\section{Motivation}~\label{sec:motivation}
-
-- There is no method available in the literature that addresses mixed data
-  types while modifying the generation mechanism
-
-- SMOTENC increases the possibility of near duplicates. This phenomenon was
-  already visible with the original SMOTE oversampler. The generation of
-  synthetic observations containing categorical features populated by
-  majority voting further amplifies this effect. Therefore, increasing the
-  diversity of the synthetic data generated becomes particularly relevant.
-
-- The selection mechanism of Geometric-SMOTE has shown effective results in
-  reducing the generation of noisy observations. This mechanism is not
-  present in any of the relevant oversamplers discussed.
-
-
 \section{Proposed Method}~\label{sec:proposed_method}
 
 We propose G-SMOTENC to handle both nominal and continuous features.  This an
@@ -239,8 +255,7 @@ extension of the original G-SMOTE oversampler, which affects both its
 selection and generation mechanisms. Due to the novelty of the work, these
 modifications are based on the SMOTENC mechanism. However, this method can be
 extended with further modifications to the categorical data encoding and
-selection mechanisms in future work. The G-SMOTENC algorithm aims to address
-the limitations described in Section~\ref{sec:motivation}.
+selection mechanisms in future work. 
 
 Similarly to G-SMOTE being an extension of SMOTE, G-SMOTENC is also an
 extension of SMOTENC since any method or ML pipeline using the SMOTENC
@@ -353,7 +368,7 @@ It divides the generation of $x^{gen}$ into two parts: (1) generation of
 continuous feature values and (2) generation of nominal feature values. At
 this stage, the nominal features from $x^c$ and $x^{nn}$ are discarded.
 Afterwards, the continuous features are generated using G-SMOTE's generation
-mechanism; within a hypersphere formed using the truncation and deformation
+mechanism; within a hyper-spheroid formed using the truncation and deformation
 hyperparameters ($\alpha_{trunc}$ and $\alpha_{def}$, respectively).  Finally,
 the nominal feature values are generated by the mode of each feature within
 the observations in $X^{nn}$.
@@ -427,10 +442,10 @@ G-SMOTENC contains 3 hyperparameters: the selection strategy ($\alpha_{sel}$),
 the truncation factor ($\alpha_{trunc}$) and the deformation factor
 ($\alpha_{def}$). Figure~\ref{fig:gsmote} depicts the effect of those
 hyperparameters in the data selection and generation phases. For an in-depth
-definition of the hyperparameters mentioned the reader may follow reference
+definition of the hyperparameters mentioned, the reader may follow reference
 \cite{douzas2019geometric}.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/g-smote}
     \caption{A visual depiction of G-SMOTENC. In this example,
@@ -512,7 +527,7 @@ method that are compatible with this type of datasets: SMOTENC, RUS, ROS and
 SMOTE-ENC.  Table~\ref{tbl:grid} shows the hyperparameters used for the
 parameter search described in Section~\ref{sec:experimental_procedure}.
 
-\begin{table}
+\begin{table}[ht]
 	\centering
     \caption{\label{tbl:grid}
         Hyperparameter definition for the classifiers and resamplers used in
@@ -520,7 +535,7 @@ parameter search described in Section~\ref{sec:experimental_procedure}.
     }
 	\begin{tabular}{lll}
 		\toprule
-		Classifier      & Parameter                        & Values                         \\
+		Classifier      & Hyperparameter                   & Values                         \\
 		\midrule
         DT              & min.\ samples split              & 2                              \\
                         & criterion                        & gini                           \\
@@ -537,7 +552,7 @@ parameter search described in Section~\ref{sec:experimental_procedure}.
 		                & Max depth                        & 3, 6                           \\
                         & criterion                        & gini                           \\
 		\toprule
-		Resampler       & Parameter                        & Values                         \\
+		Resampler       &                                  &                                \\
 		\midrule
 		SMOTENC         & \# neighbors                     & 3, 5                           \\
 		SMOTE-ENC       & \# neighbors                     & 3, 5                           \\
@@ -630,13 +645,11 @@ repository}.
 In this section we present the experimental results. We focus on the
 comparison of classification performance using oversamplers whose generation
 mechanism is compatible with datasets containing both continuous and
-categorical features.
-
-The analysis of our experimental results were developed in two stages: (1)
-analysis of mean ranking and absolute performance and (2) statistical
-analysis. In Section~\ref{sec:discussion} we discuss the main insights
-extracted by analysing the results reported in Sections~\ref{sec:results}
-and~\ref{sec:statistical_analysis}.
+categorical features. The analysis of our experimental results were developed
+in two stages: (1) analysis of mean ranking and absolute performance and (2)
+statistical analysis. In Section~\ref{sec:discussion} we discuss the main
+insights extracted by analysing the results reported in
+Sections~\ref{sec:results} and~\ref{sec:statistical_analysis}.
 
 \subsection{Results}~\label{sec:results}
 
@@ -678,15 +691,37 @@ is rejected in all cases.
 We performed a Holm-Bonferroni test to understand whether the difference in
 performance of G-SMOTENC is statistically significant to the remaining
 resampling methods. The results of this test are shown in
-Table~\ref{tbl:holms_test}. The null hypothesis was rejected in 27 out of 32 tests.
+Table~\ref{tbl:holms_test}. The null hypothesis was rejected in 33 out of 40
+tests.
 
 \input{../analysis/holms_test.tex}
 
 \subsection{Discussion}~\label{sec:discussion}
 
-The results reported in Section~\ref{sec:results} show that\ldots
+The results reported in Section~\ref{sec:results} show that G-SMOTENC
+consistently outperforms the remaining well-known oversampling approaches.
+Considering the results for the two imbalanced learning appropriate metrics in
+Table~\ref{tbl:mean_sem_ranks}, G-Mean and F-Score, G-SMOTENC was only (on
+average) outperformed once by a neglectible margin. Unlike the results
+reported in~\cite{mukherjee2021smote}, SMOTE-ENC's performance was rarely
+superior to SMOTENC's.
 
-\begin{figure}
+The relative difference in the classifiers' performance is better visible in
+Table~\ref{tbl:mean_sem_scores}. Using a RF classifier, for example, the
+impact of using G-SMOTENC compared to no oversampling improves, on
+average, 13 percentual points on G-mean and 9 percentual points
+using F-Score. 
+
+The difference in performance among the different oversamplers was found to be
+statistically significant across the different classifiers and relevant
+performance metrics by performing a Friedman test. The p-values of this test
+are reported in Table~\ref{tbl:friedman_test}. The superiority of G-SMOTENC
+was confirmed with the p-values obtained with the Holm-Bonferroni test shown
+in Table~\ref{tbl:holms_test}. This test showed that G-SMOTENC outperformed
+with statistical significance the remaining resamplers 82.5\% of the
+comparisons done.
+
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/consistency_analysis_plot}
     \caption{Average ranking of oversamplers over different characteristics of
@@ -699,17 +734,48 @@ The results reported in Section~\ref{sec:results} show that\ldots
 \end{figure}
 
 
-The results from this experiment expose some well-known limitations of SMOTE
-which become particularly evident with SMOTENC. Specifically, the loss of data
-variability and in some occasions the near-duplication of observations reveal
-that the performance of SMOTENC is comparable to ROS' performance.
+The results from this experiment expose some well-known limitations of SMOTE,
+which become particularly evident with SMOTENC. Specifically, the lack of
+diversity in the generated data and in some occasions the near-duplication of
+observations discussed in~\cite{douzas2019geometric} may be a possible
+explanation for the performance of SMOTENC being comparable to ROS'
+performance, visible in Figure~\ref{fig:consistency_analysis}. In this same
+figure, 3 groups of resampling methods with comparable performance are
+visible: (1) G-SMOTENC, the top performing method, (2) SMOTENC, ROS and
+SMOTE-ENC, where SMOTE-ENC has the most inconsistent behavior and (3) RUS and
+no oversampling, the worst performing approaches. In addition, G-SMOTENC's
+superiority seems invariable to the dataset's characteristics, with little
+overlap with the remaining benchmark methods.
 
 \section{Conclusion}~\label{sec:conclusion}
 
-This is a conclusion.
+In this paper we presented G-SMOTENC, a new oversampling algorithm that
+combines G-SMOTE and SMOTENC. This oversampling algorithm was developed to
+leverage G-SMOTE's data selection and generation mechanisms into datasets with
+mixed data types. This was achieved by encoding and generating nominal feature
+values using SMOTENC's approach. G-SMOTENC's performance was tested on 20
+datasets with different imbalance ratios, metric to non-metric feature ratio
+and number of classes and compared to no oversampling, SMOTENC, Random
+Oversampling, Random Undersampling and SMOTE-ENC using a Decision Tree,
+K-Nearest Neighbors, Logistic Regression and Random Forest as classifiers.
 
-Future work should focus on more sophisticated encoding mechanisms for the
-categorical features.
+The results show that G-SMOTENC performs significantly better when compared to
+its more popular counterparts (SMOTENC, Random Oversampling and Random
+Undersampling), as well as a recently proposed oversampling algorithm for
+mixed data types (SMOTE-ENC). The reason for this improvement in performance
+is related to G-SMOTENC's selection mechanism, which finds a safer region for
+data generation, along with it generation mechanism which increases the
+diversity of the generated observations when compared to SMOTENC. The
+G-SMOTENC implementation used in this study is available in the
+\href{https://github.com/joaopfonseca/ml-research}{open source Python library
+``ML-Research''} and is fully compatible with the Scikit-Learn ecosystem.
+
+G-SMOTENC can be seen as a drop-in replacement of SMOTENC, since when
+$\alpha_{trunc}=1$, $\alpha_{def}=1$ and $\alpha_{sel}=minority$ the SMOTENC
+algorithm is reproduced. G-SMOTENC has 3 additional hyperparameters that allow
+for a greater customization of the selection and generation mechanisms.
+However, determining the optimal parameters a priori (\textit{i.e.}, with
+reduced parameter tuning) is an topic for future work.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
