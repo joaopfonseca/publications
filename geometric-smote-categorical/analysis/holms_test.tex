@@ -2,12 +2,12 @@
 \caption{Adjusted p-values using the Holm-Bonferroni test. Statistical significance is tested at a level of $\alpha = 0.05$. The null hypothesis is that the benchmark methods perform similarly compared to the control method (G-SMOTENC).}
 \label{tbl:holms_test}\\
 \toprule
-Classifier &  Metric &          MySMOTENC &               NONE &          RAND-OVER &         RAND-UNDER &            SMOTENC \\
+Classifier &  Metric &               NONE &            SMOTENC &                ROS &                RUS &          SMOTE-ENC \\
 \midrule
 \endfirsthead
 \caption[]{Adjusted p-values using the Holm-Bonferroni test. Statistical significance is tested at a level of $\alpha = 0.05$. The null hypothesis is that the benchmark methods perform similarly compared to the control method (G-SMOTENC).} \\
 \toprule
-Classifier &  Metric &          MySMOTENC &               NONE &          RAND-OVER &         RAND-UNDER &            SMOTENC \\
+Classifier &  Metric &               NONE &            SMOTENC &                ROS &                RUS &          SMOTE-ENC \\
 \midrule
 \endhead
 \midrule
@@ -17,12 +17,12 @@ Classifier &  Metric &          MySMOTENC &               NONE &          RAND-O
 
 \bottomrule
 \endlastfoot
-        DT & F-Score &          {1.0e-01} & \textbf{{1.5e-04}} & \textbf{{7.3e-06}} & \textbf{{1.2e-06}} & \textbf{{1.5e-04}} \\
-        DT &  G-Mean & \textbf{{2.3e-02}} & \textbf{{5.6e-07}} & \textbf{{2.8e-02}} & \textbf{{3.9e-04}} & \textbf{{2.7e-03}} \\
-       KNN & F-Score & \textbf{{5.9e-06}} & \textbf{{6.4e-04}} & \textbf{{7.2e-04}} & \textbf{{6.4e-04}} & \textbf{{2.2e-04}} \\
-       KNN &  G-Mean & \textbf{{3.5e-03}} & \textbf{{1.6e-05}} & \textbf{{6.5e-03}} &          {2.0e-01} & \textbf{{9.6e-03}} \\
-        LR & F-Score &          {5.6e-02} & \textbf{{4.0e-03}} & \textbf{{9.2e-03}} & \textbf{{3.6e-04}} &          {6.1e-01} \\
-        LR &  G-Mean & \textbf{{4.7e-03}} & \textbf{{1.6e-07}} &          {8.6e-01} &          {2.4e-01} & \textbf{{4.0e-04}} \\
-        RF & F-Score & \textbf{{8.0e-03}} & \textbf{{1.7e-06}} & \textbf{{8.0e-03}} & \textbf{{1.7e-06}} & \textbf{{2.4e-04}} \\
-        RF &  G-Mean & \textbf{{1.7e-03}} & \textbf{{3.8e-06}} &          {2.5e-01} & \textbf{{2.3e-02}} & \textbf{{8.8e-03}} \\
+        DT & F-Score & \textbf{{1.5e-04}} & \textbf{{1.5e-04}} & \textbf{{7.3e-06}} & \textbf{{1.2e-06}} &          {1.0e-01} \\
+        DT &  G-Mean & \textbf{{5.6e-07}} & \textbf{{2.7e-03}} & \textbf{{2.8e-02}} & \textbf{{3.9e-04}} & \textbf{{2.3e-02}} \\
+       KNN & F-Score & \textbf{{6.4e-04}} & \textbf{{2.2e-04}} & \textbf{{7.2e-04}} & \textbf{{6.4e-04}} & \textbf{{5.9e-06}} \\
+       KNN &  G-Mean & \textbf{{1.6e-05}} & \textbf{{9.6e-03}} & \textbf{{6.5e-03}} &          {2.0e-01} & \textbf{{3.5e-03}} \\
+        LR & F-Score & \textbf{{4.0e-03}} &          {6.1e-01} & \textbf{{9.2e-03}} & \textbf{{3.6e-04}} &          {5.6e-02} \\
+        LR &  G-Mean & \textbf{{1.6e-07}} & \textbf{{4.0e-04}} &          {8.6e-01} &          {2.4e-01} & \textbf{{4.7e-03}} \\
+        RF & F-Score & \textbf{{1.7e-06}} & \textbf{{2.4e-04}} & \textbf{{8.0e-03}} & \textbf{{1.7e-06}} & \textbf{{8.0e-03}} \\
+        RF &  G-Mean & \textbf{{3.8e-06}} & \textbf{{8.8e-03}} &          {2.5e-01} & \textbf{{2.3e-02}} & \textbf{{1.7e-03}} \\
 \end{longtable}

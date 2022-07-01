@@ -174,6 +174,9 @@ def generate_statistical_results(wide_optimal, alpha=0.05, control_method="NONE"
     )
     holms_test = holms_test.set_index(pvalues.index).reset_index()
     holms_test["Metric"] = holms_test["Metric"].apply(lambda x: METRICS[x])
+    cols_reordered = ["Classifier", "Metric"] + list(OVERSAMPLERS.keys())
+    cols_reordered.remove(control_method)
+    holms_test = holms_test[cols_reordered]
 
     # Return statistical analyses
     statistical_results_names = ("friedman_test", "holms_test")
@@ -405,7 +408,8 @@ if __name__ == "__main__":
         (
             "wide_optimal",
             format_table(wide_optimal, with_sem=False).reset_index(),
-            "Wide optimal results",
+            "Classification performance after parameter tuning for each"
+            "dataset, classifier and oversampler.",
         ),
         (
             "mean_sem_ranks",
@@ -436,7 +440,8 @@ if __name__ == "__main__":
             "holms_test",
             holms_.set_index(["Classifier", "Metric"])
             .applymap(lambda x: make_bold_stat_signif(x, sig_level=0.05))
-            .reset_index(),
+            .reset_index()
+            .rename(columns=OVERSAMPLERS),
             (
                 "Adjusted p-values using the Holm-Bonferroni test. Statistical "
                 r"significance is tested at a level of $\alpha = 0.05$. The null "
