@@ -94,7 +94,7 @@ ML community, as Imbalanced Learning.
 Imbalanced learning involves a dataset with two or more target classes with
 uneven class frequencies, where the minority class is defined as the class
 with the least amount of observations and the majority is the class with the
-highest amount of observations \textbf{[CITATION]}. There are 3 main
+highest amount of observations~\cite{kaur2019systematic}. There are 3 main
 approaches to deal with imbalanced learning~\cite{fernandez2013analysing}: (1)
 Cost-sensitive solutions attribute a higher misclassification costs to
 minority class observations to minimize higher cost errors, (2) Algorithmic
@@ -168,8 +168,8 @@ ensure $|C_{min}'|=|C_{maj}|=|C_i|, i \in \{1, \ldots, n\}$.
 
 Since the proposal of SMOTE, several other methods were built upon SMOTE to
 improve the quality of the data generated. The process of generating synthetic
-data using SMOTE-based algorithms can be divided into two distinct phases
-\textbf{[CITATION]}:
+data using SMOTE-based algorithms can be divided into two distinct
+phases~\cite{fernandez2018smote}:
 
 \begin{enumerate}
     \item Data selection. A synthetic observation, $x^{gen}$, is generated based
@@ -582,14 +582,15 @@ More recent surveys have found the Geometric-mean ($\textit{G-mean} =
 \sqrt{\overline{Sensitivity} \times \overline{Specificity}}$), F1-score
 ($\textit{F-score}=2\times\frac{\overline{Precision} \times
 \overline{Recall}}{\overline{Precision} + \overline{Recall}}$), $Sensitivity =
-\frac{TP}{FN+TP}$ and $Specificity = \frac{TN}{TN + FP}$ to be commonly used
-performance metrics in imbalanced learning contexts~\cite{rout2018handling}.
-These metrics are calculated as a function of the number of False/True
-Positives (FP and TP) and False/True Negatives (FN and TN), having
-$Precision = \frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$.
-This finding is consistent with other well-known recommendations on the usage
-of performance metrics~\cite{jeni2013facing}. This led us to adopt, along with
-OA, both F-score and G-mean as the main performance metrics for this study. 
+\frac{TP}{FN+TP}$ and $Specificity = \frac{TN}{TN + FP}$ to be appropriate and
+common performance metrics in imbalanced learning
+contexts~\cite{rout2018handling}. These metrics are calculated as a function
+of the number of False/True Positives (FP and TP) and False/True Negatives (FN
+and TN), having $Precision = \frac{TP}{TP+FP}$ and $Recall =
+\frac{TP}{TP+FN}$. This finding is consistent with other well-known
+recommendations on the usage of performance metrics~\cite{jeni2013facing,
+japkowicz2013assessment}.  This led us to adopt, along with OA, both F-score
+and G-mean as the main performance metrics for this study. 
 
 \subsection{Experimental Procedure}~\label{sec:experimental_procedure}
 
@@ -616,9 +617,10 @@ A CV run consists of a stratified partitioning (\textit{i.e.}, each partition
 contains the same relative frequencies of target labels) of the dataset into
 five parts. A given resampler/classifier combination with a specific set of
 hyperparameters is fit and tested five times, using one of the partitions as a
-test set and the remaining ones as training set. The estimated performance
-consists of the average classification performance across the five different
-test sets. 
+test set and the remaining ones as training set. In the ML pipeline defined
+for each run, the nominal features are one-hot encoded after oversampling and
+before passing the data to the classifier. The estimated performance consists
+of the average classification performance across the five different test sets. 
 
 \subsection{Software Implementation}~\label{sec:software_implementation}
 
