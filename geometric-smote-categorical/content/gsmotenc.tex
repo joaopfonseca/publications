@@ -1,55 +1,41 @@
-\documentclass[parskip=full]{scrartcl}
+\documentclass[preprint,12pt]{elsarticle}
 
-\pdfoutput=1
-
-\title{Geometric SMOTE for Imbalanced Datasets with Nominal and Continuous Features}
-
-\author{%
-	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
-	\\
-	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
-	\\
-	\small{*Corresponding Author}
-	\\
-	\\
-	\small{Postal Address: NOVA Information Management School, Campus de
-    Campolide, 1070--312 Lisboa, Portugal}
-	\\
-	\small{Telephone: +351 21 382 8610}
-}
-
-\usepackage{breakcites}
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{geometry}
-\geometry{%
-	a4paper,
-	left=18mm,
-	right=18mm,
-	top=8mm,
-}
-\usepackage{amsmath}
-\usepackage{enumitem}
+\usepackage[width=468pt, height=622pt]{geometry}
+\usepackage{lineno}
+\usepackage{hyperref}
 \usepackage[ruled,vlined]{algorithm2e}
+\usepackage{longtable}
+\usepackage{tabu}
 \usepackage{booktabs}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.14}
-\usepackage{longtable}
-\usepackage{tabu}
-\usepackage{hyperref}
-\date{}
+\usepackage{graphicx}
+\usepackage{changepage}
 
-\definecolor{hypecol}{HTML}{0875b7}
-\hypersetup{%
-    colorlinks,
-    linkcolor={hypecol},
-    citecolor={hypecol},
-    urlcolor={hypecol}
-}
+\AtBeginEnvironment{longtable}{\footnotesize} 
+
+\journal{Information Sciences}
 
 \begin{document}
 
-\maketitle
+% Tables are large; this is used to keep spacing between columns low
+{\setlength{\tabcolsep}{2.5pt}
+
+\begin{frontmatter}
+
+\title{Geometric SMOTE for Imbalanced Datasets with Nominal and Continuous Features}
+
+\author[inst1]{Joao Fonseca}
+\author[inst1]{Fernando Bacao}
+
+\affiliation[inst1]{
+    organization={NOVA Information Management School, Universidade Nova de Lisboa},
+    addressline={Campus de Campolide}, 
+    city={Lisboa},
+    postcode={1070--312}, 
+    state={Lisboa},
+    country={Portugal}
+}
 
 \begin{abstract}
 
@@ -77,10 +63,34 @@
 
 \end{abstract}
 
+%%Graphical abstract
+% \begin{graphicalabstract}
+% \includegraphics{grabs}
+% \end{graphicalabstract}
+
+%%Research highlights
+\begin{highlights}
+    \item We propose Geometric-SMOTENC, a new oversampling algorithm for
+        datasets with nominal and continuous features;
+    \item We test the oversampler's performance over 20 datasets and compare
+        it to 4 other relevant oversampling methods;
+    \item Geometric-SMOTENC consistently outperforms the remaining methods and
+        significantly improves classification performance;
+\end{highlights}
+
+\begin{keyword}
+Imbalanced Learning \sep Oversampling \sep SMOTE \sep Data Generation \sep
+Nominal Data
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers%
+
 \section{Introduction}~\label{sec:introduction}
 
 % the problem of imbalanced learning
-There are various Machine Learning (ML) tasks that deal with highly imbalanced
+Various Machine Learning (ML) tasks deal with highly imbalanced
 datasets, such as fraud transactions detection, fault detection and medical
 diagnosis~\cite{tyagi2020sampling}. In these situations, predicting false
 positives is often a more acceptable error, since the class of interest is
@@ -248,6 +258,7 @@ the results reported in the paper showed that MNDO-NC was consistently
 outperformed by SMOTENC, which led us to discard this approach from further
 consideration.
 
+
 \section{Proposed Method}~\label{sec:proposed_method}
 
 We propose G-SMOTENC to handle both nominal and continuous features.  This an
@@ -295,7 +306,7 @@ The data selection mechanism is preceded by the numerical encoding of the
 categorical features. It mixes the selection mechanisms of SMOTENC and
 G-SMOTENC, as shown in Algorithm~\ref{alg:selection}.
 
-\begin{algorithm}[ht]
+\begin{algorithm}
     \SetKwProg{Fn}{Function}{:}{end}
     \SetKwInput{KwGiven}{Given}
     \caption{G-SMOTENC's selection mechanism.}\label{alg:selection}
@@ -445,7 +456,7 @@ hyperparameters in the data selection and generation phases. For an in-depth
 definition of the hyperparameters mentioned, the reader may follow reference
 \cite{douzas2019geometric}.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/g-smote}
     \caption{A visual depiction of G-SMOTENC. In this example,
@@ -453,6 +464,7 @@ definition of the hyperparameters mentioned, the reader may follow reference
         approximately 0.4.
     }~\label{fig:gsmote}
 \end{figure}
+
 
 \section{Methodology}~\label{sec:methodology}
 
@@ -578,19 +590,29 @@ occurs in 1\% of the dataset, a constant classifier would obtain an OA of 0.99
 and still be unusable. However, this metric is still reported in some of our
 results to maintain a metric that is easier to interpret.
 
-More recent surveys have found the Geometric-mean ($\textit{G-mean} =
-\sqrt{\overline{Sensitivity} \times \overline{Specificity}}$), F1-score
-($\textit{F-score}=2\times\frac{\overline{Precision} \times
-\overline{Recall}}{\overline{Precision} + \overline{Recall}}$), $Sensitivity =
-\frac{TP}{FN+TP}$ and $Specificity = \frac{TN}{TN + FP}$ to be appropriate and
-common performance metrics in imbalanced learning
-contexts~\cite{rout2018handling}. These metrics are calculated as a function
-of the number of False/True Positives (FP and TP) and False/True Negatives (FN
-and TN), having $Precision = \frac{TP}{TP+FP}$ and $Recall =
-\frac{TP}{TP+FN}$. This finding is consistent with other well-known
+More recent surveys have found the Geometric-mean (G-mean), F1-score
+(F-score), $Sensitivity = \frac{TP}{FN+TP}$ and $Specificity = \frac{TN}{TN +
+FP}$ to be appropriate and common performance metrics in imbalanced learning
+contexts~\cite{rout2018handling}. This is consistent with other
 recommendations on the usage of performance metrics~\cite{jeni2013facing,
-japkowicz2013assessment}.  This led us to adopt, along with OA, both F-score
-and G-mean as the main performance metrics for this study. 
+japkowicz2013assessment}. G-mean and F-score are defined
+equations~\ref{eq:gmean} and~\ref{eq:fscore}, respectively.
+
+\begin{equation}~\label{eq:gmean}
+    \ensuremath{\textit{G-mean}} = \sqrt{\overline{Sensitivity} \times
+    \overline{Specificity}}
+\end{equation}
+
+\begin{equation}~\label{eq:fscore}
+    \ensuremath{\textit{F-score}} = 2\times\frac{\overline{Precision} \times
+    \overline{Recall}}{\overline{Precision} + \overline{Recall}}
+\end{equation}
+
+They are calculated as a function of the number of False/True Positives (FP
+and TP) and False/True Negatives (FN and TN), having $Precision =
+\frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$.  This led us to adopt,
+along with OA, both F-score and G-mean as the main performance metrics for
+this study. 
 
 \subsection{Experimental Procedure}~\label{sec:experimental_procedure}
 
@@ -641,7 +663,6 @@ experiment setup and results' analysis), as well as the datasets used are
 available in this \href{https://github.com/joaopfonseca/publications}{GitHub
 repository}.
  
-
 \section{Results and Discussion}~\label{sec:results_and_discussion}
 
 In this section we present the experimental results. We focus on the
@@ -723,7 +744,7 @@ in Table~\ref{tbl:holms_test}. This test showed that G-SMOTENC outperformed
 with statistical significance the remaining resamplers 82.5\% of the
 comparisons done.
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/consistency_analysis_plot}
     \caption{Average ranking of oversamplers over different characteristics of
@@ -779,12 +800,12 @@ for a greater customization of the selection and generation mechanisms.
 However, determining the optimal parameters a priori (\textit{i.e.}, with
 reduced parameter tuning) is an topic for future work.
 
+\bibliographystyle{elsarticle-num} 
 \bibliography{references}
-\bibliographystyle{ieeetr}
 
 \appendix
 
-\section{Appendix}
+\section{Optimal classification scores}
 
 \input{../analysis/wide_optimal.tex}
 
