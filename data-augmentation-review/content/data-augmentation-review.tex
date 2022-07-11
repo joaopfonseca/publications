@@ -1,0 +1,89 @@
+\documentclass[parskip=full]{scrartcl}
+
+\pdfoutput=1
+
+\title{Data augmentation: A literature review}
+
+\author{%
+	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
+	\\
+	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
+	\\
+	\small{*Corresponding Author}
+	\\
+	\\
+	\small{Postal Address: NOVA Information Management School, Campus de
+    Campolide, 1070--312 Lisboa, Portugal}
+	\\
+	\small{Telephone: +351 21 382 8610}
+}
+
+\usepackage{breakcites}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{%
+	a4paper,
+	left=18mm,
+	right=18mm,
+	top=8mm,
+}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{booktabs}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.14}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{hyperref}
+\date{}
+
+\definecolor{hypecol}{HTML}{0875b7}
+\hypersetup{%
+    colorlinks,
+    linkcolor={hypecol},
+    citecolor={hypecol},
+    urlcolor={hypecol}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+    This is the abstract for a literature review
+
+\end{abstract}
+
+\section{Introduction}~\label{sec:introduction}
+
+% Introduce data augmentation
+The performance of Machine Learning models is highly dependent on the quality
+of the training dataset used~\cite{Fenza2021, Halevy2009}. The presence of
+imbalanced and/or small datasets, target labels incorrectly assigned, outliers
+and high dimensional input spaces reduce the prospects of a successful machine
+learning (ML) model implementation~\cite{Halevy2009, Domingos2012, Salman2019}.
+In particular, deep learning architectures are often limited by a natural
+inclination to overfitting, label noise memorization and catastrophic
+forgetting~\cite{Xie2021}.
+
+% Purpose of study
+
+% Contributions
+
+% Paper Organization
+
+\section{Brief Historical Perspective}
+
+\section{Data Augmentation Taxonomy}
+
+\section{Review of the State-of-the-art}
+
+\section{Algorithmic applications}
+
+\bibliography{references}
+\bibliographystyle{ieeetr}
+
+\end{document}
