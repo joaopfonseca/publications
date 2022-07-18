@@ -2,7 +2,7 @@
 
 \pdfoutput=1
 
-\title{Data augmentation: A literature review}
+\title{Synthetic data generation: A literature review}
 
 \author{%
 	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
@@ -39,6 +39,9 @@
 \usepackage{hyperref}
 \date{}
 
+% highlight text: \hl
+\usepackage{soul}
+
 \definecolor{hypecol}{HTML}{0875b7}
 \hypersetup{%
     colorlinks,
@@ -59,23 +62,98 @@
 
 \section{Introduction}~\label{sec:introduction}
 
+% A geracao de dados artificiais pode ser importante em varios dominios,
+% explicar quais, aplicacoes, tecnicas onde e usado, em que contextos praticos
+% etc.
+
+
 % Introduce data augmentation
 The performance of Machine Learning models is highly dependent on the quality
 of the training dataset used~\cite{Fenza2021, Halevy2009}. The presence of
 imbalanced and/or small datasets, target labels incorrectly assigned, outliers
 and high dimensional input spaces reduce the prospects of a successful machine
-learning (ML) model implementation~\cite{Halevy2009, Domingos2012, Salman2019}.
-In particular, deep learning architectures are often limited by a natural
-inclination to overfitting, label noise memorization and catastrophic
-forgetting~\cite{Xie2021}.
+learning (ML) model implementation~\cite{Halevy2009, Domingos2012,
+Salman2019}. In the case of deep learning, for example, these
+models are often limited by a natural inclination to overfitting, label noise
+memorization and catastrophic forgetting~\cite{Xie2021}. Regularization
+methods are the typical approach to address these problems, but producing
+robust ML solutions is still a challenge~\cite{Zhang2021}.
+
+It is frequently assumed that the training data is sampled from a fixed data
+source, it is balanced and does not contain label noise. Under these
+conditions, the resulting ML classifier is expected to achieve good
+generalization performance~\cite{benning2018modern}. Although, in practical
+applications, this is rarely the case. When the training data is not
+representative of the true population, or the model is over-parametrized, it
+becomes particularly prone to overfitting~\cite{Bartlett2021}. Regularization
+methods attempt to address these limitations. They can be divided into three
+categories~\cite{santos2022avoiding}:
+
+\begin{enumerate}
+    \item Output level modifications. Transforms the labels in the training
+        data.
+    \item Algorithmic level modifications. Modifies the classifier's
+        architecture, loss function or other components in the training
+        procedure.
+    \item Input level modifications. Modifies the training dataset by expanding it
+        with synthetic data.
+\end{enumerate}
+
+The last approach, input level modifications, is known as data augmentation.
+Data augmentation is used to increase the size and data variability of data in
+a training dataset, by producing synthetic observations~\cite{Van2001,
+Wong2016}. Since it is applied at the data level, it can be used for various
+types of problems and classifiers~\cite{Behpour2019}. However, the generation
+of synthetic data is not only limited to regularization techniques.
+
+
+% Oversampling
+
+
+% Introduce synthetic data generation
+Synthetic data generation is also a popular technique to produce synthetic,
+anonymized versions of datasets~\cite{dankar2021fake}. It is considered a good
+approach to share sensitive data without compromising significantly a given
+data mining task~\cite{taub2018differential, park2018data}.  Traditional data
+anonymization techniques, as well as federated learning are two other viable
+solutions for privacy-preserving data publishing tasks, but contain
+drawbacks~\cite{hernandez2022synthetic}. On the one hand, traditional data
+anonymization requires domain knowledge, is labor intensive and remains
+susceptible to disclosure~\cite{reiter2004new}. On the other hand, federated
+learning is a technically complex task that consists on training ML
+classifiers on edge devices and aggregating temporarily updated parameters on
+a centralized server, instead of aggregating the training data~\cite{yu2022survey}.
 
 % Purpose of study
 
-% Contributions
+\subsection{Contributions}
 
-% Paper Organization
+Contributions of this paper:
 
-\section{Brief Historical Perspective}
+\begin{itemize}
+    \item Bridge different ML concepts using synthetic data generation in its
+        core \hl{(Algorithmic applications + Review of the State-of-the-art)}.
+    \item List the different synthetic data generation/data augmentation
+        taxonomies and characterize all relevant methods accordingly \hl{(Data
+        augmentation taxonomy)}.
+    \item Discuss the ML techniques in which synthetic data generation/data augmentation is used,
+        beyond regularization \hl{(Algorithmic Applications)}.
+    \item Bring to light the key challenges of synthetic data generation and
+        put forward possible research directions in the future.
+\end{itemize}
+
+\subsection{Paper Organization}
+
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+
+\section{Synthetic Data Generation}
+
+% A historical approach
 
 \section{Data Augmentation Taxonomy}
 
