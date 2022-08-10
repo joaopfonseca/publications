@@ -18,7 +18,6 @@
 	\small{Telephone: +351 21 382 8610}
 }
 
-\usepackage{breakcites}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{geometry}
@@ -39,7 +38,33 @@
 \usepackage{hyperref}
 \date{}
 
-% highlight text: \hl
+% use \citet for inline text references, \cite for normal citations
+\usepackage[
+    style=numeric,
+    citestyle=numeric,
+    sorting=none,
+    natbib=true,
+    backend=biber, 
+    maxcitenames=1, 
+    maxbibnames=99
+]{biblatex}
+\bibliography{references}
+\usepackage{breakcites}
+
+% Fix underfull hbox warnings in bilbliography
+% Reference: https://tex.stackexchange.com/questions/10924/underfull-hbox-in-bibliography
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{%
+    \hbadness%
+    10000\relax
+}{}{}
+
+% Fix overfull hbox warnings in bibliography
+% Reference: https://tex.stackexchange.com/questions/171999/overfull-hbox-in-biblatex
+\usepackage[T1]{fontenc}
+\usepackage[final]{microtype}
+
+% Highlight text: \hl
 \usepackage{soul}
 
 \definecolor{hypecol}{HTML}{0875b7}
@@ -56,14 +81,27 @@
 
 \begin{abstract}
 
-    This is the abstract for a literature review
+    The generation of synthetic data can be used for anonymization,
+    regularization, oversampling, semi-supervised learning, self-supervised
+    learning and various other tasks. The wide range of applications of these
+    mechanisms motivated the development of new algorithms specialized in
+    generating data for specific types of data and Machine Learning (ML)
+    tasks. As a result, the analysis of the different types of generative
+    models 
+
+    % We provide a broad taxonomy to define data generation mechanisms
+
+    % We provide an analysis on recommendations for the evaluation of the
+    % quality of the synthetic data generated
 
 \end{abstract}
 
 \section{Introduction}~\label{sec:introduction}
 
+Synthetic data is defined as data obtained from a generative process based on
+properties of real data~\cite{assefa2020generating}.
 The generation of synthetic data is essential for various domains and tasks.
-For example, synthetic data is used as a form of regularizing neural network
+For example, synthetic data is used as a form of regularizing neural networks
 (\textit{i.e.}, data augmentation) \textbf{[CITATION]}. One form of
 anonymizing datasets is via the production of synthetic observations
 (\textit{i.e.}, synthetic data generation) \textbf{[CITATION]}. In settings
@@ -71,7 +109,7 @@ where only a small portion of training data is labeled, some techniques
 generate artificial data using both labeled and unlabeled data with a modified
 loss function to train neural networks (\textit{i.e.}, semi-supervised
 learning)~\cite{laine2017temporal}. In imbalanced learning contexts, synthetic
-data can be used to balance the target classes' frequencies, reinforcing the
+data can be used to balance the target classes' frequencies and reinforce the
 learning of minority classes (\textit{i.e.},
 oversampling)~\cite{fonseca2021improving}. Some active learning frameworks use
 data generation to improve the quality of data selection and classifier
@@ -79,40 +117,77 @@ training~\cite{kim2021lada}. Other techniques employ data generation to
 produce deep neural networks without labeled data (\textit{i.e.},
 self-supervised learning)~\cite{grill2020bootstrap}.
 
-Accordingly, the breadth of these techniques span multiple domains, such as
-facial recognition~\cite{lv2017data}, Land Use/Land Cover mapping
-\textbf{[CITATION]}, medical image processing \textbf{[CITATION]} and Natural
-Language Processing~\cite{feng2021survey}. 
+The breadth of these techniques span multiple domains, such as facial
+recognition~\cite{lv2017data}, Land Use/Land Cover mapping
+\textbf{[CITATION]}, medical image processing \textbf{[CITATION]}, Natural
+Language Processing~\cite{feng2021survey} or credit card default
+prediction~\cite{alam2020investigation}. According to the domain and data
+type, the data generation techniques used may vary significantly. Generally
+speaking, some data generation mechanisms are specific to some domains, data
+types or tasks. \hl{For example, \ldots}. Most, if not all, of these
+techniques are applied on the input or output space.
 
-According to the domain, the data generation techniques used may vary
-significantly. Generally speaking, there are data generation mechanisms
-specific to most domains. However, multiple techniques are independent and can
-be used for multiple data types, tasks or domains. \hl{For example, \ldots}
+However, there are various data generation techniques that are invariant to
+the task or data types used. These techniques can be either applied in the
+feature space~\cite{devries2017dataset} or in problems using tabular data.  On
+the one hand, data generation in the feature space uses a generative model to
+learn a manifold, lower-dimensional abstraction over the input
+space~\cite{kingma2019introduction}, defined here as the feature space.  At
+this level, any tabular data generation mechanism can be applied and
+reconstructed into the input space if necessary. On the other hand, synthetic
+data generation on tabular data can be applied to most problems. Although, the
+choice of the generation mechanism is still dependant on (1) the importance of
+the relationships found between the different features, (2) the ML task to be
+developed and (3) the motivation for the generation of synthetic data. For
+example, when generating data to address an imbalanced learning problem
+(\textit{i.e.}, oversampling), the relationships between the different
+features are not necessarily kept since the goal is to reinforce the learning
+of the minority class by redefining an ML classifier's decision boundaries. If
+the goal is to anonymize a dataset, perform some type of descriptive task, or
+ensure a consistent model interpretability, these relationships need to be
+kept.
 
 Depending on the context, evaluating the quality of the generated data is a
 complex task. For example, for image and time series data, perceptually small
 changes in the original data can lead to large changes in the euclidean
-distance~\cite{assefa2020generating, theis2016note}.
+distance~\cite{assefa2020generating, theis2016note}. The evaluation of
+generative models typically account primarily for the performance in a
+specific task, since good performance in one criterion does not imply good
+performance on another~\cite{theis2016note}. However, in computationally
+intensive tasks it is often impracticable to search for the optimal
+configurations of generative models. To address this limitation, other
+evaluation methods have been proposed to assist in this evaluation, which can
+be distinguished into statistical divergence metrics and precision/recall
+metrics~\cite{alaa2022faithful}. The relevant performance metrics found in the
+literature are discussed in Section~\ref{sec:evaluating-synthetic-data}.
 
-In this literature review, we focus on the Machine Learning perspective of
-synthetic data, as opposed to the practical perspective. From a practical
-sense, synthetic data is used as a proxy of real data. It is assumed to be
-inaccessible, essential and secondary for different purposes, such as
-educational, software development, or systems
-demonstrations~\cite{mannino2019real}.
+% Discuss Generative models -> Network based models
 
-\subsection{Contributions}
+\subsection{Motivation and Contributions}
 
-This literature review focuses on the generation mechanisms underlying the
-different techniques where synthetic data is generated.
+This literature review focuses on the generation mechanisms and generative
+models underlying the different techniques where synthetic data is generated.
+We focus on the ML perspective of synthetic data, as opposed to the practical
+perspective. From a practical sense, synthetic data is used as a proxy of real
+data. It is assumed to be inaccessible, essential and a secondary asset for
+purposes such as education, software development, or systems
+demonstrations~\cite{mannino2019real}. 
+
 
 We focus particularly on tabular and feature space (\textit{i.e.}, embedded
-inputs) augmentation given its breadth in scope.
+inputs) augmentation given its breadth in scope. Related literature reviews
+are mostly focused on specific algorithmic applications, with little to no
+emphasis on the core generative process. For this reason, these techniques
+often appear ``sandboxed'', even though there is a significant overlap between
+them. \citet{assefa2020generating} provides a general overview of
+synthetic data generation for time series data anonymization in the finance
+sector. \citet{hernandez2022synthetic} reviews data generation techniques for
+tabular health records anonymization. \citet{raghunathan2021synthetic} reviews
+synthetic data anonymization techniques that preserve the statistical
+properties of a dataset.
 
-Related literature reviews are mostly focused on specific algorithmic
-applications, with little to no emphasis on the core generative process. For
-this reason, these techniques often appear ``sandboxed'' even though there is
-a significant overlap between them. 
+\citet{nalepa2019data} reviews data augmentation techniques for brain-tumor
+segmentation. 
 
 The different taxonomies established are often specific to the technique
 discussed. However, it is possible to establish a broader taxonomy without
@@ -132,9 +207,10 @@ Contributions of this paper are summarized below:
     \item List the different synthetic data generation/data augmentation
         taxonomies and characterize all relevant methods accordingly \hl{(Data
         augmentation taxonomy)}.
-    \item Discuss the ML techniques in which synthetic data generation/data augmentation is used,
-        beyond regularization and consolidate the current data generation
-        mechanisms across the different techniques \hl{(Algorithmic Applications)}.
+    \item Discuss the ML techniques in which synthetic data generation/data
+        augmentation is used, beyond regularization and consolidate the
+        current data generation mechanisms across the different techniques
+        \hl{(Algorithmic Applications)}.
     \item Bring to light the key challenges of synthetic data generation and
         put forward possible research directions in the future.
 \end{itemize}
@@ -280,6 +356,7 @@ successful implementation of ML tasks. However,
 Anonymizing data using synthetic data generation in the financial
 sector~\cite{assefa2020generating}.
 
+Guidelines for effective synthetic data generation~\cite{dankar2021fake}
 
 
 
@@ -327,11 +404,43 @@ types of problems and classifiers~\cite{Behpour2019}.
 
 \subsection{Oversampling}
 
+The original author of SMOTE recently published the paper ``Efficient Augmentation for Imbalanced Deep
+Learning''~\cite{dablain2022efficient}
+
 \subsection{Active Learning}
 
 \subsection{Semi-supervised Learning}
 
 \subsection{Self-supervised Learning}
+
+\section{Evaluating the Quality of Synthetic Data
+}~\label{sec:evaluating-synthetic-data}
+
+The log-likelihood (and equivalently the Kullback-Leibler Divergence) is a
+de-facto standard to train and evaluate generative
+models~\cite{theis2016note}. Other common metrics include Parzen window
+estimates, which~\citet{theis2016note} show that these metrics behave
+independently and should generally be avoided. Therefore, it is necessary
+to evaluate generative models with respect to the application these models are
+being developed for.
+
+
+The evaluation of generative models should quantify three key aspects of
+synthetic data~\cite{alaa2022faithful}:
+
+\begin{enumerate}
+    \item Fidelity
+    \item Diversity 
+    \item Generalization
+\end{enumerate}
+
+The 3-dimensional metric proposed by~\citet{alaa2022faithful} quantifies these
+aspects via the combination of three metrics ($\alpha$-Precision,
+$\beta$-Recall and Authenticity) for various application domains.
+
+\subsection{Statistical Divergence Metrics} 
+
+\subsection{Precision/Recall Metrics}
 
 \section{Discussion}
 
@@ -362,9 +471,15 @@ reliability.
 Unlike with data privacy solutions, data augmentation techniques generally do
 not consider the similarity/dissimilarity of synthetic data.
 
+There is not a clear understanding of what types of data augmentation methods
+are more appropriate according to different model architectures, ML tasks or
+domains and the reason why they work better or worse depending on the task. 
+
 % oversampling
 There is a lack of research on oversampling solutions to generate synthetic
 data with mixed data types and datasets with exclusively non metric features.
+
+% Lack of methods adapted to use categorical features for tabular data
 
 % Active Learning
 
@@ -399,7 +514,5 @@ Quantifying the quality of the generated data:
 
 \section{Conclusions}
 
-\bibliography{references}
-\bibliographystyle{ieeetr}
-
+\printbibliography
 \end{document}
