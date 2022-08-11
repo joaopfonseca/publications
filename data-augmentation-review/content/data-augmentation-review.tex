@@ -98,24 +98,23 @@
 
 \section{Introduction}~\label{sec:introduction}
 
-Synthetic data is defined as data obtained from a generative process based on
-properties of real data~\cite{assefa2020generating}.
-The generation of synthetic data is essential for various domains and tasks.
-For example, synthetic data is used as a form of regularizing neural networks
-(\textit{i.e.}, data augmentation) \textbf{[CITATION]}. One form of
-anonymizing datasets is via the production of synthetic observations
-(\textit{i.e.}, synthetic data generation) \textbf{[CITATION]}. In settings
-where only a small portion of training data is labeled, some techniques
-generate artificial data using both labeled and unlabeled data with a modified
-loss function to train neural networks (\textit{i.e.}, semi-supervised
-learning)~\cite{laine2017temporal}. In imbalanced learning contexts, synthetic
-data can be used to balance the target classes' frequencies and reinforce the
-learning of minority classes (\textit{i.e.},
-oversampling)~\cite{fonseca2021improving}. Some active learning frameworks use
-data generation to improve the quality of data selection and classifier
-training~\cite{kim2021lada}. Other techniques employ data generation to
-produce deep neural networks without labeled data (\textit{i.e.},
-self-supervised learning)~\cite{grill2020bootstrap}.
+Synthetic data is obtained from a generative process based on properties of
+real data~\cite{assefa2020generating}. The generation of synthetic data is
+essential for various domains and tasks. For example, synthetic data is used
+as a form of regularizing neural networks (\textit{i.e.}, data augmentation)
+\textbf{[CITATION]}. One form of anonymizing datasets is via the production of
+synthetic observations (\textit{i.e.}, synthetic data generation)
+\textbf{[CITATION]}. In settings where only a small portion of training data
+is labeled, some techniques generate artificial data using both labeled and
+unlabeled data with a modified loss function to train neural networks
+(\textit{i.e.}, semi-supervised learning)~\cite{laine2017temporal}. In
+imbalanced learning contexts, synthetic data can be used to balance the target
+classes' frequencies and reinforce the learning of minority classes
+(\textit{i.e.}, oversampling)~\cite{fonseca2021improving}. Some active
+learning frameworks use data generation to improve the quality of data
+selection and classifier training~\cite{kim2021lada}. Other techniques employ
+data generation to produce deep neural networks without labeled data
+(\textit{i.e.}, self-supervised learning)~\cite{grill2020bootstrap}.
 
 The breadth of these techniques span multiple domains, such as facial
 recognition~\cite{lv2017data}, Land Use/Land Cover mapping
@@ -167,27 +166,52 @@ literature are discussed in Section~\ref{sec:evaluating-synthetic-data}.
 
 This literature review focuses on the generation mechanisms and generative
 models underlying the different techniques where synthetic data is generated.
+Specifically, we focus on techniques used in studies published since 2019. 
 We focus on the ML perspective of synthetic data, as opposed to the practical
 perspective. From a practical sense, synthetic data is used as a proxy of real
 data. It is assumed to be inaccessible, essential and a secondary asset for
 purposes such as education, software development, or systems
 demonstrations~\cite{mannino2019real}. 
 
-
-We focus particularly on tabular and feature space (\textit{i.e.}, embedded
-inputs) augmentation given its breadth in scope. Related literature reviews
-are mostly focused on specific algorithmic applications, with little to no
-emphasis on the core generative process. For this reason, these techniques
-often appear ``sandboxed'', even though there is a significant overlap between
-them. \citet{assefa2020generating} provides a general overview of
-synthetic data generation for time series data anonymization in the finance
+We focus on data generation techniques in the tabular and feature space
+(\textit{i.e.}, embedded inputs) given its breadth in scope. Related
+literature reviews are mostly focused on specific algorithmic applications,
+with little to no emphasis on the core generative process. For this reason,
+these techniques often appear ``sandboxed'', even though there is a
+significant overlap between them. There are some related reviews to be
+published since 2019. \citet{assefa2020generating} provides a general overview
+of synthetic data generation for time series data anonymization in the finance
 sector. \citet{hernandez2022synthetic} reviews data generation techniques for
 tabular health records anonymization. \citet{raghunathan2021synthetic} reviews
 synthetic data anonymization techniques that preserve the statistical
-properties of a dataset.
+properties of a dataset. \citet{nalepa2019data} reviews data augmentation
+techniques for brain-tumor segmentation. \citet{bayer2021survey} distinguishes
+augmentation techniques for text classification into feature and data space,
+while providing an extensive overview of augmentation methods within this
+domain. However, the taxonomy proposed and feature space augmentation methods
+are not necessarily specific to the domain. \citet{shorten2021text},
+\citet{chen2021empirical}, \citet{feng2021survey} and \citet{liu2020survey}
+also review data augmentation techniques for text data.
+\citet{yi2019generative} review Generative Adversarial Network architectures
+for medical imaging. \citet{wang2020survey} reviews face data augmentation
+techniques. \citet{shorten2019survey} and \citet{khosla2020enhancing} discuss
+techniques for image data augmentation. \citet{rashid2019times} review data
+augmentation techniques for time-series data, specifically construction
+equipment activity recognition. \citet{iwana2021empirical} and
+\citet{wen2020time} also review time-series data augmentation techniques. The
+analysis of related literature reviews \footnote{%
+    Results obtained using Google Scholar, limited to articles published since
+    2019, using the search query {\fontfamily{qcr}\selectfont (``synthetic
+    data generation'' OR ``oversampling'' OR ``imbalanced learning'' OR ``data
+    augmentation'') AND (``literature review'' OR ``survey'')}. Retrieved on
+    August 11th, 2022.
+} is shown in Table \hl{\textbf{XXXXX}}.
 
-\citet{nalepa2019data} reviews data augmentation techniques for brain-tumor
-segmentation. 
+
+This literature review attempts to provide a
+joint overview of the different data generation techniques, domains and ML
+techniques where data generation is being used. 
+
 
 The different taxonomies established are often specific to the technique
 discussed. However, it is possible to establish a broader taxonomy without
@@ -325,6 +349,12 @@ In NLP, there is the challenge of establishing universal rules for text
 transformations to provide new linguistic patterns~\cite{bayer2022data}
 
 https://github.com/styfeng/DataAug4NLP
+
+\subsection{Graphs}
+
+Superficial review on the topic here \cite{zhao2021data}
+
+Another relevant paper \cite{zhou2020data}
 
 \section{Algorithmic applications}
 
@@ -486,6 +516,9 @@ data with mixed data types and datasets with exclusively non metric features.
 % Semi-supervised Learning
 
 % Self-supervised Learning
+There is no clear understanding of the most appropriate data augmentation
+techniques used to train self-supervised models and how their behavior and
+performance varies according to the data generation method used.
 
 % Societal challenges raised by data generation (?)
 % Systematic bias
