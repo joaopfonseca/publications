@@ -1,52 +1,97 @@
-\documentclass[10pt,journal,compsoc]{IEEEtran}
+\documentclass[parskip=full]{scrartcl}
 
-\usepackage{breakcites}
+\pdfoutput=1
+
+\title{%
+    Improving Active Learning Performance Through the Use of Data Augmentation
+}
+
+
+\author{%
+	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
+	\\
+	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
+	\\
+	\small{*Corresponding Author}
+	\\
+	\\
+	\small{Postal Address: NOVA Information Management School, Campus de
+    Campolide, 1070--312 Lisboa, Portugal}
+	\\
+	\small{Telephone: +351 21 382 8610}
+}
+
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{geometry}
+\geometry{%
+	a4paper,
+	left=18mm,
+	right=18mm,
+	top=18mm,
+}
 \usepackage{amsmath}
 \usepackage{enumitem}
+\usepackage[ruled,vlined]{algorithm2e}
 \usepackage{booktabs}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.14}
 \usepackage{longtable}
 \usepackage{tabu}
 \usepackage{hyperref}
-\usepackage{lineno}
-\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
-% \usepackage{soul} % Used to highlight text
+\date{}
 
-% correct bad hyphenation here
-% \hyphenation{op-tical net-works semi-conduc-tor}
+% use \citet for inline text references, \cite for normal citations
+\usepackage[
+    style=numeric,
+    citestyle=numeric,
+    sorting=none,
+    natbib=true,
+    backend=biber, 
+    maxcitenames=1, 
+    maxbibnames=99
+]{biblatex}
+\bibliography{references}
+\usepackage{breakcites}
+
+% Fix underfull hbox warnings in bilbliography
+% Reference: https://tex.stackexchange.com/questions/10924/underfull-hbox-in-bibliography
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{%
+    \hbadness%
+    10000\relax
+}{}{}
+
+% Fix overfull hbox warnings in bibliography
+% Reference: https://tex.stackexchange.com/questions/171999/overfull-hbox-in-biblatex
+\usepackage[T1]{fontenc}
+\usepackage[final]{microtype}
+
+% Highlight text: \hl
+\usepackage{soul}
+
+\definecolor{hypecol}{HTML}{0875b7}
+\hypersetup{%
+    colorlinks,
+    linkcolor={hypecol},
+    citecolor={hypecol},
+    urlcolor={hypecol}
+}
+
+
+
+
+
+
+
+
+
 
 
 \begin{document}
 
-\title{%
-    Improving Active Learning Performance Through the Use of Data Augmentation
-}
+\maketitle
 
-\author{Joao~Fonseca,
-        and~Fernando~Bacao
-\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem J. Fonseca and F. Bacao are
-    with NOVA Information Management School (NOVA IMS), Universidade Nova de
-    Lisboa, Campus de Campolide, 1070-312 Lisboa, Portugal.\protect\\
-E-mail: \{jpfonseca, bacao\}@novaims.unl.pt}% <-this % stops an unwanted space
-\thanks{Manuscript received May 26, 2022.}}
-
-% The paper headers
-\markboth{Submitted to International Journal of Intelligent Systems}%
-{Fonseca \MakeLowercase{\textit{et al.}}: Improving Active Learning
-    Performance Through the Use of Data Augmentation
-}
-% The only time the second header will appear is for the odd numbered pages
-% after the title page when using the twoside option.
-% 
-% *** Note that you probably will NOT want to include the author's ***
-% *** name in the headers of peer review papers.                   ***
-% You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
-% you desire.
-
-\IEEEtitleabstractindextext{%
 \begin{abstract}
 
     Active Learning (AL) is a well-known technique to optimize data usage in
@@ -72,32 +117,11 @@ E-mail: \{jpfonseca, bacao\}@novaims.unl.pt}% <-this % stops an unwanted space
 
 \end{abstract}
 
-% Note that keywords are not normally used for peerreview papers.
-\begin{IEEEkeywords}
-Active Learning, Data Augmentation, Oversampling
-\end{IEEEkeywords}}
+\textbf{Keywords:} Active Learning, Data Augmentation, Oversampling
 
+\section{Introduction}~\label{sec:introduction}
 
-% make the title area
-\maketitle
-
-\IEEEdisplaynontitleabstractindextext
-
-% For peer review papers, you can put extra information on the cover
-% page as needed:
-% \ifCLASSOPTIONpeerreview
-% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
-% \fi
-%
-% For peerreview papers, this IEEEtran command inserts a page break and
-% creates the second title. It will be ignored for other modes.
-\IEEEpeerreviewmaketitle
-
-
-
-\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
-
-\IEEEPARstart{T}{he} importance of training robust ML models with minimal data
+The importance of training robust ML models with minimal data
 requirements is substantially increasing~\cite{Nath2021, Sverchkov2017,
 Li2012}. Although the growing amount of valuable data sources and formats
 being developed and explored is affecting various domains~\cite{Li2021}, this
@@ -227,7 +251,7 @@ Yoo2019, Aghdam2019}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{../analysis/al_iteration}
+	\includegraphics[width=.6\linewidth]{../analysis/al_iteration}
     \caption{%
         Diagram depicting a typical AL iteration. In the first iteration, the
         training set collected during the initialization process becomes the
@@ -260,9 +284,8 @@ prediction module in the AL framework to replace the uncertainty criterion.
 This model implements a second classifier to predict the expected loss of the
 unlabeled observations (using the actual losses collected during the training
 of the original classifier) and return the unlabeled observations with the
-highest expected loss. However, this contribution is specific to neural
-networks (and more specifically, to deep neural networks) and was only tested
-for image classification.
+highest expected loss. However, this contribution is specific to deep neural
+networks and was only tested for image classification.
 
 \subsection{Data Augmentation}~\label{sec:data_augmentation}
 
@@ -415,9 +438,9 @@ following step. This procedure is described in
 Algorithm~\ref{alg:al-framework}.
 
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{../analysis/al_proposed}
+	\includegraphics[width=.6\linewidth]{../analysis/al_proposed}
     \caption{%
         Diagram depicting the proposed AL iteration. The proposed
         modifications are marked with a boldface ``C.''
@@ -503,7 +526,7 @@ augmentation vs normal oversampling) and hyperparameter tuning steps.
 However, in this case, the hyperparameter tuning is solely going to be used
 for augmentation policy optimization. 
 
-\begin{algorithm}
+\begin{algorithm}[t]
     \SetKwInput{KwGiven}{Given}
     \SetKwProg{Fn}{Function}{:}{end}
     \caption{G-SMOTE Modified for Data Augmentation in AL}\label{alg:g-smote}
@@ -634,9 +657,9 @@ originally found in each dataset (where $IR =
 dataset are scaled to the range of $[-1, 1]$ to ensure a common range across
 features.
 
-\begin{figure}[H]
+\begin{figure}[t]
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/data_preprocessing}
+	\includegraphics[width=.8\linewidth]{../analysis/data_preprocessing}
     \caption{%
         Data preprocessing pipeline.
     }~\label{fig:data_preprocessing}
@@ -793,9 +816,9 @@ collected. The final scores of each AL configuration and classifier correspond
 to the average of the three runs and 5-fold Cross-Validation estimations
 (\textit{i.e.,} the mean score of 15 fits, across 15 datasets).
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{../analysis/experimental_procedure}
+	\includegraphics[width=.5\linewidth]{../analysis/experimental_procedure}
     \caption{%
         Experimental procedure flowchart. The preprocessed datasets are split
         into five folds. One of the folds is used to test the best-found
@@ -817,7 +840,7 @@ mechanism. Since the G-SMOTE-AUGM method is intended to be used with varying
 parameter values (via within-iteration parameter tuning), the parameters were
 defined as a list of various possible values.
 
-\begin{table*}
+\begin{table}
 	\centering
     \caption{\label{tab:grid}
         Hyperparameter definition for the active learners, classifiers,
@@ -865,7 +888,7 @@ defined as a list of various possible values.
                         & augmentation factor              & $[1.1, 2.0]$ at 0.1 step       \\
 		\bottomrule
 	\end{tabular}
-\end{table*}
+\end{table}
  
 \subsection{Software Implementation}~\label{sec:software_implementation}
 
@@ -900,7 +923,7 @@ The average rankings of the AL methods' AULC estimations are shown in
 Table~\ref{tab:aulc_ranks}. The proposed method almost always improves AL
 performance and ensures higher data selection efficiency.
  
-\begin{table}
+\begin{table}[t]
 	\centering
     \caption{%
         Mean rankings of the AULC metric over the different datasets (15),
@@ -926,7 +949,7 @@ proposed method is almost always superior when considering the F-score and
 G-mean. On some occasions, the average AULC score is significantly improved
 when compared with the oversampling AL method.
 
-\begin{table}
+\begin{table}[H]
 	\centering
     \setlength{\tabcolsep}{2.5pt}
     \caption{\label{tab:aulc_scores}
@@ -955,7 +978,7 @@ scores starting from a G-mean score of 0.6 and was filtered to show the
 thresholds ending with 0 or 6 only. In most cases, the proposed method reduces
 the amount of data annotation required to reach each G-mean score threshold.
 
-\begin{table}
+\begin{table}[H]
     \centering
     \setlength{\tabcolsep}{2.5pt}
     \caption{\label{tab:optimal_data_utilization}
@@ -981,9 +1004,9 @@ classifier requires 80.7\% of the amount of data required by the Standard AL
 method using the same classifier to reach an F-Score of 0.62 (\textit{i.e.,}
 requires 19.3\% less data).
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/data_utilization_rate}
+	\includegraphics[width=.8\linewidth]{../analysis/data_utilization_rate}
     \caption{%
         Mean data utilization rates. The y-axis shows the percentage of data
         (relative to the baseline AL framework) required to reach the
@@ -998,7 +1021,7 @@ accuracy, the proposed AL method produces classifiers that almost consistently
 outperform classifiers using the whole training set (\textit{i.e.,} the ones
 labeled as MP).
 
-\begin{table*}[t]
+\begin{table}[H]
     \centering
     \caption{\label{tab:optimal_mean_std_scores}
         Optimal classification scores. The Maximum Performance (MP)
@@ -1014,7 +1037,7 @@ labeled as MP).
         },
         every last row/.style={after row=\bottomrule},
     ]{../analysis/optimal_mean_std_scores.csv}
-\end{table*}
+\end{table}
 
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
 
@@ -1037,7 +1060,7 @@ Friedman test. The difference in performance across AL frameworks is
 statistically significant at a level of $\alpha = 0.05$ regardless of the
 classifier or evaluation metric being considered.
 
-\begin{table}
+\begin{table}[t]
 	\centering
     \caption{%
         Friedman test results. Statistical significance is tested at a level
@@ -1061,7 +1084,7 @@ standard AL framework, as well as the AL framework using a typical
 oversampling policy with statistical significance in 14 and 12 out of 15
 datasets, respectively.
 
-\begin{table}
+\begin{table}[H]
 	\centering
     \caption{%
         Adjusted p-values using the Wilcoxon signed-rank method. Bold values
@@ -1224,198 +1247,14 @@ observations from the unlabeled dataset and (3) understand the gap between
 heuristic/input space data augmentation techniques and neural network/feature
 space data augmentation techniques in an AL context better.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% if have a single appendix:
-%\appendix[Proof of the Zonklar Equations]
-% or
-%\appendix  % for no appendix heading
-% do not use \section anymore after \appendix, only \section*
-% is possibly needed
-
-% use appendices with more than one appendix
-% then use \section to start each appendix
-% you must declare a \section before using any
-% \subsection or using \label (\appendices by itself
-% starts a section numbered zero.)
-%
-%\appendices
-%\section{Proof of the First Zonklar Equation}
-%Appendix one text goes here.
-%
-%% you can choose not to have a title for an appendix
-%% if you want by leaving the argument blank
-%\section{}
-%Appendix two text goes here.
-
-
-% use section* for acknowledgment
-\ifCLASSOPTIONcompsoc
-  % The Computer Society usually uses the plural form
-  \section*{Acknowledgments}
-\else
-  % regular IEEE prefers the singular form
-  \section*{Acknowledgment}
-\fi
-
+\section*{Acknowledgments}
 
 This research was supported by three research grants of the Portuguese Foundation
 for Science and Technology (``Fundação para a Ciência e a Tecnologia''),
 references SFRH/BD/151473/2021, DSAIPA/DS/0116/2019 and PCIF/SSI/0102/2017.
 
+\printbibliography%
 
-% trigger a \newpage just before the given reference
-% number - used to balance the columns on the last page
-% adjust value as needed - may need to be readjusted if
-% the document is modified later
-%\IEEEtriggeratref{8}
-% The "triggered" command can be changed if desired:
-%\IEEEtriggercmd{\enlargethispage{-5in}}
-
-% references section
-
-% can use a bibliography generated by BibTeX as a .bbl file
-% BibTeX documentation can be easily obtained at:
-% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
-% The IEEEtran BibTeX style support page is at:
-% http://www.michaelshell.org/tex/ieeetran/bibtex/
-\bibliographystyle{IEEEtran}
-% argument is your BibTeX string definitions and bibliography database(s)
-\bibliography{references}
-
-% biography section
-% 
-% If you have an EPS/PDF photo (graphicx package needed) extra braces are
-% needed around the contents of the optional argument to biography to prevent
-% the LaTeX parser from getting confused when it sees the complicated
-% \includegraphics command within an optional argument. (You could create
-% your own custom macro containing the \includegraphics command to make things
-% simpler here.)
-%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
-% or if you just want to reserve a space for a photo:
-
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,trim=20 4 60 0,clip,keepaspectratio]{fonseca}}]{João Fonseca}
-
-is a PhD student at NOVA Information Management School (NOVA IMS) working on
-data augmentation, active learning and data preprocessing methods.
-Specifically, I am focused on improving the quality of Land Use/Land Cover
-classification tasks through the application of these data preprocessing
-methods. His work is being funded with a MIT Portugal PhD Grant (2020
-FCT-MPP2030). In the past, João Fonseca conducted research on Land Use/Land
-Cover classification methods to automatically update LULC maps of the
-Portuguese mainland. His research included the development of pipelines to
-systematize the preprocessing of Sentinel-2 satellite imagery. He also
-developed and deployed different types of algorithms for various tasks, such
-as data filtering, dimensionality reduction, feature extraction and
-classification.
-
-\end{IEEEbiography}
-
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,trim=80 0 80
-    0,clip,keepaspectratio]{bacao}}]{Fernando Bação}
-
-is currently a Full Professor at the NOVA Information Management School (NOVA
-IMS), Universidade Nova de Lisboa, where he has served as Associate Dean,
-Director of the MagIC Research Center and Director of the Doctoral Program in
-Information Management. He holds a PhD in Information Management, from
-Universidade Nova de Lisboa, and his research interests include data science,
-machine learning, remote sensing, and information management. His research
-work has appeared in scientific journals such as Information Sciences, Expert
-Systems with Applications, Information Sciences, Computers in Human Behavior,
-The Internet and Higher Education, Information \& Management, International
-Journal of Geographical Information Science, among others and received awards
-for its impact. 
-
-\end{IEEEbiography}
-
-% You can push biographies down or up by placing
-% a \vfill before or after them. The appropriate
-% use of \vfill depends on what kind of text is
-% on the last page and whether or not the columns
-% are being equalized.
-
-%\vfill
-
-% Can be used to pull up biographies so that the bottom of the last one
-% is flush with the other column.
-%\enlargethispage{-5in}
-
-
-
-% that's all folks
 \end{document}
 
 
