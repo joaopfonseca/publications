@@ -34,8 +34,7 @@ E-mail: \{jpfonseca, bacao\}@novaims.unl.pt}% <-this % stops an unwanted space
 \thanks{Manuscript received May 26, 2022.}}
 
 % The paper headers
-\markboth{Journal of IEEE Transactions on Knowledge and Data
-Engineering,~Vol.~XX, No.~X, MMMM~YYYY}%
+\markboth{Submitted to International Journal of Intelligent Systems}%
 {Fonseca \MakeLowercase{\textit{et al.}}: Improving Active Learning
     Performance Through the Use of Data Augmentation
 }
@@ -103,17 +102,16 @@ requirements is substantially increasing~\cite{Nath2021, Sverchkov2017,
 Li2012}. Although the growing amount of valuable data sources and formats
 being developed and explored is affecting various domains~\cite{Li2021}, this
 data is often unlabeled. Only a tiny amount of the data being produced and
-stored can be helpful in supervised learning tasks. Additionally, it is
-essential to note that labeling data for specific Machine Learning (ML)
-projects is often difficult and expensive, especially when data-intensive ML
-techniques are involved (\textit{e.g.,} Deep Learning
-classifiers)~\cite{Nath2021}. In this scenario, labeling the full dataset
-becomes impractical, time-consuming and expensive. Two different ML techniques
-attempt to address this problem: Semi-Supervised Learning (SSL) and Active
-Learning (AL). Even though they address the same problem, the two follow
-different approaches. SSL focuses on observations with the most certain
-predictions, whereas AL focuses on observations with the least certain
-predictions~\cite{Simeoni2020}.
+stored can be helpful in supervised learning tasks. In addition, it is often
+difficult and expensive to label data for specific Machine Learning (ML)
+projects, especially when data-intensive ML techniques are involved
+(\textit{e.g.,} Deep Learning classifiers)~\cite{Nath2021}. In this scenario,
+labeling the full dataset becomes impractical, time-consuming and expensive.
+Two different ML techniques attempt to address this problem: Semi-Supervised
+Learning (SSL) and Active Learning (AL). Even though they address the same
+problem, the two follow different approaches. SSL focuses on observations with
+the most certain predictions, whereas AL focuses on observations with the
+least certain predictions~\cite{Simeoni2020}.
 
 SSL attempts to use a small, predefined set of labeled and unlabeled data to
 produce a classifier with superior performance. This method uses the unlabeled
@@ -238,9 +236,10 @@ Yoo2019, Aghdam2019}.
 \end{figure}
 
 Research focused on AL has typically been focused on the specification of
-$f_{acq}$~\cite{hospedales2011finding} and domain-specific applications.
-Acquisition functions can be divided into two different
-categories~\cite{Gu2021, Kumar2020}: 
+$f_{acq}$~\cite{hospedales2011finding} and domain-specific applications, such
+as malware detection~\cite{li2022boosting} or Land Use/Land Cover
+classification~\cite{li2020label}. Acquisition functions can be divided into
+two different categories~\cite{su2021cost, Kumar2020}: 
 
 \begin{enumerate}
 
@@ -321,17 +320,17 @@ in~\cite{Fonseca2021}. In this study, the AL model proposed is applied for
 tabular data using an oversampling data augmentation policy (\textit{i.e.},
 the artificial data was only generated to balance the target class
 frequencies). However, this AL model was applied in a Land Use/Land Cover
-context with specific characteristics that are not necessarily found in other
-supervised learning problems. Specifically, these types of datasets are high
-dimensional and have limited data variability within each class
-(\textit{i.e.,} cohesive spectral signatures within classes) due to their
-geographical proximity. Furthermore, this method does not allow augmentation
-policy optimization (i.e., every hyperparameter has to be hardcoded \textit{a
-priori}).
+classification context with specific characteristics that are not necessarily
+found in other supervised learning problems. Specifically, these types of
+datasets are high dimensional and have limited data variability within each
+class (\textit{i.e.,} cohesive spectral signatures within classes) due to
+their geographical proximity. Furthermore, this method does not allow
+augmentation policy optimization (i.e., every hyperparameter has to be
+hardcoded \textit{a priori}).
 
 The Bayesian Generative Active Deep Learning (BGDAL)~\cite{tran2019bayesian}
 is another example of a pipelined combination of $f_{acq}$ and $f_{aug}$,
-applied image classification. BGDAL uses a Variational AutoEncoder (VAE)
+applied to image classification. BGDAL uses a Variational AutoEncoder (VAE)
 architecture to generate artificial observations. However, the proposed model
 is computationally expensive, requires a large data pool to train the VAE, and
 is not only dependent on the quality of the augmentations performed, but also
