@@ -36,7 +36,9 @@
 \usepackage{longtable}
 \usepackage{tabu}
 \usepackage{hyperref}
+\usepackage{lineno}
 \date{}
+
 
 % use \citet for inline text references, \cite for normal citations
 \usepackage[
@@ -75,9 +77,14 @@
     urlcolor={hypecol}
 }
 
+% Case-dependent packages here
+\usepackage{tabularx}
+\renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
+
 \begin{document}
 
 \maketitle
+\linenumbers
 
 \begin{abstract}
 
@@ -166,21 +173,21 @@ literature are discussed in Section~\ref{sec:evaluating-synthetic-data}.
 
 This literature review focuses on the generation mechanisms and generative
 models underlying the different techniques where synthetic data is generated.
-Specifically, we focus on techniques used in studies published since 2019. 
-We focus on the ML perspective of synthetic data, as opposed to the practical
+Specifically, we focus on techniques used in studies published since 2019.  We
+focus on the ML perspective of synthetic data, as opposed to the practical
 perspective. From a practical sense, synthetic data is used as a proxy of real
 data. It is assumed to be inaccessible, essential and a secondary asset for
-purposes such as education, software development, or systems
+tasks like education, software development, or systems
 demonstrations~\cite{mannino2019real}. 
 
 We focus on data generation techniques in the tabular and feature space
-(\textit{i.e.}, embedded inputs) given its breadth in scope. Related
-literature reviews are mostly focused on specific algorithmic applications,
-with little to no emphasis on the core generative process. For this reason,
-these techniques often appear ``sandboxed'', even though there is a
-significant overlap between them. There are some related reviews to be
-published since 2019. \citet{assefa2020generating} provides a general overview
-of synthetic data generation for time series data anonymization in the finance
+(\textit{i.e.}, embedded inputs), given its breadth in scope. Related
+literature reviews are mostly focused on specific algorithmic or domain
+applications, with little to no emphasis on the core generative process. For
+this reason, these techniques often appear ``sandboxed'', even though there is
+a significant overlap between them. There are some related reviews published
+since 2019. \citet{assefa2020generating} provides a general overview of
+synthetic data generation for time series data anonymization in the finance
 sector. \citet{hernandez2022synthetic} reviews data generation techniques for
 tabular health records anonymization. \citet{raghunathan2021synthetic} reviews
 synthetic data anonymization techniques that preserve the statistical
@@ -195,35 +202,104 @@ also review data augmentation techniques for text data.
 \citet{yi2019generative} review Generative Adversarial Network architectures
 for medical imaging. \citet{wang2020survey} reviews face data augmentation
 techniques. \citet{shorten2019survey} and \citet{khosla2020enhancing} discuss
-techniques for image data augmentation. \citet{rashid2019times} review data
-augmentation techniques for time-series data, specifically construction
-equipment activity recognition. \citet{iwana2021empirical} and
-\citet{wen2020time} also review time-series data augmentation techniques. The
-analysis of related literature reviews \footnote{%
+techniques for image data augmentation. \citet{iwana2021empirical} and
+\citet{wen2020time} also review time series data augmentation techniques.
+\citet{zhao2022graph} review data augmentation techniques for graph data. The
+analysis of related literature reviews~\footnote{%
     Results obtained using Google Scholar, limited to articles published since
     2019, using the search query {\fontfamily{qcr}\selectfont (``synthetic
     data generation'' OR ``oversampling'' OR ``imbalanced learning'' OR ``data
     augmentation'') AND (``literature review'' OR ``survey'')}. Retrieved on
-    August 11th, 2022.
-} is shown in Table \hl{\textbf{XXXXX}}.
+    August 11th, 2022. Additional articles were later included whenever
+    found relevant.
+} is shown in Table~\ref{tab:literature-reviews}.
+
+% TODO: move table to appendix
+\begin{table}[t!]
+    \centering
+    \caption{\label{tab:literature-reviews}
+        Related literature reviews published since 2019.
+    }
+    \begin{tabularx}{\textwidth}{@{}rcccX@{}}
+        \toprule
+        Reference & Data type & ML problem & Domain & Observations \\
+        \midrule
+
+        \citet{assefa2020generating} & --- & Differential privacy &
+        Finance & Analysis of applications, motivation and properties of
+        synthetic data for anonymization. \\
+
+        \citet{hernandez2022synthetic} & Tabular & Differential privacy &
+        Healthcare & Focus on GANs. \\
+
+        \citet{raghunathan2021synthetic} & Tabular & Differential privacy &
+        Statistics & Focus on general definitions such as differential privacy
+        and statistical disclosure control.\\
+
+        \citet{nalepa2019data} & Image & Segmentation & Medicine & Analysis of
+        algorithmic applications on a 2018 brain-tumor segmentation
+        challenge\\
+
+        \citet{bayer2021survey} & Text & Classification & --- & Distinguish
+        100 methods into 12 groups. \\
+
+        \citet{shorten2021text} & Text & Deep Learning & --- & General
+        overview of text data augmentation. \\
+
+        \citet{chen2021empirical} & Text & Few-shot Learning & --- &
+        Augmentation techniques for machine learning with limited data\\
+
+        \citet{feng2021survey} & Text & --- & --- & Overview of augmentation
+        techniques and applications on NLP tasks.\\
+
+        \citet{liu2020survey} & Text & --- & Various & Analysis of industry
+        use cases of data augmentation in NLP\@. Emphasis on input level data
+        augmentation.\\
+
+        \citet{yi2019generative} & Image & --- & Medicine & Emphasis on GANs.\\
+
+        \citet{wang2020survey} & Image & Deep Learning & --- & Regularization
+        techniques using facial image data. Emphasis on Deep Learning
+        generative models.\\
+
+        \citet{shorten2019survey} & Image & Deep Learning & --- & Emphasis on
+        data augmentation as a regularization technique.\\
+
+        \citet{khosla2020enhancing} & Image & --- & --- & Broad overview of
+        image data augmentation. Emphasis on traditional approaches. \\
+
+        \citet{iwana2021empirical} & Time series & Classification & --- &
+        Defined a taxonomy for time series data augmentation.\\
+
+        \citet{wen2020time} & Time series & Various & --- & Analysis of data
+        augmentation methods for classification, anomaly detection and
+        forecasting.\\
+
+        \citet{zhao2022graph} & Graph & Various & --- & Graph data
+        augmentation for supervised and self-supervised learning.\\
+
+        \citet{khalifa2021comprehensive} & Image & --- & Various & General
+        overview of image data augmentation and relevant domains of
+        application.\\
+
+        \bottomrule
+        
+    \end{tabularx}
+\end{table}
 
 
-This literature review attempts to provide a
-joint overview of the different data generation techniques, domains and ML
-techniques where data generation is being used. 
+The different taxonomies established in the literature follow a similar line
+of thought, but are often specific to the technique discussed. Regardless, it
+is possible to establish a broader taxonomy without giving up on specificity.
 
-
-The different taxonomies established are often specific to the technique
-discussed. However, it is possible to establish a broader taxonomy without
-giving up on specificity.
-
-With this article, we aim to understand the current research gaps in the
-different data mining techniques that involve synthetic data generation. We
+This study provides a joint overview of the different data generation
+approaches, domains and ML techniques where data generation is being used, as
+well as a common taxonomy across domains. It extends the analyses found in
+these articles and uses the compiled knowledge to identify research gaps. We
 compare the strengths and weaknesses of the models developed within each of
 these fields. Finally, we identify possible future research directions to
-address some of the limitations found.
-
-Contributions of this paper are summarized below:
+address some of the limitations found. The contributions of this paper are
+summarized below:
 
 \begin{itemize}
     \item Bridge different ML concepts using synthetic data generation in its
@@ -244,14 +320,39 @@ Contributions of this paper are summarized below:
 
 \subsection{Paper Organization}
 
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+This paper is organized as follows: Section~\ref{sec:background} defines and
+formalizes the different concepts, goals, trade-offs and motivations related
+to synthetic data generation. Section~\ref{sec:taxonomy} establishes the
+taxonomy used to categorize all the methods described in the paper.
+Section~\ref{sec:feature-space} reviews synthetic data generation
+mechanisms in the feature space. Section~\ref{sec:input-space}
+reviews synthetic data generation mechanisms in the input space.
+Section~\ref{sec:algorithmic-applications} describes the applications of
+synthetic data in ML methods. Section~\ref{sec:evaluating-synthetic-data}
+reviews performance evaluation methods of synthetic data generation
+mechanisms. Section~\ref{sec:discussion} summarizes the main findings and
+discusses limitations and possible research directions in the
+state-of-the-art. Section~\ref{sec:conclusions} presents the main conclusions
+drawn from this study.
 
-\section{Data Generation Taxonomy}
+\section{Background}~\label{sec:background}
+
+% Concepts definition, goals + trade-offs, Motivations
+
+
+
+Motivations:
+
+\begin{enumerate}
+    \item Low-resource languages (NLP)
+    \item Mitigate bias
+    \item Fixing class imbalance
+    \item Few-shot learning
+    \item Adversarial examples
+\end{enumerate}
+
+
+\section{Data Generation Taxonomy}~\label{sec:taxonomy}
 
 Image data augmentation taxonomy~\cite{khalifa2021comprehensive}
 
@@ -284,7 +385,7 @@ proposed taxonomy is shown in Figure~\ref{fig:data-generation-taxonomy}.
 \end{figure}
 
 
-\section{Synthetic Data Generation}
+\section{Data Generation in the Feature Space}~\label{sec:feature-space}
 % Feature level data augmentation
 
 According to~\cite{assefa2020generating}. The generation of synthetic data
@@ -296,7 +397,10 @@ should aim to fulfil the conditions below:
     \item Compact.
 \end{itemize}
 
-\section{Data Generation Mechanisms}
+Discuss Auto-augmentation (as mentioned in~\cite{wang2020survey}) or meta
+learning (as mentioned in~\cite{shorten2019survey})
+
+\section{Data Generation in the Input Space}~\label{sec:input-space}
 % Review of the State-of-the-art of domain specific data generation
 
 In this section, we describe some popular domain and data type-specific data
@@ -352,11 +456,20 @@ https://github.com/styfeng/DataAug4NLP
 
 \subsection{Graphs}
 
-Superficial review on the topic here \cite{zhao2021data}
 
-Another relevant paper \cite{zhou2020data}
+Another relevant paper~\cite{zhou2020data}
 
-\section{Algorithmic applications}
+Various graph data augmentation methods can be applied to related data types
+such as text data~\cite{shorten2021text}.
+
+
+An analysis on different graph data augmentation techniques and a new graph
+data augmentation framework~\citet{zhao2021data}
+
+List of papers about graph data augmentation:
+https://github.com/zhao-tong/graph-data-augmentation-papers
+
+\section{Algorithmic applications}~\label{sec:algorithmic-applications}
 
 \subsection{Data Privacy}
 
@@ -432,6 +545,10 @@ a training dataset, by producing synthetic observations~\cite{Van2001,
 Wong2016}. Since it is applied at the data level, it can be used for various
 types of problems and classifiers~\cite{Behpour2019}. 
 
+
+``Su et al. [78] show that 70.97\% of images can be misclassified by changing
+just one pixel'' \citet{shorten2019survey}
+
 \subsection{Oversampling}
 
 The original author of SMOTE recently published the paper ``Efficient Augmentation for Imbalanced Deep
@@ -472,9 +589,14 @@ $\beta$-Recall and Authenticity) for various application domains.
 
 \subsection{Precision/Recall Metrics}
 
-\section{Discussion}
+\section{Discussion}~\label{sec:discussion}
 
 \subsection{Main Findings}
+
+The combination of data generation strategies is an approach commonly found in
+different problems, such as self-supervised
+learning~\cite{grill2020bootstrap}. It can be more frequently found in text
+data applications~\cite{bayer2021survey} and image data \textbf{[CITATION]}.
 
 \subsubsection{RQ1: bla bla bla}
 
@@ -487,6 +609,14 @@ $\beta$-Recall and Authenticity) for various application domains.
 Research across the different applications appears to be sandboxed even though
 all techniques integrate synthetic data in its core.
 
+Given the breadth and complexity of input-level and feature-level data
+generation mechanisms, it is increasingly important to find a method to
+efficiently determine the most appropriate data generation policies. However,
+the complexity of this task is determined by various factors: different data
+types, ML problems, model architectures, computational resources, performance
+metrics and contextual constraints. Auto-augmentation and meta learning aim to
+address this challenge and are still subject to active research.
+
 % data privacy
 The evaluation of anonymization techniques lack standardized, objective and
 reliable performance metrics and benchmark datasets to allow an easier
@@ -495,7 +625,13 @@ comparison across classifiers to evaluate key aspects of data anonymization
 mixed data types (\textit{i.e.}, a combination of categorical, ordinal,
 continuous and discrete features) and the metrics should evaluate the
 performance of different data mining tasks along with the anonymization
-reliability.
+reliability. This problem appears to be universal across domains. For example,
+\citet{hernandez2022synthetic} observed the lack of a universal method or metric
+to report the performance synthetic data generation algorithms for tabular
+health records.
+
+Computational cost and inconsistent quality of synthetic data generated with
+GANs (\textit{e.g.}, mode collapse).
 
 % Regularization in supervised learning
 Unlike with data privacy solutions, data augmentation techniques generally do
@@ -504,6 +640,9 @@ not consider the similarity/dissimilarity of synthetic data.
 There is not a clear understanding of what types of data augmentation methods
 are more appropriate according to different model architectures, ML tasks or
 domains and the reason why they work better or worse depending on the task. 
+In addition, it is still unclear \textit{why} data augmentation works.
+Research on this topic lacks depth and fails to address the theoretical
+underpinnings~\cite{feng2021survey}.
 
 % oversampling
 There is a lack of research on oversampling solutions to generate synthetic
@@ -545,7 +684,7 @@ Quantifying the quality of the generated data:
     \item Understand the relationship between the 3 factors
 \end{enumerate}
 
-\section{Conclusions}
+\section{Conclusions}~\label{sec:conclusions}
 
 \printbibliography
 \end{document}
