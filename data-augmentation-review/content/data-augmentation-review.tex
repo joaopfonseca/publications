@@ -135,10 +135,10 @@ techniques are applied on the input or output space.
 
 However, there are various data generation techniques that are invariant to
 the task or data types used. These techniques can be either applied in the
-feature space~\cite{devries2017dataset} or in problems using tabular data.  On
+feature space~\cite{devries2017dataset} or in problems using tabular data. On
 the one hand, data generation in the feature space uses a generative model to
 learn a manifold, lower-dimensional abstraction over the input
-space~\cite{kingma2019introduction}, defined here as the feature space.  At
+space~\cite{kingma2019introduction}, defined here as the feature space. At
 this level, any tabular data generation mechanism can be applied and
 reconstructed into the input space if necessary. On the other hand, synthetic
 data generation on tabular data can be applied to most problems. Although, the
@@ -173,7 +173,7 @@ literature are discussed in Section~\ref{sec:evaluating-synthetic-data}.
 
 This literature review focuses on the generation mechanisms and generative
 models underlying the different techniques where synthetic data is generated.
-Specifically, we focus on techniques used in studies published since 2019.  We
+Specifically, we focus on techniques used in studies published since 2019. We
 focus on the ML perspective of synthetic data, as opposed to the practical
 perspective. From a practical sense, synthetic data is used as a proxy of real
 data. It is assumed to be inaccessible, essential and a secondary asset for
@@ -220,6 +220,7 @@ analysis of related literature reviews~\footnote{%
     \caption{\label{tab:literature-reviews}
         Related literature reviews published since 2019.
     }
+    \small{
     \begin{tabularx}{\textwidth}{@{}rcccX@{}}
         \toprule
         Reference & Data type & ML problem & Domain & Observations \\
@@ -285,21 +286,21 @@ analysis of related literature reviews~\footnote{%
         \bottomrule
         
     \end{tabularx}
+    }
 \end{table}
 
 
-The different taxonomies established in the literature follow a similar line
-of thought, but are often specific to the technique discussed. Regardless, it
-is possible to establish a broader taxonomy without giving up on specificity.
-
-This study provides a joint overview of the different data generation
-approaches, domains and ML techniques where data generation is being used, as
-well as a common taxonomy across domains. It extends the analyses found in
-these articles and uses the compiled knowledge to identify research gaps. We
-compare the strengths and weaknesses of the models developed within each of
-these fields. Finally, we identify possible future research directions to
-address some of the limitations found. The contributions of this paper are
-summarized below:
+The different taxonomies established in the literature follow a similar
+philosophy, but vary in terminology and are often specific to the technique
+discussed. Regardless, it is possible to establish a broader taxonomy without
+giving up on specificity. This study provides a joint overview of the
+different data generation approaches, domains and ML techniques where data
+generation is being used, as well as a common taxonomy across domains. It
+extends the analyses found in these articles and uses the compiled knowledge
+to identify research gaps. We compare the strengths and weaknesses of the
+models developed within each of these fields. Finally, we identify possible
+future research directions to address some of the limitations found. The
+contributions of this paper are summarized below:
 
 \begin{itemize}
     \item Bridge different ML concepts using synthetic data generation in its
@@ -337,8 +338,37 @@ drawn from this study.
 
 \section{Background}~\label{sec:background}
 
+In this section we define basics concepts, common goals, trade-offs and
+motivations related to the generation of synthetic data in ML\@.
+
 % Concepts definition, goals + trade-offs, Motivations
 
+% Concepts definition
+% - Original dataset
+% - Synthetic dataset
+% - Generator
+% - Quality criteria (e.g., similarity function)
+% - Objective performance metric (ML method to improve)
+% 
+% Common success criteria 
+% - The synthetic dataset should be different than the original dataset (i.e.,
+%   no duplicates)
+% - It should minimize a similarity function
+% - The statistical properties of the dataset are preserved
+% - It should improve the output of the objective performance
+% 
+% Goals 
+% - 
+% 
+% Trade-offs
+% - Additional computational overhead
+% 
+% Motivations
+% - Generalize ML classifiers (and improve robustness against adversarial
+%   attacks)
+% - Expand dataset
+% - Balance class distributions
+% - Anonymize datasets (differential privacy)
 
 
 Motivations:
@@ -387,6 +417,9 @@ proposed taxonomy is shown in Figure~\ref{fig:data-generation-taxonomy}.
 
 \section{Data Generation in the Feature Space}~\label{sec:feature-space}
 % Feature level data augmentation
+
+The concept of data generation in the feature space was popularized
+with~\cite{devries2017dataset}.
 
 According to~\cite{assefa2020generating}. The generation of synthetic data
 should aim to fulfil the conditions below:
@@ -548,6 +581,9 @@ types of problems and classifiers~\cite{Behpour2019}.
 
 ``Su et al. [78] show that 70.97\% of images can be misclassified by changing
 just one pixel'' \citet{shorten2019survey}
+
+Data augmentation can also be used to improve a model's robustness against
+adversarial attacks. 
 
 \subsection{Oversampling}
 
