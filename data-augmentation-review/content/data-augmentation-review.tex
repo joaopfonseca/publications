@@ -126,7 +126,7 @@ data generation to produce deep neural networks without labeled data
 The breadth of these techniques span multiple domains, such as facial
 recognition~\cite{lv2017data}, Land Use/Land Cover mapping
 \textbf{[CITATION]}, medical image processing \textbf{[CITATION]}, Natural
-Language Processing~\cite{feng2021survey} or credit card default
+Language Processing (NLP)~\cite{feng2021survey} or credit card default
 prediction~\cite{alam2020investigation}. According to the domain and data
 type, the data generation techniques used may vary significantly. Generally
 speaking, some data generation mechanisms are specific to some domains, data
@@ -210,8 +210,8 @@ analysis of related literature reviews~\footnote{%
     2019, using the search query {\fontfamily{qcr}\selectfont (``synthetic
     data generation'' OR ``oversampling'' OR ``imbalanced learning'' OR ``data
     augmentation'') AND (``literature review'' OR ``survey'')}. Retrieved on
-    August 11th, 2022. Additional articles were later included whenever
-    found relevant.
+    August $11^{th}$, 2022. More articles were added later whenever found
+    relevant.
 } is shown in Table~\ref{tab:literature-reviews}.
 
 % TODO: move table to appendix
@@ -239,7 +239,7 @@ analysis of related literature reviews~\footnote{%
 
         \citet{nalepa2019data} & Image & Segmentation & Medicine & Analysis of
         algorithmic applications on a 2018 brain-tumor segmentation
-        challenge\\
+        challenge.\\
 
         \citet{bayer2021survey} & Text & Classification & --- & Distinguish
         100 methods into 12 groups. \\
@@ -305,9 +305,11 @@ contributions of this paper are summarized below:
 \begin{itemize}
     \item Bridge different ML concepts using synthetic data generation in its
         core \hl{(Algorithmic applications + Review of the State-of-the-art)}.
-    \item List the different synthetic data generation/data augmentation
-        taxonomies and characterize all relevant methods accordingly \hl{(Data
-        augmentation taxonomy)}.
+    \item Propose a synthetic data generation/data augmentation taxonomy to
+        resolve the ambiguity in the literature \hl{(Data augmentation
+        taxonomy)}.
+    \item Characterize all relevant data generation methods using the proposed
+        taxonomy. 
     \item Discuss the ML techniques in which synthetic data generation/data
         augmentation is used, beyond regularization and consolidate the
         current data generation mechanisms across the different techniques
@@ -315,7 +317,6 @@ contributions of this paper are summarized below:
     \item Bring to light the key challenges of synthetic data generation and
         put forward possible research directions in the future.
 \end{itemize}
-
 
 % TODO: Develop research questions
 
@@ -338,8 +339,73 @@ drawn from this study.
 
 \section{Background}~\label{sec:background}
 
+% Definition
 In this section we define basics concepts, common goals, trade-offs and
-motivations related to the generation of synthetic data in ML\@.
+motivations regarding the generation of synthetic data in ML\@. We define
+synthetic data generation as the production of observations using a generative
+model (regardless of its nature) that resemble naturally occurring
+observations within a certain domain. It requires access to either a training
+dataset, a generative process, or a data stream. However, additional
+requirements might be imposed depending on the ML task being developed. For
+example, to generate artificial data for regularization purposes in supervised
+learning (\textit{i.e.}, data augmentation) the training dataset must be
+annotated \textbf{[CITATION]}. The generation of synthetic data for
+anonymization purposes assumes synthetic datasets to be different from the
+original data, while following the same statistical properties
+\textbf{[CITATION]}. Domain knowledge may also be necessary to encode
+specific relationships among features into the generative process.
+
+% Motivations
+%% Anonymize datasets (differential privacy)
+The breach of sensitive information is an important barrier to the sharing of
+datasets, especially when it concerns personal
+information~\cite{dankar2021fake}. A common solution for this problem is the
+generation of synthetic data without identifiable information. Generally
+speaking, ML tasks that require data with sensitive information are not
+compromised when using synthetic data.  The experiment conducted by
+\citet{patki2016synthetic} using relational datasets showed that in 11 out 15
+comparisons ($\approx 73\%$), practitioners performing predictive modelling
+tasks using fully synthetic datasets performed the same or better than those
+using the original dataset.
+
+
+%% Generalization/regularization
+A common problem in the training of deep neural networks are their capacity to
+generalize~\cite{Zhang2021} (\textit{i.e.}, reduce the difference in
+classification performance between known and unseen observations). Data
+augmentation is a common method to address this problem. The generation of
+synthetic observations increases the range of the possible input space used in
+the training phase, which reduces the performance difference between known and
+unseen observations. Although other regularization methods exist, data
+augmentation is a useful method since it does not affect the choice in the
+architecture of the ML classifier and does not exclude the usage of other
+regularization methods. In domains such as computer vision and NLP, data
+augmentation is also used to improve the robustness of models against
+adversarial attacks~\cite{zeng2020data, morris2020textattack}. These topics
+are discussed into higher detail in Section~\ref{sec:regularization}.
+
+%% Oversampling
+In supervised learning, synthetic data generation is often motivated by the
+need to balance target class distributions (\textit{i.e.}, oversampling).
+Since most ML classifiers are designed to perform best with balanced datasets,
+defining an appropriate decision boundary to distinguish rare classes becomes
+difficult~\cite{saez2016analyzing}. Although there are other approaches to
+address imbalanced learning, oversampling techniques are generally easier to
+implement since they do not involve modifications to the classifier. This
+topic is discussed into higher detail in Section~\ref{sec:oversampling}.
+
+%% Active Learning
+In supervised learning projects where labeled data is not readily available,
+but can be labeled, an Active Learning (AL) method may be used to improve the
+data labelling process. AL aims to find the most informative observations to
+be labeled and fed into the classifier. 
+
+%% Few-shot Learning
+% - Expand small training datasets
+
+%% Semi-supervised Learning
+
+%% Self-supervised Learning
 
 % Concepts definition, goals + trade-offs, Motivations
 
@@ -357,30 +423,12 @@ motivations related to the generation of synthetic data in ML\@.
 % - The statistical properties of the dataset are preserved
 % - It should improve the output of the objective performance
 % 
-% Goals 
-% - 
-% 
 % Trade-offs
 % - Additional computational overhead
+% - Expose the classifier to unfeasible input areas
 % 
-% Motivations
-% - Generalize ML classifiers (and improve robustness against adversarial
-%   attacks)
-% - Expand dataset
-% - Balance class distributions
-% - Anonymize datasets (differential privacy)
 
-
-Motivations:
-
-\begin{enumerate}
-    \item Low-resource languages (NLP)
-    \item Mitigate bias
-    \item Fixing class imbalance
-    \item Few-shot learning
-    \item Adversarial examples
-\end{enumerate}
-
+\subsection{Problem Formulation}
 
 \section{Data Generation Taxonomy}~\label{sec:taxonomy}
 
@@ -480,6 +528,17 @@ Generative Adversarial Networks in computer vision~\cite{wang2021generative}
 % TODO: 
 % - Table with literature review references 
 
+NLP motivations~\cite{feng2021survey}:
+
+\begin{enumerate}
+    \item Low-resource languages (NLP)
+    \item Mitigate bias
+    \item Fixing class imbalance
+    \item Few-shot learning
+    \item Adversarial examples
+\end{enumerate}
+
+
 NLP also benefit from data augmentation~\cite{feng2021survey}.
 
 In NLP, there is the challenge of establishing universal rules for text
@@ -502,9 +561,14 @@ data augmentation framework~\citet{zhao2021data}
 List of papers about graph data augmentation:
 https://github.com/zhao-tong/graph-data-augmentation-papers
 
+\subsection{Audio}
+
 \section{Algorithmic applications}~\label{sec:algorithmic-applications}
 
 \subsection{Data Privacy}
+
+SynSys~\cite{dahmen2019synsys}, Sensegen~\cite{alzantot2017sensegen}, The
+Synthetic Data Vault~\cite{patki2016synthetic}
 
 % Introduce synthetic data generation
 Synthetic data generation is a technique used to produce synthetic, anonymized
@@ -538,7 +602,7 @@ Guidelines for effective synthetic data generation~\cite{dankar2021fake}
 
 
 
-\subsection{Regularization in Supervised Learning}
+\subsection{Regularization in Supervised Learning}~\label{sec:regularization}
 
 % Introduce data augmentation
 The performance of Machine Learning models is highly dependent on the quality
@@ -578,23 +642,43 @@ a training dataset, by producing synthetic observations~\cite{Van2001,
 Wong2016}. Since it is applied at the data level, it can be used for various
 types of problems and classifiers~\cite{Behpour2019}. 
 
+Problems such as fraud detection and healthcare are frequently tackled via
+synthetic data generation~\cite{ekbatani2017synthetic}.
 
 ``Su et al. [78] show that 70.97\% of images can be misclassified by changing
 just one pixel'' \citet{shorten2019survey}
 
+``Moreover, the current research about so called adversarial attacks on CNNs
+showed that deep neural networks can be easily fooled into misclassification
+of images just by partial rotations and image translation [1], adding the
+noise to images [5] and even changing one, skillfully selected pixel in the
+image [6].'' \citet{mikolajczyk2018data}
+
 Data augmentation can also be used to improve a model's robustness against
 adversarial attacks. 
 
-\subsection{Oversampling}
+% NOTE: Using an ensemble of views of the same observation to the same
+% classifier and checking the different predictions has surely been explored
+% (?) 
+% i.e., augmentation at inference time, instead of training
+
+\subsection{Oversampling}~\label{sec:oversampling}
+
+KernelADASYN~\cite{tang2015kerneladasyn}
 
 The original author of SMOTE recently published the paper ``Efficient Augmentation for Imbalanced Deep
 Learning''~\cite{dablain2022efficient}
 
 \subsection{Active Learning}
 
-\subsection{Semi-supervised Learning}
+\subsection{Few-shot Learning}~\label{sec:few-shot-learning}
 
-\subsection{Self-supervised Learning}
+\subsection{Semi-supervised Learning}~\label{sec:semi-supervised-learning}
+
+Synthetic data generation for semi-supervised learning given limited labeled
+data regarding the COVID-19 pandemic~\cite{das2022conditional}.
+
+\subsection{Self-supervised Learning}~\label{sec:self-supervised-learning}
 
 \section{Evaluating the Quality of Synthetic Data
 }~\label{sec:evaluating-synthetic-data}
@@ -679,6 +763,11 @@ domains and the reason why they work better or worse depending on the task.
 In addition, it is still unclear \textit{why} data augmentation works.
 Research on this topic lacks depth and fails to address the theoretical
 underpinnings~\cite{feng2021survey}.
+
+``Dao et al. (2019) note that ``data augmentation is typically performed in an
+ad-hoc manner with little understanding of the underlying theoretical
+principles'', and claim the typical explanation of DA as regularization to be
+insufficient.''~\cite{feng2021survey}
 
 % oversampling
 There is a lack of research on oversampling solutions to generate synthetic
