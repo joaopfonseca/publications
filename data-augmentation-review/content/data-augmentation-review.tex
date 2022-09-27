@@ -2,7 +2,7 @@
 
 \pdfoutput=1
 
-\title{Synthetic data generation: A literature review}
+\title{Tabular synthetic data generation: A literature review}
 
 \author{%
 	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
@@ -136,23 +136,22 @@ techniques are applied on the input or output space.
 
 However, there are various data generation techniques that are invariant to
 the task or data types used. These techniques can be either applied in the
-feature space~\cite{devries2017dataset} or in problems using tabular data. On
-the one hand, data generation in the feature space uses a generative model to
-learn a manifold, lower-dimensional abstraction over the input
+feature space~\cite{devries2017dataset} or in tabular datasets. On the one
+hand, data generation in the feature space uses a generative model to learn a
+manifold, lower-dimensional abstraction over the input
 space~\cite{kingma2019introduction}, defined here as the feature space. At
 this level, any tabular data generation mechanism can be applied and
 reconstructed into the input space if necessary. On the other hand, synthetic
 data generation on tabular data can be applied to most problems. Although, the
-choice of the generation mechanism is still dependant on (1) the importance of
-the relationships found between the different features, (2) the ML task to be
-developed and (3) the motivation for the generation of synthetic data. For
-example, when generating data to address an imbalanced learning problem
-(\textit{i.e.}, oversampling), the relationships between the different
-features are not necessarily kept since the goal is to reinforce the learning
-of the minority class by redefining an ML classifier's decision boundaries. If
-the goal is to anonymize a dataset, perform some type of descriptive task, or
-ensure a consistent model interpretability, these relationships need to be
-kept.
+choice of generation mechanism is still dependant on (1) the importance of the
+relationships found between the different features, (2) the ML task developed
+and (3) the motivation for the generation of synthetic data. For example, when
+generating data to address an imbalanced learning problem (\textit{i.e.},
+oversampling), the relationships between the different features are not
+necessarily kept since the goal is to reinforce the learning of the minority
+class by redefining an ML classifier's decision boundaries. If the goal is to
+anonymize a dataset, perform some type of descriptive task, or ensure a
+consistent model interpretability, these relationships need to be kept.
 
 Depending on the context, evaluating the quality of the generated data is a
 complex task. For example, for image and time series data, perceptually small
@@ -170,15 +169,21 @@ literature are discussed in Section~\ref{sec:evaluating-synthetic-data}.
 
 % Discuss Generative models -> Network based models
 
-\subsection{Motivation and Contributions}
+\subsection{Motivation, Scope and Contributions}
 
-This literature review focuses on the generation mechanisms and generative
-models underlying the different techniques where synthetic data is generated.
-Specifically, we focus on techniques used in studies published since 2019. We
-focus on the ML perspective of synthetic data, as opposed to the practical
-perspective. From a practical sense, synthetic data is used as a proxy of real
-data. It is assumed to be inaccessible, essential and a secondary asset for
-tasks like education, software development, or systems
+% TODO: Define scope
+% - Exclude domain-specific traditional applications
+% - Exclude Generation techniques with an internal application level
+% - Preference for methods published in 2019 or later, or seminal
+%   non-traditional methods
+% - 
+
+This literatrue review focuses on generation mechanisms applied to tabular
+data and the different ML techniques where tabular synthetic data is used. In
+addition, we focus on the ML perspective of synthetic data, as opposed to the
+practical perspective. From a practical sense, synthetic data is used as a
+proxy of real data. It is assumed to be inaccessible, essential and a
+secondary asset for tasks like education, software development, or systems
 demonstrations~\cite{mannino2019real}. 
 
 We focus on data generation techniques in the tabular and feature space
@@ -441,7 +446,6 @@ and~\ref{sec:self-supervised-learning}.
 % Trade-offs
 % - Additional computational overhead
 % - Expose the classifier to unfeasible input areas
-% 
 
 \subsection{Problem Formulation}~\label{sec:problem-formulation}
 
@@ -484,21 +488,17 @@ generation techniques. Within image data studies, \citet{shorten2019survey}
 and \citet{khalifa2021comprehensive} divide data augmentation techniques into
 ``basic'' or ``classical'' approaches and deep learning approaches. In both
 cases, the former refers to domain-specific generation techniques, while the
-latter may be applied to any type of data.
-
-Time series data augmentation taxonomy~\cite{iwana2021empirical}
-
-There is a distinction between semantic and traditional image data
-augmentation~\cite{wang2021regularizing}, also discussed
-in~\cite{shorten2019survey} 
-
-Synthetic data generation for medical records
-taxonomy~\cite{hernandez2022synthetic} which is incomplete
-
-
-
-All taxonomies with categories defined as ``basic'', ``traditional'' or
-``classical'' use these to characterize domain-specific transformations.
+latter may be applied to any type of data. \citet{iwana2021empirical} proposes
+a time-series data augmentation taxonomy divided in four families: (1)
+Decomposition, (2) Pattern mixing, (3) Generative models and (4)
+Decomposition. With exception to generative models, the majority of the
+methods presented in the remaining families are well established and domain
+specific. \citet{hernandez2022synthetic} defines a taxonomy for synthetic
+tabular data generation approaches divided in three types of approaches: (1)
+Classical, (2) Deep learning and (3) Others.  Most taxonomies found followed
+similar definitions with variations in terminology or distinction criteria. In
+addition, all taxonomies with categories defined as ``basic'', ``traditional''
+or ``classical'' use these to characterize domain-specific transformations.
 
 
 
@@ -508,24 +508,51 @@ mechanism employs $\mathcal{D}^r$ into the generation process or, if
 applicable, the training phase. However, it is important to understand whether
 a generation mechanism randomly selects $x$ and a set of close neighbors, thus
 considering local information only, or considers the overall dataset or data
-distribution for the selection of $x$ and generation of $\tilde{x}$.
-
-% Local info: Does not guarantee control over P^s, allows for a larger
-% diversity of x^s and higher variance over the candidate synthetic datasets.
-% 
-% 
-% Global info: Higher capacity to model P^s, produces a lower diversity of x^s
-% and lower variance over the candidate synthetic datasets.
-
-We characterize generation mechanisms with 4 properties: Architecture,
-Application level, Scope and Data space. The proposed taxonomy is shown in
-Figure~\ref{fig:data-generation-taxonomy}.
+distribution for the selection of $x$ and/or generation of $\tilde{x}$. Our
+proposed taxonomy is depicted in Figure~\ref{fig:data-generation-taxonomy}. It
+characterizes data generation mechanisms using four properties:
 
 \begin{enumerate}
-    \item Level of application (External or Internal)
-    \item Scope (Local or Global augmentation)
-    \item Architectural approach (heuristic, network-based or others)
-    \item Data space (Input, feature or output). Within feature and output: Domain
+
+    \item Architecture. Defines the broader type of data augmentation. It is
+        based on domain specificity, architecture type or data transformations
+        using a heuristic or random perturbation process. Generation
+        techniques that apply a form of random perturbation, interpolation or
+        geometric transformation to the data with some degree of randomness
+        are considered randomized approaches. Typical, domain-specific data
+        generation techniques are considered traditional architectures. These
+        techniques apply transformations to a data point using \textit{a
+        priori} domain knowledge. Generative models based on neural network
+        architectures are defined as network-based. These architectures
+        attempt to either generate observations in the feature space and/or by
+        producing observations that are difficult to distinguish from the
+        original dataset.
+
+    \item Application level. Refers to the phase of the ML pipeline where the
+        generative process is included. Generative models are considered
+        internal if they are used alongside the primary ML task, whereas
+        models used prior to the development of the primary ML task are
+        considered external.
+
+    \item Scope. Considers the usage of the original dataset's properties.
+        Generative models that consider the density of the data space,
+        statistical properties of $\mathcal{D}^r$, or attempt to replicate
+        specific relationships found in $\mathcal{D}^r$ are considered to have
+        a global scope, whereas generative models that consider a single
+        observation and/or a set of close neighbors are considered to have a
+        local scope. On the one hand, generative models with a local scope do
+        not account for $\mathbb{P}^s$ but allow for a larger diversity of
+        candidate $x^s$ and higher variance within $\mathcal{D}^s$. On the
+        other hand, generative models with a global scope have a higher
+        capacity to model $\mathbb{P}^s$ but produce candidate $x^s$ with
+        lower diversity and lower variance within $\mathcal{D}^s$.
+
+    \item Data space. Refers to the type data representation used to apply the
+        generative model. Generation mechanisms can be applied using the raw
+        dataset (\textit{i.e.}, on the input space), an embedded
+        representation of the data (\textit{i.e.}, on the feature space) or
+        based on the target feature (\textit{i.e.}, on the output space).
+
 \end{enumerate}
 
 \begin{figure}
@@ -536,113 +563,181 @@ Figure~\ref{fig:data-generation-taxonomy}.
     }~\label{fig:data-generation-taxonomy}
 \end{figure}
 
+Throughout the analysis of the different types of generation mechanisms, all
+relevant methods were characterized using this taxonomy and listed in
+Table~\ref{tbl:generators}.
 
-\section{Data Generation in the Feature Space}~\label{sec:feature-space}
-% Feature level data augmentation
+\begin{longtable}{rcccccccc}
+    \caption{Analysis of synthetic data generation models discussed in this work.}
+    \label{tbl:generators}\\
+    \toprule
+               Algorithm & ML problem & Domain &  Architecture & Level &  Data
+               Space & Scope \\
+    \midrule
+    \endfirsthead
+    \caption[]{Analysis of synthetic data generation models discussed in this work.} \\
+    \toprule
+               Algorithm & ML problem & Domain &  Architecture & Level &  Data
+               Space & Scope \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{9}{r}{{Continued on next page}} \\
+    \midrule
+    \endfoot
+    
+    \bottomrule
+    \endlastfoot
+      SynSys~\cite{dahmen2019synsys} & DP & Healthcare &   &  &  & \\
+      CTGAN~\cite{xu2019modeling} & & & Network-based & & Feature & Global \\
+      Sensegen~\cite{alzantot2017sensegen} & DP \\
+      SDV~\cite{patki2016synthetic} & DP \\
+      MST~\cite{mckenna2021winning} & DP\\
+      QUAIL~\cite{rosenblatt2020differentially} & DP \\
+      SuperQUAIL~\cite{rosenblatt2022spending} & DP \\
+      MWEM~\cite{hardt2012simple} & DP \\
+      MWEM-PGM~\cite{mckenna2019graphical} & DP \\
+      PrivBayes~\cite{zhang2017privbayes} & DP\\
+      DPGAN~\cite{xie2018differentially} & DP \\
+      DPCTGAN~\cite{rosenblatt2020differentially} & DP & \\
+      DP-CTGAN~\cite{fang2022dp} & DP & Healthcare \\
+      PATE-GAN~\cite{jordon2018pate} & DP \\
+      PATECTGAN~\cite{rosenblatt2020differentially} & DP \\
+      FEM~\cite{vietri2020new} & DP \\
+      RAP~\cite{aydore2021differentially} & DP \\
+      Kamino~\cite{ge2020kamino} & DP \\
+      RON-GAUSS~\cite{chanyaswad2019ron} & DP \\
+      SMOTE~\cite{chawla2002smote} & Ovs \\
+      SMOTENC~\cite{chawla2002smote} & Ovs \\
+      SMOTEN~\cite{chawla2002smote} & Ovs \\
+      Borderline-SMOTE~\cite{han2005borderline} & Ovs \\
+      G-SMOTE~\cite{douzas2019geometric} & Ovs \\
+      ADASYN~\cite{he2008adasyn} & Ovs \\
+      KernelADASYN~\cite{tang2015kerneladasyn} & Ovs \\
+      Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs \\
+      LR-SMOTE~\cite{liang2020lr} & Ovs \\
+      K-means SMOTE~\cite{douzas2018improving} & Ovs \\
+      CGAN~\cite{douzas2018effective} & Ovs \\
+      K-means CTGAN~\cite{an2021k} & Ovs \\
+      G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
+      SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
+\end{longtable}
 
-The concept of data generation in the feature space was popularized
-with~\cite{devries2017dataset}.
 
-According to~\cite{assefa2020generating}. The generation of synthetic data
-should aim to fulfil the conditions below:
+% \section{Data Generation in the Input Space}~\label{sec:input-space}
+% 
+% In this section, we describe some popular domain and data type-specific data
+% generation techniques. For each data type we include a table with related
+% literature reviews specific to different domains.
+% 
+% \subsection{Supervised data generation}
+% % TODO: 
+% % - Table with literature review references 
+% 
+% \subsection{Unsupervised data generation}
+% % TODO: 
+% % - Table with literature review references 
 
-\begin{itemize}
-    \item Privacy preserving.
-    \item Human readable.
-    \item Compact.
-\end{itemize}
-
-Discuss Auto-augmentation (as mentioned in~\cite{wang2020survey}) or meta
-learning (as mentioned in~\cite{shorten2019survey})
-
-\section{Data Generation in the Input Space}~\label{sec:input-space}
-% Review of the State-of-the-art of domain specific data generation
-
-In this section, we describe some popular domain and data type-specific data
-generation techniques. For each data type we include a table with related
-literature reviews specific to different domains.
-
-\subsection{Tabular}
-% TODO: 
-% - Table with literature review references 
-
-\subsection{Time series}
-% TODO: 
-% - Table with literature review references 
-
-Generative adversarial networks in time series 
-
-\subsection{Image}
-% TODO: 
-% - Table with literature review references 
-
-Image-specific data generation mechanisms can be further divided into
-traditional and semantic techniques~\cite{wang2021regularizing}. Traditional
-generation techniques comprise simple modifications such as translation,
-cropping or random erasing~\cite{zhong2017random}. Semantic generation methods
-involve more complex tasks, such changing colors of specific attributes,
-backgrounds and visual angles \textbf{[CITATION]}. 
-% Go back to explaining wang2021regularizing
-
-% semantic generation technique
-Data generation by modifying specific attributes in data points with known
-perturbations~\cite{lv2017data}. For example, overlaying facial elements into
-a picture containing a human face (\textit{e.g.}, adding sunglasses and
-different hairstyles), introducing perturbations in facial landmarks,
-different illumination and artificial misalignment are different approaches to
-generate artificial observations for facial recognition.
-
-% GANs
-Generative Adversarial Networks in computer vision~\cite{wang2021generative}
+% \subsection{Image}
+% % TODO: 
+% % - Table with literature review references 
+% 
+% Image-specific data generation mechanisms can be further divided into
+% traditional and semantic techniques~\cite{wang2021regularizing}. Traditional
+% generation techniques comprise simple modifications such as translation,
+% cropping or random erasing~\cite{zhong2017random}. Semantic generation methods
+% involve more complex tasks, such changing colors of specific attributes,
+% backgrounds and visual angles \textbf{[CITATION]}. 
+% % Go back to explaining wang2021regularizing
+% 
+% % semantic generation technique
+% Data generation by modifying specific attributes in data points with known
+% perturbations~\cite{lv2017data}. For example, overlaying facial elements into
+% a picture containing a human face (\textit{e.g.}, adding sunglasses and
+% different hairstyles), introducing perturbations in facial landmarks,
+% different illumination and artificial misalignment are different approaches to
+% generate artificial observations for facial recognition.
+% 
+% % GANs
+% Generative Adversarial Networks in computer vision~\cite{wang2021generative}
 
 % traditional
 % - mixup
 
-\subsection{Text}
-% TODO: 
-% - Table with literature review references 
+% \subsection{Text}
+% % TODO: 
+% % - Table with literature review references 
+% 
+% NLP motivations~\cite{feng2021survey}:
+% 
+% \begin{enumerate}
+%     \item Low-resource languages (NLP)
+%     \item Mitigate bias
+%     \item Fixing class imbalance
+%     \item Few-shot learning
+%     \item Adversarial examples
+% \end{enumerate}
+% 
+% 
+% NLP also benefit from data augmentation~\cite{feng2021survey}.
+% 
+% In NLP, there is the challenge of establishing universal rules for text
+% transformations to provide new linguistic patterns~\cite{bayer2022data}
+% 
+% https://github.com/styfeng/DataAug4NLP
+% 
+% \subsection{Graphs}
+% 
+% 
+% Another relevant paper~\cite{zhou2020data}
+% 
+% Various graph data augmentation methods can be applied to related data types
+% such as text data~\cite{shorten2021text}.
+% 
+% 
+% An analysis on different graph data augmentation techniques and a new graph
+% data augmentation framework~\citet{zhao2021data}
+% 
+% List of papers about graph data augmentation:
+% https://github.com/zhao-tong/graph-data-augmentation-papers
 
-NLP motivations~\cite{feng2021survey}:
-
-\begin{enumerate}
-    \item Low-resource languages (NLP)
-    \item Mitigate bias
-    \item Fixing class imbalance
-    \item Few-shot learning
-    \item Adversarial examples
-\end{enumerate}
 
 
-NLP also benefit from data augmentation~\cite{feng2021survey}.
 
-In NLP, there is the challenge of establishing universal rules for text
-transformations to provide new linguistic patterns~\cite{bayer2022data}
+% \section{Data Generation in the Feature Space}~\label{sec:feature-space}
+% % Feature level data augmentation
+% 
+% The concept of data generation in the feature space was popularized
+% with~\cite{devries2017dataset}.
+% 
+% According to~\cite{assefa2020generating}. The generation of synthetic data
+% should aim to fulfil the conditions below:
+% 
+% \begin{itemize}
+%     \item Privacy preserving.
+%     \item Human readable.
+%     \item Compact.
+% \end{itemize}
+% 
+% Discuss Auto-augmentation (as mentioned in~\cite{wang2020survey}) or meta
+% learning (as mentioned in~\cite{shorten2019survey})
 
-https://github.com/styfeng/DataAug4NLP
-
-\subsection{Graphs}
-
-
-Another relevant paper~\cite{zhou2020data}
-
-Various graph data augmentation methods can be applied to related data types
-such as text data~\cite{shorten2021text}.
-
-
-An analysis on different graph data augmentation techniques and a new graph
-data augmentation framework~\citet{zhao2021data}
-
-List of papers about graph data augmentation:
-https://github.com/zhao-tong/graph-data-augmentation-papers
-
-\subsection{Audio}
 
 \section{Algorithmic applications}~\label{sec:algorithmic-applications}
 
-\subsection{Data Privacy}~\label{sec:data-privacy}
+In this section we discuss the data generation mechanisms for the different
+applications 
+
+CTGAN~\cite{xu2019modeling}
+
+\subsection{Differentially Private Synthetic Data}~\label{sec:data-privacy}
 
 SynSys~\cite{dahmen2019synsys}, Sensegen~\cite{alzantot2017sensegen}, The
-Synthetic Data Vault~\cite{patki2016synthetic}
+Synthetic Data Vault~\cite{patki2016synthetic}, MST~\cite{mckenna2021winning},
+SuperQUAIL~\cite{rosenblatt2020differentially}
+
+A benchmark of various differentially private synthetic data generation
+mechanisms~\cite{tao2021benchmarking}.
 
 % Introduce synthetic data generation
 Synthetic data generation is a technique used to produce synthetic, anonymized
@@ -736,6 +831,14 @@ adversarial attacks.
 % (?) 
 % i.e., augmentation at inference time, instead of training
 
+
+\subsection{Time Series}
+% TODO: 
+% - Table with literature review references 
+
+Generative adversarial networks in time series 
+
+
 \subsection{Oversampling}~\label{sec:oversampling}
 
 KernelADASYN~\cite{tang2015kerneladasyn}
@@ -751,6 +854,11 @@ Analysis of six feature space data augmentation techniques for few-shot
 learning~\cite{kumar2019closer}
 
 FlipDA~\cite{zhou2021flipda}
+
+Data generation can be used to address Few-shot learning in three
+ways~\cite{wang2020generalizing}: (1) transforming samples from the dataset,
+(2) transforming samples from a weakly labeled or unlabeled dataset, or (3)
+transforming samples from similar datasets.
 
 \subsection{Semi-supervised Learning}~\label{sec:semi-supervised-learning}
 
@@ -829,9 +937,13 @@ mixed data types (\textit{i.e.}, a combination of categorical, ordinal,
 continuous and discrete features) and the metrics should evaluate the
 performance of different data mining tasks along with the anonymization
 reliability. This problem appears to be universal across domains. For example,
-\citet{hernandez2022synthetic} observed the lack of a universal method or metric
-to report the performance synthetic data generation algorithms for tabular
-health records.
+\citet{hernandez2022synthetic} observed the lack of a universal method or
+metric to report the performance synthetic data generation algorithms for
+tabular health records. Therefore, in order to facilitate the usage of these
+techniques in industry domains, these benchmarks must also be
+realistic. \citet{rosenblatt2020differentially} attempts to address this
+problem by proposing a standardized evaluation methodology using standard
+datasets and real-world industry applications.
 
 Computational cost and inconsistent quality of synthetic data generated with
 GANs (\textit{e.g.}, mode collapse).
@@ -900,4 +1012,5 @@ Quantifying the quality of the generated data:
 \section{Conclusions}~\label{sec:conclusions}
 
 \printbibliography
+
 \end{document}
