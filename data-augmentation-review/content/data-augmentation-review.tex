@@ -449,16 +449,16 @@ and~\ref{sec:self-supervised-learning}.
 
 \subsection{Problem Formulation}~\label{sec:problem-formulation}
 
-The original dataset, $\mathcal{D}^r = \mathcal{D}^r_L \cup \mathcal{D}^r_U$,
+The original dataset, $\mathcal{D} = \mathcal{D}_L \cup \mathcal{D}_U$,
 is a collection of real observations and is distinguished according to whether
 a target feature exists, $\mathcal{D}_L = {((x_i, y_i))}^l_{i=1}$, or not,
-$\mathcal{D}_U = {(x_i)}^{u}_{i=1}$. All three datasets, $\mathcal{D}^r$,
-$\mathcal{D}^r_L$ and $\mathcal{D}^r_U$ consist of ordered collections with
+$\mathcal{D}_U = {(x_i)}^{u}_{i=1}$. All three datasets, $\mathcal{D}$,
+$\mathcal{D}_L$ and $\mathcal{D}_U$ consist of ordered collections with
 lengths $l+u$, $l$ and $u$, respectively. Synthetic data generation is
 performed using a generator, $f_{gen}(x;\tau) = \tilde{x}$, where $\tau$
 defines the generation policy (\textit{i.e.}, its hyperparameters), $x \in
-\mathcal{D}^r$ is an observation and $\tilde{x} \in \mathcal{D}^s$ is a
-synthetic observation. Analogous to $\mathcal{D}^r$, the synthetic dataset,
+\mathcal{D}$ is an observation and $\tilde{x} \in \mathcal{D}^s$ is a
+synthetic observation. Analogous to $\mathcal{D}$, the synthetic dataset,
 $\mathcal{D}^s$, is also distinguished according to whether there is an
 assignment of a target feature, $\mathcal{D}^s_L = {((\tilde{x}_j,
 \tilde{y}_j))}^{l'}_{j=1}$, or not, $\mathcal{D}^s_U =
@@ -473,9 +473,9 @@ addition, a performance metric to estimate the performance of a model on the
 objective task, $f_{per}$, may be used to determine the appropriateness of a
 model with parameters $\theta$, \textit{i.e.}, $f_{\theta}$. The generator's
 goal is to generate $\mathcal{D}^s$ with arbitrary length, given
-$\mathcal{D}^r \sim \mathbb{P}^r$ and $\mathcal{D}^s \sim \mathbb{P}^s$, such
-that $\mathbb{P}^s \approx \mathbb{P}^r$, $x_i \neq x_j \forall x_i \in
-\mathcal{D}^r \wedge x_j \in \mathcal{D}^s$. $f_{gen}(x;\tau)$ attempts to
+$\mathcal{D} \sim \mathbb{P}$ and $\mathcal{D}^s \sim \mathbb{P}^s$, such
+that $\mathbb{P}^s \approx \mathbb{P}$, $x_i \neq x_j \forall x_i \in
+\mathcal{D} \wedge x_j \in \mathcal{D}^s$. $f_{gen}(x;\tau)$ attempts to
 generate a $\mathcal{D}^s$ that maximizes either $f_{per}$, $f_{qual}$, or a
 combination of both.
 
@@ -504,7 +504,7 @@ or ``classical'' use these to characterize domain-specific transformations.
 
 
 Within the taxonomies considered, none of them consider how a generation
-mechanism employs $\mathcal{D}^r$ into the generation process or, if
+mechanism employs $\mathcal{D}$ into the generation process or, if
 applicable, the training phase. However, it is important to understand whether
 a generation mechanism randomly selects $x$ and a set of close neighbors, thus
 considering local information only, or considers the overall dataset or data
@@ -536,8 +536,8 @@ characterizes data generation mechanisms using four properties:
 
     \item Scope. Considers the usage of the original dataset's properties.
         Generative models that consider the density of the data space,
-        statistical properties of $\mathcal{D}^r$, or attempt to replicate
-        specific relationships found in $\mathcal{D}^r$ are considered to have
+        statistical properties of $\mathcal{D}$, or attempt to replicate
+        specific relationships found in $\mathcal{D}$ are considered to have
         a global scope, whereas generative models that consider a single
         observation and/or a set of close neighbors are considered to have a
         local scope. On the one hand, generative models with a local scope do
@@ -567,15 +567,16 @@ Throughout the analysis of the different types of generation mechanisms, all
 relevant methods were characterized using this taxonomy and listed in
 Table~\ref{tbl:generators}.
 
+\begingroup\small
 \begin{longtable}{rcccccccc}
-    \caption{Analysis of synthetic data generation models discussed in this work.}
+    \caption{Summary of synthetic data generation mechanisms discussed in this work.}
     \label{tbl:generators}\\
     \toprule
                Algorithm & ML problem & Domain &  Architecture & Level &  Data
                Space & Scope \\
     \midrule
     \endfirsthead
-    \caption[]{Analysis of synthetic data generation models discussed in this work.} \\
+    \caption[]{Summary of synthetic data generation mechanisms discussed in this work.} \\
     \toprule
                Algorithm & ML problem & Domain &  Architecture & Level &  Data
                Space & Scope \\
@@ -588,10 +589,10 @@ Table~\ref{tbl:generators}.
     
     \bottomrule
     \endlastfoot
-      SynSys~\cite{dahmen2019synsys} & DP & Healthcare &   &  &  & \\
-      CTGAN~\cite{xu2019modeling} & & & Network-based & & Feature & Global \\
-      Sensegen~\cite{alzantot2017sensegen} & DP \\
-      SDV~\cite{patki2016synthetic} & DP \\
+      SynSys~\cite{dahmen2019synsys} & Reg. & Healthcare & \textbf{[Statistical]}  & External & Input & Global \\
+      CTGAN~\cite{xu2019modeling} & & --- & Net. & External & Feature & Global \\
+      SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & Sensor & Net. + \textbf{[Stat.]} & External & Input & Global\\
+      SDV~\cite{patki2016synthetic} & Anon. & --- & \textbf{[Copula]} & External & Input & Global \\
       MST~\cite{mckenna2021winning} & DP\\
       QUAIL~\cite{rosenblatt2020differentially} & DP \\
       SuperQUAIL~\cite{rosenblatt2022spending} & DP \\
@@ -622,6 +623,7 @@ Table~\ref{tbl:generators}.
       G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
       SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
 \end{longtable}
+\endgroup
 
 
 % \section{Data Generation in the Input Space}~\label{sec:input-space}
@@ -726,18 +728,12 @@ Table~\ref{tbl:generators}.
 \section{Algorithmic applications}~\label{sec:algorithmic-applications}
 
 In this section we discuss the data generation mechanisms for the different
-applications 
+contexts where they are applied. We emphasize the constraints in each problem
+that condition the way generation mechanisms are used.
 
 CTGAN~\cite{xu2019modeling}
 
-\subsection{Differentially Private Synthetic Data}~\label{sec:data-privacy}
-
-SynSys~\cite{dahmen2019synsys}, Sensegen~\cite{alzantot2017sensegen}, The
-Synthetic Data Vault~\cite{patki2016synthetic}, MST~\cite{mckenna2021winning},
-SuperQUAIL~\cite{rosenblatt2020differentially}
-
-A benchmark of various differentially private synthetic data generation
-mechanisms~\cite{tao2021benchmarking}.
+\subsection{Dataset Anonymization}~\label{sec:data-privacy}
 
 % Introduce synthetic data generation
 Synthetic data generation is a technique used to produce synthetic, anonymized
@@ -760,10 +756,50 @@ identifiable and the relevant data mining tasks are not
 compromised~\cite{singh2017aggregating, li2018privacy}.
 
 The generation of synthetic datasets allow a more flexible approach to the
-successful implementation of ML tasks. However,
+successful implementation of ML tasks. To do this, it is important to
+guarantee that sensitive information in $\mathcal{D}$ is not leaked into
+$\mathcal{D}^s$. Differential privacy (DP), a formalization of privacy, offers
+strict theoretical privacy guarantees~\cite{rosenblatt2020differentially}. A
+differentially private generation mechanism produces a synthetic dataset,
+regulated by the privacy parameter $\epsilon$, with statistically
+indistinguishable results when using either $\mathcal{D}$ or neighboring
+datasets $\mathcal{D}' = \mathcal{D} \backslash \{x\}$, for any $x \in
+\mathcal{D}$. A synthetic data generation model ($f_{gen}$) guarantees
+$(\epsilon, \delta)$-differential privacy if $\forall S \subseteq
+Range(f_{gen})$ all $\mathcal{D}, \mathcal{D}'$ differing on a single
+entry~\cite{hardt2012simple}:
+
+\begin{equation}
+    Pr[f_{gen}(\mathcal{D}) \in S] \le e^{\epsilon} \cdot
+    Pr[f_{gen}(\mathcal{D}') \in S] + \delta
+\end{equation}
+ 
+In this case, $\epsilon$ is a non-negative number defined as the privacy
+budget. A lower $\epsilon$ guarantees a higher level of privacy, but reduces
+the quality of the produced synthetic data. The generation of DP synthetic
+data is especially appealing since DP is not affected by post-processing; any
+ML pipeline may be applied using $\mathcal{D}^s$ without a loss of
+differential privacy.
+
+Despite the formalization and the ability to quantify differential privacy,
+there are popular synthetic data-based anonymization approaches that perform
+this task without DP guarantees. Specifically, the Synthetic Data Vault
+(SDV)~\cite{patki2016synthetic} is a method for database anonymization that
+uses Gaussian Copula models for generating data. However, this method allows
+the usage of other generation mechanisms. A posterior extension of SDV was
+proposed to generate data using a CTGAN~\cite{xu2019modeling} and to handle
+sequential tabular data using a conditional probabilistic auto-regressive
+neural network~\cite{zhang2022sequential}. 
+
+% MST~\cite{mckenna2021winning}
 
 Anonymizing data using synthetic data generation in the financial
 sector~\cite{assefa2020generating}.
+
+
+A benchmark of various differentially private synthetic data generation
+mechanisms~\cite{tao2021benchmarking}.
+
 
 Guidelines for effective synthetic data generation~\cite{dankar2021fake}
 
@@ -835,6 +871,17 @@ adversarial attacks.
 \subsection{Time Series}
 % TODO: 
 % - Table with literature review references 
+
+% A general description of time series data
+
+Synsys~\cite{dahmen2019synsys} approaches time-series using both Hidden Markov
+and regression models. They show the method's effectiveness in the Healthcare
+domain with limited ground truth data by comparing it to models trained using
+only real data. A related model, Sensegen~\cite{alzantot2017sensegen}, uses an
+adversarial training approach to train an LSTM that predicts the parameters
+of Gaussian Mixture Models (GMM) at each time stamp, using real data as
+an input. Finally, the GMM estimations are used to sample synthetic data. 
+
 
 Generative adversarial networks in time series 
 
@@ -974,6 +1021,9 @@ data with mixed data types and datasets with exclusively non metric features.
 
 There is a lack of methods adapted to use categorical features for tabular
 data.
+
+There is a paucity of research on the usage of probabilistic-based generation
+mechanisms in oversampling.
 
 % Active Learning
 
