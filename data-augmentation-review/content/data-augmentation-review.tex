@@ -593,7 +593,7 @@ Table~\ref{tbl:generators}.
       CTGAN~\cite{xu2019modeling} & & --- & Net. & External & Feature & Global \\
       SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & Sensor & Net. + \textbf{[Stat.]} & External & Input & Global\\
       SDV~\cite{patki2016synthetic} & Anon. & --- & \textbf{[Copula]} & External & Input & Global \\
-      MST~\cite{mckenna2021winning} & DP\\
+      MST~\cite{mckenna2021winning} & DP & --- & \textbf{[Statistical]} & External & Input & Global \\
       QUAIL~\cite{rosenblatt2020differentially} & DP \\
       SuperQUAIL~\cite{rosenblatt2022spending} & DP \\
       MWEM~\cite{hardt2012simple} & DP \\
@@ -791,7 +791,12 @@ proposed to generate data using a CTGAN~\cite{xu2019modeling} and to handle
 sequential tabular data using a conditional probabilistic auto-regressive
 neural network~\cite{zhang2022sequential}. 
 
-% MST~\cite{mckenna2021winning}
+The MST mechanism~\cite{mckenna2021winning} is a general approach that
+produces differentially private data. It uses the Private-PGM
+mechanism~\cite{mckenna2019graphical} that relies on Probabilistic Graphical
+Models (PGM) to generate synthetic data. PGM models are most commonly used
+when it is important to maintain the pre-existing relationships between
+features and statistical properties in $\mathcal{D}$~\cite{young2009using}.
 
 Anonymizing data using synthetic data generation in the financial
 sector~\cite{assefa2020generating}.
