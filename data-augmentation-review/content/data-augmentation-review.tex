@@ -594,7 +594,7 @@ Table~\ref{tbl:generators}.
       SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & Sensor & Net. + \textbf{[Stat.]} & External & Input & Global\\
       SDV~\cite{patki2016synthetic} & Anon. & --- & \textbf{[Copula]} & External & Input & Global \\
       MST~\cite{mckenna2021winning} & DP & --- & \textbf{[Statistical]} & External & Input & Global \\
-      QUAIL~\cite{rosenblatt2020differentially} & DP \\
+      QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & --- \\
       SuperQUAIL~\cite{rosenblatt2022spending} & DP \\
       MWEM~\cite{hardt2012simple} & DP \\
       MWEM-PGM~\cite{mckenna2019graphical} & DP \\
@@ -795,8 +795,16 @@ The MST mechanism~\cite{mckenna2021winning} is a general approach that
 produces differentially private data. It uses the Private-PGM
 mechanism~\cite{mckenna2019graphical} that relies on Probabilistic Graphical
 Models (PGM) to generate synthetic data. PGM models are most commonly used
-when it is important to maintain the pre-existing relationships between
-features and statistical properties in $\mathcal{D}$~\cite{young2009using}.
+when it is important to maintain the pre-existing statistical properties and
+relationships between features~\cite{young2009using}.
+
+The Quail-ified Architecture to Improve Learning (QUAIL) is a DP method that
+produces differentially private data by distributing the privacy budget
+between a DP classifier to attribute the target labels onto $D^s$ and the data
+generator. QUAIL works as a framework that involves the adoption of both a DP
+classifier and generator. Originally, it was experimented using
+DPGAN~\cite{xie2018differentially}, DPCTGAN, MWEM~\cite{hardt2012simple},
+PATE-GAN~\cite{jordon2018pate} and PATE-CTGAN\@.
 
 Anonymizing data using synthetic data generation in the financial
 sector~\cite{assefa2020generating}.
