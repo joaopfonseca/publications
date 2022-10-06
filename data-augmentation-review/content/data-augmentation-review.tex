@@ -500,10 +500,7 @@ similar definitions with variations in terminology or distinction criteria. In
 addition, all taxonomies with categories defined as ``basic'', ``traditional''
 or ``classical'' use these to characterize domain-specific transformations.
 
-
-
-
-Within the taxonomies considered, none of them consider how a generation
+Within the taxonomies found, none of them consider how a generation
 mechanism employs $\mathcal{D}$ into the generation process or, if
 applicable, the training phase. However, it is important to understand whether
 a generation mechanism randomly selects $x$ and a set of close neighbors, thus
@@ -569,16 +566,16 @@ Table~\ref{tbl:generators}.
 
 \begingroup\small
 \begin{longtable}{rcccccccc}
-    \caption{Summary of synthetic data generation mechanisms discussed in this work.}
+    \caption{Summary of the synthetic data generation methods discussed in this work.}
     \label{tbl:generators}\\
     \toprule
-               Algorithm & ML problem & Domain &  Architecture & Level &  Data
+               Algorithm & ML Problem & Type &  Architecture & Level &  Data
                Space & Scope \\
     \midrule
     \endfirsthead
-    \caption[]{Summary of synthetic data generation mechanisms discussed in this work.} \\
+    \caption[]{Summary of the synthetic data generation methods discussed in this work.} \\
     \toprule
-               Algorithm & ML problem & Domain &  Architecture & Level &  Data
+               Algorithm & ML Problem & Type &  Architecture & Level &  Data
                Space & Scope \\
     \midrule
     \endhead
@@ -589,25 +586,27 @@ Table~\ref{tbl:generators}.
     
     \bottomrule
     \endlastfoot
-      SynSys~\cite{dahmen2019synsys} & Reg. & Healthcare & \textbf{[Statistical]}  & External & Input & Global \\
-      CTGAN~\cite{xu2019modeling} & & --- & Net. & External & Feature & Global \\
-      SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & Sensor & Net. + \textbf{[Stat.]} & External & Input & Global\\
-      SDV~\cite{patki2016synthetic} & Anon. & --- & \textbf{[Copula]} & External & Input & Global \\
-      MST~\cite{mckenna2021winning} & DP & --- & \textbf{[Statistical]} & External & Input & Global \\
-      QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & --- \\
-      SuperQUAIL~\cite{rosenblatt2022spending} & DP \\
-      MWEM~\cite{hardt2012simple} & DP \\
-      MWEM-PGM~\cite{mckenna2019graphical} & DP \\
-      PrivBayes~\cite{zhang2017privbayes} & DP\\
-      DPGAN~\cite{xie2018differentially} & DP \\
-      DPCTGAN~\cite{rosenblatt2020differentially} & DP & \\
-      DP-CTGAN~\cite{fang2022dp} & DP & Healthcare \\
-      PATE-GAN~\cite{jordon2018pate} & DP \\
-      PATECTGAN~\cite{rosenblatt2020differentially} & DP \\
-      FEM~\cite{vietri2020new} & DP \\
-      RAP~\cite{aydore2021differentially} & DP \\
-      Kamino~\cite{ge2020kamino} & DP \\
-      RON-GAUSS~\cite{chanyaswad2019ron} & DP \\
+      SynSys~\cite{dahmen2019synsys} & Regression & HMM & Probabilistic & External & Input & Global \\
+      CTGAN~\cite{xu2019modeling} & --- & GAN & Network & External & Feature & Global \\
+      SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & GMM & Net. + Prob. & External & Input & Global \\
+      SDV~\cite{patki2016synthetic} & Anon. & Copula & Probabilistic & External & Input & Global \\
+      MST~\cite{mckenna2021winning} & DP & Marginal & Probabilistic & External & Input & Global \\
+      QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & Global \\
+      SuperQUAIL~\cite{rosenblatt2022spending} & DP & --- & --- & External & --- & Global \\
+      MWEM~\cite{hardt2012simple} & DP & Marginal & Probabilistic & External & Input & Global \\
+      MWEM-PGM~\cite{mckenna2019graphical} & DP & Marginal & Probabilistic & External & Input & Global \\
+      PrivBayes~\cite{zhang2017privbayes} & DP & Marginal & Probabilistic & External & Input & Global \\
+      DPGAN~\cite{xie2018differentially} & DP & GAN & Network & External & Feature & Global \\
+      DPCTGAN~\cite{rosenblatt2020differentially} & DP & GAN &  Network & External & Feature & Global \\
+      PATE-GAN~\cite{jordon2018pate} & DP & GAN & & & Feat. + Out.\\
+      PATECTGAN~\cite{rosenblatt2020differentially} & DP & GAN & & & Feat. + Out.\\
+      FEM~\cite{vietri2020new} & DP & Workload & Probabilistic & External & Input & Global \\
+      RAP~\cite{aydore2021differentially} & DP & Workload \\
+      Kamino~\cite{ge2021kamino} & DP \\
+      PDF~\cite{de2019formal, suciu2011probabilistic} & --- &  & Probabilistic & External & Input & Global \\
+      RON-GAUSS~\cite{chanyaswad2019ron} & DP & Gaussian & Probabilistic & Internal & Feature & Global \\
+      HDMM~\cite{mckenna2018optimizing} & DP &  & Probabilistic & External & Input & Global \\
+      DualQuery~\cite{gaboardi2014dual} & DP &  & Probabilistic & External & Input & Global \\
       SMOTE~\cite{chawla2002smote} & Ovs \\
       SMOTENC~\cite{chawla2002smote} & Ovs \\
       SMOTEN~\cite{chawla2002smote} & Ovs \\
@@ -724,6 +723,29 @@ Table~\ref{tbl:generators}.
 % Discuss Auto-augmentation (as mentioned in~\cite{wang2020survey}) or meta
 % learning (as mentioned in~\cite{shorten2019survey})
 
+\section{Generation mechanisms}
+
+Laplace perturbations (commonly used as a baseline approach for DP
+algorithms). Categorical features use n-way marginals (also known as
+conjunctions or contingency tables~\cite{gaboardi2014dual}) to ensure the generated data contains
+variability in the categorical features and the distribution of categorical
+feature values follows some given constraint.
+
+Distribution approximation (discuss marginal inference)
+
+Copula-based mechanisms
+
+\begin{itemize}
+    \item Gaussian generative model 
+    \item Gaussian mixture model 
+\end{itemize}
+
+Linear interpolation
+
+Geometric interpolation
+
+GANs
+
 
 \section{Algorithmic applications}~\label{sec:algorithmic-applications}
 
@@ -733,7 +755,7 @@ that condition the way generation mechanisms are used.
 
 CTGAN~\cite{xu2019modeling}
 
-\subsection{Dataset Anonymization}~\label{sec:data-privacy}
+\subsection{Privacy}~\label{sec:data-privacy}
 
 % Introduce synthetic data generation
 Synthetic data generation is a technique used to produce synthetic, anonymized
@@ -778,8 +800,8 @@ In this case, $\epsilon$ is a non-negative number defined as the privacy
 budget. A lower $\epsilon$ guarantees a higher level of privacy, but reduces
 the quality of the produced synthetic data. The generation of DP synthetic
 data is especially appealing since DP is not affected by post-processing; any
-ML pipeline may be applied using $\mathcal{D}^s$ without a loss of
-differential privacy.
+ML pipeline may be applied using $\mathcal{D}^s$ without losing differential
+privacy~\cite{dwork2014algorithmic}.
 
 Despite the formalization and the ability to quantify differential privacy,
 there are popular synthetic data-based anonymization approaches that perform
@@ -791,11 +813,63 @@ proposed to generate data using a CTGAN~\cite{xu2019modeling} and to handle
 sequential tabular data using a conditional probabilistic auto-regressive
 neural network~\cite{zhang2022sequential}. 
 
-The MST mechanism~\cite{mckenna2021winning} is a general approach that
-produces differentially private data. It uses the Private-PGM
-mechanism~\cite{mckenna2019graphical} that relies on Probabilistic Graphical
-Models (PGM) to generate synthetic data. PGM models are most commonly used
-when it is important to maintain the pre-existing statistical properties and
+A well-known method for the generation of DP synthetic datasets is the
+combination of the Multiplicative Weights update rule with the Exponential
+Mechanism (MWEM)~\cite{hardt2012simple}. The MWEM mechanism is an active
+learning-style algorithm that maintains an approximation of $\mathcal{D}^s$.
+At each time step, MWEM selects the worst approximated query (determined by a
+scoring function) using the Exponential Mechanism and improves the accuracy of
+the approximating distribution using the Multiplicative Weights update rule.
+A know limitation of this method refers to its scalability. Since this method
+represents the approximate data distribution in datacubes, this method becomes
+infeasible for high-dimensional problems~\cite{mckenna2019graphical}. This
+limitation was addressed with the integration of a Probabilistic Graphical
+Model-based (PGM) estimation into MWEM (MWEM-PGM) and a subroutine to compute
+and optimize the clique marginals of the PGM, along with other existing
+privacy mechanisms~\cite{mckenna2019graphical}. Besides MWEM, this method was
+used to modify and improve the quality of other DP algorithms:
+PrivBayes~\cite{zhang2017privbayes}, HDMM~\cite{mckenna2018optimizing} and
+DualQuery~\cite{gaboardi2014dual}.
+
+PrivBayes~\cite{zhang2017privbayes} circumvents the curse of dimensionality by
+computing a differentially private Bayesian Network (\textit{i.e.}, a type of
+PGM). Instead of injecting noise into the dataset, they inject noise into the
+lower-dimensional marginals. The high-dimensional matrix mechanism
+(HDMM)~\cite{mckenna2018optimizing} mechanism is designed to efficiently
+answer a set of linear queries on high-dimensional data, which are answered
+using the Laplace mechanism. The DualQuery algorithm~\cite{gaboardi2014dual}
+is based on the two-player interactions in MWEM, and follows a similar
+synthetic data generation mechanism as the one found in MWEM\@.
+
+FEM~\cite{vietri2020new} follows a similar data generation approach as MWEM\@.
+It also uses the exponential mechanism and replaces the multiplicative weights
+update rule with the follow-the-perturbed-leader (FTPL)
+algorithm~\cite{kalai2005efficient}. The Relaxed Adaptive Projection (RAP)
+algorithm~\cite{aydore2021differentially} uses the projection
+mechanism~\cite{nikolov2013geometry} to answer queries on the private dataset
+using a perturbation mechanism and attempts to find the synthetic dataset that
+matches the noisy answers as accurately as it can.
+
+Kamino~\cite{ge2021kamino} introduces denial constraints in the data synthesis
+process. Kamino builds on top of the probabilistic database framework
+(PDF)~\cite{de2019formal, suciu2011probabilistic}, which uses ordinary
+databases to model a probability distribution and integrates denial
+constraints as parametric factors, out of which the synthetic observations are
+sampled. RON-GAUSS~\cite{chanyaswad2019ron} combines the random orthonormal
+(RON) dimensionality reduction technique and synthetic data sampling using
+either a Gaussian generative model or a Gaussian mixture model. The motivation
+for this models stems from the \textit{Diaconis-Freedman-Meckes}
+effect~\cite{meckes2012projections}, which states that most high-dimensional
+data projections follow a nearly Gaussian distribution. Since RON-GAUSS
+includes a feature extraction step (using RON) and the synthetic data
+generated is not projected back into the input space, we consider RON-GAUSS an
+internal approach to the ML pipeline.
+
+The MST mechanism~\cite{mckenna2021winning} is a marginal estimation-based
+approach that produces differentially private data. It uses the Private-PGM
+mechanism~\cite{mckenna2019graphical} that relies on the PGM approach to
+generate synthetic data. PGM models are most commonly used when it is
+important to maintain the pre-existing statistical properties and
 relationships between features~\cite{young2009using}.
 
 The Quail-ified Architecture to Improve Learning (QUAIL) is a DP method that
@@ -805,6 +879,28 @@ generator. QUAIL works as a framework that involves the adoption of both a DP
 classifier and generator. Originally, it was experimented using
 DPGAN~\cite{xie2018differentially}, DPCTGAN, MWEM~\cite{hardt2012simple},
 PATE-GAN~\cite{jordon2018pate} and PATE-CTGAN\@.
+SuperQUAIL~\cite{rosenblatt2022spending} is an extension of QUAIL that further
+distributes the privacy budget according to the feature importance determined
+using a DP version of SAGE~\cite{covert2020understanding}. However, this
+method does not ensure statistical parity with real data and assumes the task
+being developed is known \textit{a priori}.
+
+Another family of DP synthetic data generation techniques relies on the usage
+of Generative Adversarial Networks (GAN). DPGAN~\cite{xie2018differentially}
+modifies the original GAN architecture to make it differentially private by
+introducing noise to gradients during the learning procedure. This approach
+was also applied on a conditional GAN architecture directed towards tabular
+data (CTGAN)~\cite{xu2019modeling}, which originated the
+DPCTGAN~\cite{rosenblatt2020differentially}. Another type of GAN-based DP data
+synthesis method is based on the combination of a GAN architecture and the
+Private Aggregation of Teacher Ensembles (PATE)~\cite{papernot2017semi}
+approach. Although the PATE method generates a DP classifier, it served as the
+basis for PATE-GAN~\cite{jordon2018pate}, a DP synthetic data generation
+mechanism. PATE-GAN replaces the discriminator component of a GAN with the
+PATE mechanism, which guarantees DP over the generated data.
+
+
+
 
 Anonymizing data using synthetic data generation in the financial
 sector~\cite{assefa2020generating}.
@@ -820,7 +916,7 @@ Guidelines for effective synthetic data generation~\cite{dankar2021fake}
 
 
 
-\subsection{Regularization in Supervised Learning}~\label{sec:regularization}
+\subsection{Regularization}~\label{sec:regularization}
 
 % Introduce data augmentation
 The performance of Machine Learning models is highly dependent on the quality
@@ -986,6 +1082,14 @@ types, ML problems, model architectures, computational resources, performance
 metrics and contextual constraints. Auto-augmentation and meta learning aim to
 address this challenge and are still subject to active research.
 
+The quality of synthetic data generation in high-dimensional domains appears
+as a prevailing limitation in most applications. This method might be
+addressed with dimensionality reduction techniques along with data generation
+in the feature space. However, research on generation in the feature space is
+greatly focused on GAN architectures, which require significant computational
+power. Other methods for learning manifold space embeddings could be explored
+to address this limitation.
+
 % Synthetic data generation with a real valued y?
 
 % data privacy
@@ -1050,10 +1154,15 @@ performance varies according to the data generation method used.
 % Societal challenges raised by data generation (?)
 % Systematic bias
 
-oversampling does not seem to be a relevant source of bias in behavioral
+Oversampling does not seem to be a relevant source of bias in behavioral
 research and does not appear to have an appreciably different effect on
 results for directly versus indirectly oversampled
-variables~\cite{hauner2014latent}
+variables~\cite{hauner2014latent}. However, most oversampling methods do not
+account for the distribution in $\mathcal{D}$, which is especially important
+for features with sensitive information (\textit{e.g.}, gender or ethnicity).
+Therefore, the application of oversampling methods on user data may further
+increase the bias in classification/discrimination between gender or ethnicity
+groups.
 
 % Maybe discuss adversarial attacks?
 
