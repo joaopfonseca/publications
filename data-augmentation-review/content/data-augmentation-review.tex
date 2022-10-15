@@ -104,7 +104,7 @@
 
 \end{abstract}
 
-\section{Introduction}~\label{sec:introduction}
+\section{Introduction}\label{sec:introduction}
 
 Synthetic data is obtained from a generative process based on properties of
 real data~\cite{assefa2020generating}. The generation of synthetic data is
@@ -343,7 +343,7 @@ discusses limitations and possible research directions in the
 state-of-the-art. Section~\ref{sec:conclusions} presents the main conclusions
 drawn from this study.
 
-\section{Background}~\label{sec:background}
+\section{Background}\label{sec:background}
 
 % Definition
 In this section we define basics concepts, common goals, trade-offs and
@@ -447,7 +447,7 @@ and~\ref{sec:self-supervised-learning}.
 % - Additional computational overhead
 % - Expose the classifier to unfeasible input areas
 
-\subsection{Problem Formulation}~\label{sec:problem-formulation}
+\subsection{Problem Formulation}\label{sec:problem-formulation}
 
 The original dataset, $\mathcal{D} = \mathcal{D}_L \cup \mathcal{D}_U$,
 is a collection of real observations and is distinguished according to whether
@@ -480,7 +480,7 @@ generate a $\mathcal{D}^s$ that maximizes either $f_{per}$, $f_{qual}$, or a
 combination of both.
 
 
-\section{Data Generation Taxonomy}~\label{sec:taxonomy}
+\section{Data Generation Taxonomy}\label{sec:taxonomy}
 
 The taxonomy proposed in this paper is a compilation of different definitions
 found in the literature, along with other traits that vary among domains and
@@ -549,6 +549,10 @@ characterizes data generation mechanisms using four properties:
         dataset (\textit{i.e.}, on the input space), an embedded
         representation of the data (\textit{i.e.}, on the feature space) or
         based on the target feature (\textit{i.e.}, on the output space).
+        Although some studies discuss the need to generate synthetic data on
+        the input space~\cite{dankar2021fake, patki2016synthetic}, there are
+        various studies that apply synthetic data generation techniques on a
+        feature space.
 
 \end{enumerate}
 
@@ -598,22 +602,24 @@ Table~\ref{tbl:generators}.
       PrivBayes~\cite{zhang2017privbayes} & DP & Marginal & Probabilistic & External & Input & Global \\
       DPGAN~\cite{xie2018differentially} & DP & GAN & Network & External & Feature & Global \\
       DPCTGAN~\cite{rosenblatt2020differentially} & DP & GAN &  Network & External & Feature & Global \\
-      PATE-GAN~\cite{jordon2018pate} & DP & GAN & & & Feat. + Out.\\
-      PATECTGAN~\cite{rosenblatt2020differentially} & DP & GAN & & & Feat. + Out.\\
+      PATE-GAN~\cite{jordon2018pate} & DP & GAN & Network & External & Feat. + Out. & Global \\
+      PATECTGAN~\cite{rosenblatt2020differentially} & DP & GAN & Network & External & Feat. + Out. & Global \\
       FEM~\cite{vietri2020new} & DP & Workload & Probabilistic & External & Input & Global \\
-      RAP~\cite{aydore2021differentially} & DP & Workload \\
-      Kamino~\cite{ge2021kamino} & DP \\
+      RAP~\cite{aydore2021differentially} & DP & Workload & Probabilistic & External & Input & Global \\
       PDF~\cite{de2019formal, suciu2011probabilistic} & --- &  & Probabilistic & External & Input & Global \\
+      Kamino~\cite{ge2021kamino} & DP  &  & Probabilistic & External & Input & Global \\
       RON-GAUSS~\cite{chanyaswad2019ron} & DP & Gaussian & Probabilistic & Internal & Feature & Global \\
       HDMM~\cite{mckenna2018optimizing} & DP &  & Probabilistic & External & Input & Global \\
       DualQuery~\cite{gaboardi2014dual} & DP &  & Probabilistic & External & Input & Global \\
-      SMOTE~\cite{chawla2002smote} & Ovs \\
+      ROS(E)~\cite{menardi2014training} & Ovs & Bootstrap & Randomized & External & Input & Local \\ 
+      SMOTE~\cite{chawla2002smote} & Ovs & Linear & Randomized & External & Input & Local \\
       SMOTENC~\cite{chawla2002smote} & Ovs \\
       SMOTEN~\cite{chawla2002smote} & Ovs \\
-      Borderline-SMOTE~\cite{han2005borderline} & Ovs \\
+      Borderline-SMOTE~\cite{han2005borderline} & Ovs & Linear & Randomized & External & Input & Local \\
       G-SMOTE~\cite{douzas2019geometric} & Ovs \\
-      ADASYN~\cite{he2008adasyn} & Ovs \\
-      KernelADASYN~\cite{tang2015kerneladasyn} & Ovs \\
+      ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local\\
+      KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & Gaussian & Probabilistic & External & Input & Local \\
+      MOKAS~\cite{lin2017minority} & Ovs \\
       Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs \\
       LR-SMOTE~\cite{liang2020lr} & Ovs \\
       K-means SMOTE~\cite{douzas2018improving} & Ovs \\
@@ -747,7 +753,7 @@ Geometric interpolation
 GANs
 
 
-\section{Algorithmic applications}~\label{sec:algorithmic-applications}
+\section{Algorithmic applications}\label{sec:algorithmic-applications}
 
 In this section we discuss the data generation mechanisms for the different
 contexts where they are applied. We emphasize the constraints in each problem
@@ -755,7 +761,7 @@ that condition the way generation mechanisms are used.
 
 CTGAN~\cite{xu2019modeling}
 
-\subsection{Privacy}~\label{sec:data-privacy}
+\subsection{Privacy}\label{sec:data-privacy}
 
 % Introduce synthetic data generation
 Synthetic data generation is a technique used to produce synthetic, anonymized
@@ -813,21 +819,25 @@ proposed to generate data using a CTGAN~\cite{xu2019modeling} and to handle
 sequential tabular data using a conditional probabilistic auto-regressive
 neural network~\cite{zhang2022sequential}. 
 
-A well-known method for the generation of DP synthetic datasets is the
-combination of the Multiplicative Weights update rule with the Exponential
-Mechanism (MWEM)~\cite{hardt2012simple}. The MWEM mechanism is an active
-learning-style algorithm that maintains an approximation of $\mathcal{D}^s$.
-At each time step, MWEM selects the worst approximated query (determined by a
-scoring function) using the Exponential Mechanism and improves the accuracy of
-the approximating distribution using the Multiplicative Weights update rule.
-A know limitation of this method refers to its scalability. Since this method
-represents the approximate data distribution in datacubes, this method becomes
-infeasible for high-dimensional problems~\cite{mckenna2019graphical}. This
-limitation was addressed with the integration of a Probabilistic Graphical
-Model-based (PGM) estimation into MWEM (MWEM-PGM) and a subroutine to compute
-and optimize the clique marginals of the PGM, along with other existing
-privacy mechanisms~\cite{mckenna2019graphical}. Besides MWEM, this method was
-used to modify and improve the quality of other DP algorithms:
+The choice of the most appropriate DP synthetic data generation techniques
+depends on the task to be developed (if known) and the domain. However,
+marginal-based algorithms appear to perform well across various
+tests~\cite{tao2021benchmarking}. A well-known method for the generation of DP
+synthetic datasets is the combination of the Multiplicative Weights update
+rule with the Exponential Mechanism (MWEM)~\cite{hardt2012simple}. The MWEM
+mechanism is an active learning-style algorithm that maintains an
+approximation of $\mathcal{D}^s$. At each time step, MWEM selects the worst
+approximated query (determined by a scoring function) using the Exponential
+Mechanism and improves the accuracy of the approximating distribution using
+the Multiplicative Weights update rule. A know limitation of this method
+refers to its scalability. Since this method represents the approximate data
+distribution in datacubes, this method becomes infeasible for high-dimensional
+problems~\cite{mckenna2019graphical}. This limitation was addressed with the
+integration of a Probabilistic Graphical Model-based (PGM) estimation into
+MWEM (MWEM-PGM) and a subroutine to compute and optimize the clique marginals
+of the PGM, along with other existing privacy
+mechanisms~\cite{mckenna2019graphical}. Besides MWEM, this method was used to
+modify and improve the quality of other DP algorithms:
 PrivBayes~\cite{zhang2017privbayes}, HDMM~\cite{mckenna2018optimizing} and
 DualQuery~\cite{gaboardi2014dual}.
 
@@ -858,7 +868,7 @@ constraints as parametric factors, out of which the synthetic observations are
 sampled. RON-GAUSS~\cite{chanyaswad2019ron} combines the random orthonormal
 (RON) dimensionality reduction technique and synthetic data sampling using
 either a Gaussian generative model or a Gaussian mixture model. The motivation
-for this models stems from the \textit{Diaconis-Freedman-Meckes}
+for this model stems from the \textit{Diaconis-Freedman-Meckes}
 effect~\cite{meckes2012projections}, which states that most high-dimensional
 data projections follow a nearly Gaussian distribution. Since RON-GAUSS
 includes a feature extraction step (using RON) and the synthetic data
@@ -897,26 +907,13 @@ Private Aggregation of Teacher Ensembles (PATE)~\cite{papernot2017semi}
 approach. Although the PATE method generates a DP classifier, it served as the
 basis for PATE-GAN~\cite{jordon2018pate}, a DP synthetic data generation
 mechanism. PATE-GAN replaces the discriminator component of a GAN with the
-PATE mechanism, which guarantees DP over the generated data.
+PATE mechanism, which guarantees DP over the generated data. The PATE
+mechanism is used in the learning phase to train an ensemble of classifiers to
+distinguish real from synthetic data. In a second step, the predicted labels
+are passed (with added noise) to another discriminator, which is used to train
+the generator network.
 
-
-
-
-Anonymizing data using synthetic data generation in the financial
-sector~\cite{assefa2020generating}.
-
-
-A benchmark of various differentially private synthetic data generation
-mechanisms~\cite{tao2021benchmarking}.
-
-
-Guidelines for effective synthetic data generation~\cite{dankar2021fake}
-
-
-
-
-
-\subsection{Regularization}~\label{sec:regularization}
+\subsection{Regularization}\label{sec:regularization}
 
 % Introduce data augmentation
 The performance of Machine Learning models is highly dependent on the quality
@@ -995,9 +992,114 @@ an input. Finally, the GMM estimations are used to sample synthetic data.
 Generative adversarial networks in time series 
 
 
-\subsection{Oversampling}~\label{sec:oversampling}
+\subsection{Oversampling}\label{sec:oversampling}
 
-KernelADASYN~\cite{tang2015kerneladasyn}
+One problem frequently found in industry settings is the training of ML models
+on imbalanced datasets. Since most supervised machine learning classifiers are
+designed to expect classes with similar frequencies, with highly skewed
+distributions in $\mathcal{D}_L$, the classifier’s predictions tend to be
+biased towards overrepresented classes~\cite{fonseca2021improving}. For
+example, one can predict correctly with over 99\% accuracy whether credit card
+accounts were defrauded using a constant classifier. This issue can be
+addressed in 3 different ways: resampling, algorithmic modifications and
+cost-sensitive solutions~\cite{douzas2019imbalanced}. Resampling techniques
+are more general approaches when opposed to algorithmic and cost-sensitive
+methods.  They modify $\mathcal{D}_L$ to ensure balanced class frequencies by
+removing majority class observations (\textit{i.e.}, undersampling), producing
+synthetic minority class observations (\textit{i.e.}, oversampling), or a
+combination of both. However, since undersampling removes observations from
+$\mathcal{D}_L$, it has the disadvantage of information
+loss~\cite{feng2019imbalanced} and lacks effectiveness when compared to
+oversampling methods~\cite{mohammed2020machine, hernandez2013empirical}.
+
+Oversampling is an appropriate technique when, given a set of $n$ target
+classes, there is a collection $C_{maj}$ containing the majority class
+observations and $C_{min}$ containing the minority class observations such
+that $\mathcal{D}_L = \bigcup^n_{i=1} C_i$. The training dataset
+$\mathcal{D}_L$ is considered imbalanced if $|C_{maj}| > |C_{min}|$. This
+imbalance is quantified using the Imbalance Ratio (IR), expressed as $IR =
+\frac{|C_{maj}|}{|C_{min}|}$. An oversampling algorithm with a standard
+generation policy will generate a $\mathcal{D}_L^s = \bigcup^n_{i=1} C_i^s$
+that guarantees $|C_i \cup C_i^s| = |C_{maj}|, \forall i \in \{1, \ldots,
+n\}$. The model $f_\theta$ will be trained using an artificially balanced
+dataset $\mathcal{D}_L' = \mathcal{D}_L \cup \mathcal{D}_L^s$.
+
+Random Oversampling (ROS) is considered a classical approach to oversampling.
+It oversamples minority classes by randomly picking samples with replacement.
+It is a bootstrapping approach that, if generated in a smoothed manner
+(\textit{i.e.}, by adding perturbations to the synthetic data), is also
+known as Random Oversampling Examples (ROSE)~\cite{menardi2014training}.
+However, the random duplication of observations often leads to
+overfitting~\cite{krawczyk2016learning}.
+
+The Synthetic Minority Oversampling Technique (SMOTE)~\cite{chawla2002smote}
+attempts to address the data duplication limitation in ROS with a two stage 
+data generation mechanism:
+
+\begin{enumerate}
+
+    \item Selection phase. A minority class observation, $x^c \in C_{min}$,
+        and one of its $k$-nearest neighbors, $x^{nn} \in C_{min}$, are
+        randomly selected.
+
+    \item Generation phase. A synthetic observation, $x^s$, is generated along
+        a line segment between $x^c$ and $x^{nn}$: $x^s = \alpha x^c +
+        (1-\alpha)x^{nn}, \alpha \sim \mathcal{U}(0, 1)$.
+
+\end{enumerate}
+
+Although the SMOTE algorithm addresses the limitations in ROS, it brings other
+problems, which motivated the development of several SMOTE-based
+variants~\cite{douzas2019geometric}: (1) it introduces noise when a noisy
+minority class observations is assigned to $x^c$ or $x^{nn}$, (2) it
+introduces noise when $x^c$ and $x^{nn}$ belong to different minority-class
+clusters, (3) it introduces near duplicate observations when $x^c$ and
+$x^{nn}$ are too close together and (4) it does not account for within-class
+imbalance (\textit{i.e.}, different input space regions should assume a
+different importance according to the concentration of minority class
+observations).
+
+Borderline-SMOTE~\cite{han2005borderline} is a SMOTE-based mechanism that
+modifies the selection mechanism. This method calculates the $k$-nearest
+neighbors for all minority class observations and selects the ones that are
+going to be used as $x^c$ in the generation phase. An observation is selected
+based on the number of neighbors belonging to a different class, where the
+observations with no neighbors belonging to $C_{min}$ and insufficient number
+of neighbors belonging $C_{maj}$ are not considered for the generation phase.
+This approximates the synthetic observations to the border of the expected
+decision boundaries.
+
+The Adaptive Synthetic Sampling approach (ADASYN)~\cite{he2008adasyn} uses a
+comparable approach to Borderline-SMOTE\@. It calculates the ratio of
+non-minority class observations within the $k$-nearest neighbors of each $x
+\in C_{min}$. The amount of observations to be generated using each $x \in
+C_{min}$ as $x^c$ is determined according to this ratio; the more non-minority
+class neighbors an observation contains, the more synthetic observations are
+generated using it as $x^c$. The generation phase is done using the linear
+mechanism in SMOTE\@. However, this approach tends to aggravate the limitation
+(1) previously discussed. A second version of this method,
+KernelADASYN~\cite{tang2015kerneladasyn}, replaces the generation mechanism
+with a weighted kernel density estimation. The weighing is done according to
+ADASYN's ratio and the synthetic data is sampled using the calculated Gaussian
+Kernel function whose bandwidth is passed as an additional hyperparameter.
+
+The Minority Oversampling Kernel Adaptive Subspaces algorithm
+(MOKAS)~\cite{lin2017minority} adopts a different approach when compared to
+SMOTE-based mechanisms. It uses 
+
+G-SMOTE~\cite{douzas2019geometric}
+
+Safe-level SMOTE~\cite{bunkhumpornpat2009safe}
+
+LR-SMOTE~\cite{liang2020lr}
+
+K-means SMOTE~\cite{douzas2018improving}
+
+CGAN~\cite{douzas2018effective}
+
+K-means CTGAN~\cite{an2021k}
+
+Fair SMOTE
 
 The original author of SMOTE recently published the paper ``Efficient Augmentation for Imbalanced Deep
 Learning''~\cite{dablain2022efficient}
@@ -1054,6 +1156,8 @@ $\beta$-Recall and Authenticity) for various application domains.
 
 \subsection{Precision/Recall Metrics}
 
+\subsection{Supervised Learning Metrics}
+
 \section{Discussion}~\label{sec:discussion}
 
 \subsection{Main Findings}
@@ -1092,6 +1196,10 @@ to address this limitation.
 
 % Synthetic data generation with a real valued y?
 
+% Data generation in the feature vs input vs output
+There is not much research concerning the quality and general performance
+between data generation on the input, feature and output space.
+
 % data privacy
 The evaluation of anonymization techniques lack standardized, objective and
 reliable performance metrics and benchmark datasets to allow an easier
@@ -1111,6 +1219,11 @@ datasets and real-world industry applications.
 
 Computational cost and inconsistent quality of synthetic data generated with
 GANs (\textit{e.g.}, mode collapse).
+
+Research on differentially private variational autoencoders is sparse to
+non-existent. The only related study found in the literature was developed
+in~\cite{takahashi2020differentially}. However, it is not peer reviewed or
+particularly popular, which led us to discard this paper from our analysis.
 
 % Regularization in supervised learning
 Unlike with data privacy solutions, data augmentation techniques generally do
@@ -1138,6 +1251,8 @@ data with mixed data types and datasets with exclusively non metric features.
 
 There is a lack of methods adapted to use categorical features for tabular
 data.
+
+There is a lack of methods directed to regression problems.
 
 There is a paucity of research on the usage of probabilistic-based generation
 mechanisms in oversampling.
