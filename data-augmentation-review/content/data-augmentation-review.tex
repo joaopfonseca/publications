@@ -124,6 +124,14 @@ selection and classifier training~\cite{kim2021lada}. Other techniques employ
 data generation to produce deep neural networks without labeled data
 (\textit{i.e.}, self-supervised learning)~\cite{grill2020bootstrap}.
 
+% TODO: Use this as inspiration to further justify the need for this literature
+% review:
+%
+% These methods heavily rely on the unique structure in the domain datasets
+% (such as spatial relationships in images or semantic relationships in
+% language). They are not adaptable to general tabular data which does not
+% have the same explicit structure as image and language data.
+
 The breadth of these techniques span multiple domains, such as facial
 recognition~\cite{lv2017data}, Land Use/Land Cover mapping
 \textbf{[CITATION]}, medical image processing \textbf{[CITATION]}, Natural
@@ -136,9 +144,11 @@ techniques are applied on the input or output space.
 
 However, there are various data generation techniques that are invariant to
 the task or data types used. These techniques can be either applied in the
-feature space~\cite{devries2017dataset} or in tabular datasets. On the one
-hand, data generation in the feature space uses a generative model to learn a
-manifold, lower-dimensional abstraction over the input
+feature space~\cite{devries2017dataset} or in tabular
+datasets\footnote{Tabular data is a database structured in tabular form,
+composed of columns (features) and rows (observations)~\cite{yoon2020vime}}.
+On one hand, data generation in the feature space uses a generative model to
+learn a manifold, lower-dimensional abstraction over the input
 space~\cite{kingma2019introduction}, defined here as the feature space. At
 this level, any tabular data generation mechanism can be applied and
 reconstructed into the input space if necessary. On the other hand, synthetic
@@ -174,11 +184,11 @@ literature are discussed in Section~\ref{sec:evaluating-synthetic-data}.
 % TODO: Define scope
 % - Exclude domain-specific traditional applications
 % - Exclude Generation techniques with an internal application level
-% - Preference for methods published in 2019 or later, or seminal
-%   non-traditional methods
+% - Preference for methods published in 2019 or later, 
+%   non-traditional methods, or unique/uncommon approaches
 % - 
 
-This literatrue review focuses on generation mechanisms applied to tabular
+This literature review focuses on generation mechanisms applied to tabular
 data and the different ML techniques where tabular synthetic data is used. In
 addition, we focus on the ML perspective of synthetic data, as opposed to the
 practical perspective. From a practical sense, synthetic data is used as a
@@ -226,7 +236,7 @@ analysis of related literature reviews~\footnote{%
     \caption{\label{tab:literature-reviews}
         Related literature reviews published since 2019.
     }
-    \small{
+    \small{%
     \begin{tabularx}{\textwidth}{@{}rcccX@{}}
         \toprule
         Reference & Data type & ML problem & Domain & Observations \\
@@ -616,17 +626,24 @@ Table~\ref{tbl:generators}.
       SMOTENC~\cite{chawla2002smote} & Ovs \\
       SMOTEN~\cite{chawla2002smote} & Ovs \\
       Borderline-SMOTE~\cite{han2005borderline} & Ovs & Linear & Randomized & External & Input & Local \\
-      G-SMOTE~\cite{douzas2019geometric} & Ovs \\
-      ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local\\
+      G-SMOTE~\cite{douzas2019geometric} & Ovs & Geometric & Randomized & External & Input & Local \\
+      ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local \\
       KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & Gaussian & Probabilistic & External & Input & Local \\
-      MOKAS~\cite{lin2017minority} & Ovs \\
-      Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs \\
-      LR-SMOTE~\cite{liang2020lr} & Ovs \\
-      K-means SMOTE~\cite{douzas2018improving} & Ovs \\
-      CGAN~\cite{douzas2018effective} & Ovs \\
-      K-means CTGAN~\cite{an2021k} & Ovs \\
-      G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
+      MOKAS~\cite{lin2017minority} & Ovs & Rec. Err. & Network & External & Feature & Global \\
+      SOMO~\cite{douzas2017self} & Ovs & Linear & Net.+Rand. & External & Input & Global \\
+      G-SOMO~\cite{douzas2021g} & Ovs & Geometric & Net.+Rand. & External & Input & Global \\
+      Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs & Linear & Randomized & External & Input & Local \\
+      LR-SMOTE~\cite{liang2020lr} & Ovs & Linear & Randomized & External & Input & Global \\
+      K-means SMOTE~\cite{douzas2018improving} & Ovs & Linear & Randomized & External & Input & Global\\
+      DBSMOTE~\cite{bunkhumpornpat2012dbsmote} & Ovs & Linear & Randomized & External & Input & Local\\
+      CGAN~\cite{douzas2018effective} & Ovs & GAN & Network & External & Feature & Global \\
+      K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Feature & Global \\
       SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
+      G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
+      AE-DA~\cite{feng2020autuencoder} & DA & AE & Network \\
+      Masking~\cite{yoon2020vime} & DA & Mask & Randomized \\
+      MixUp~\cite{zhang2017mixup} & DA \\
+      MODALS~\cite{cheung2020modals} & DA \\
 \end{longtable}
 \endgroup
 
@@ -744,13 +761,26 @@ Copula-based mechanisms
 \begin{itemize}
     \item Gaussian generative model 
     \item Gaussian mixture model 
+    \item Kernel Density Estimation
 \end{itemize}
 
-Linear interpolation
+Linear transformations
 
-Geometric interpolation
+\begin{itemize}
+    \item Linear interpolation
+    \item Linear extrapolation
+    \item Both
+\end{itemize}
+
+Geometric transformations
+
+Difference transform~\cite{cheung2020modals}
 
 GANs
+
+Autoencoders
+
+Reconstruction error-based
 
 
 \section{Algorithmic applications}\label{sec:algorithmic-applications}
@@ -943,8 +973,8 @@ categories~\cite{santos2022avoiding}:
     \item Algorithmic level modifications. Modifies the classifier's
         architecture, loss function or other components in the training
         procedure.
-    \item Input level modifications. Modifies the training dataset by expanding it
-        with synthetic data.
+    \item Input level modifications. Modifies the training dataset by
+        expanding it with synthetic data.
 \end{enumerate}
 
 The last approach, input level modifications, is known as data augmentation.
@@ -1004,7 +1034,7 @@ accounts were defrauded using a constant classifier. This issue can be
 addressed in 3 different ways: resampling, algorithmic modifications and
 cost-sensitive solutions~\cite{douzas2019imbalanced}. Resampling techniques
 are more general approaches when opposed to algorithmic and cost-sensitive
-methods.  They modify $\mathcal{D}_L$ to ensure balanced class frequencies by
+methods. They modify $\mathcal{D}_L$ to ensure balanced class frequencies by
 removing majority class observations (\textit{i.e.}, undersampling), producing
 synthetic minority class observations (\textit{i.e.}, oversampling), or a
 combination of both. However, since undersampling removes observations from
@@ -1059,15 +1089,22 @@ imbalance (\textit{i.e.}, different input space regions should assume a
 different importance according to the concentration of minority class
 observations).
 
-Borderline-SMOTE~\cite{han2005borderline} is a SMOTE-based mechanism that
-modifies the selection mechanism. This method calculates the $k$-nearest
-neighbors for all minority class observations and selects the ones that are
-going to be used as $x^c$ in the generation phase. An observation is selected
-based on the number of neighbors belonging to a different class, where the
-observations with no neighbors belonging to $C_{min}$ and insufficient number
-of neighbors belonging $C_{maj}$ are not considered for the generation phase.
-This approximates the synthetic observations to the border of the expected
-decision boundaries.
+Borderline-SMOTE~\cite{han2005borderline} modifies SMOTE's selection
+mechanism. It calculates the $k$-nearest neighbors for all minority class
+observations and selects the ones that are going to be used as $x^c$ in the
+generation phase. An observation is selected based on the number of neighbors
+belonging to a different class, where the observations with no neighbors
+belonging to $C_{min}$ and insufficient number of neighbors belonging
+$C_{maj}$ are not considered for the generation phase. This approximates the
+synthetic observations to the border of the expected decision boundaries.
+Various other methods were proposed since then to modify selection mechanism,
+such as K-means SMOTE~\cite{douzas2018improving}. This approach addresses
+within-class imbalance and the generation of noisy synthetic data by
+generating data within clusters. The data generation is done according to each
+cluster's imbalance ratio and dispersion of minority class observations.
+DBSMOTE~\cite{bunkhumpornpat2012dbsmote} also modifies the selection strategy
+by selecting as $x^c$ the set of core observations in a DBSCAN clustering
+solution.
 
 The Adaptive Synthetic Sampling approach (ADASYN)~\cite{he2008adasyn} uses a
 comparable approach to Borderline-SMOTE\@. It calculates the ratio of
@@ -1083,26 +1120,54 @@ with a weighted kernel density estimation. The weighing is done according to
 ADASYN's ratio and the synthetic data is sampled using the calculated Gaussian
 Kernel function whose bandwidth is passed as an additional hyperparameter.
 
+Modifications to SMOTE's generation mechanism are less common and generally
+attempt to address problem of noisy synthetic data generation. Safe-level
+SMOTE~\cite{bunkhumpornpat2009safe} truncates the line segment between $x^c$
+and $x^{nn}$ according to a safe level ratio. Geometric-SMOTE
+(G-SMOTE)~\cite{douzas2019geometric} it generates synthetic data within a
+deformed and truncated hypersphere to also avoid the generation of
+near-duplicate synthetic data. It also introduces a modification of the
+selection strategy to combine the selection of majority class observations as
+$x^{nn}$ to avoid the introduction of noisy synthetic data. 
+
+LR-SMOTE~\cite{liang2020lr} modifies both the selection and generation
+mechanisms. The set of observations to use as $x^c$ contains the misclassified
+minority class observations using a SVM classifier, out of which the
+potentially noisy observations are removed. The k-means clustering method is
+used to find the closest observations to the cluster centroids, which are used
+as $x^c$. The observations with a higher number of majority class neighbors
+are more likely to be selected as $x^{nn}$. Although the generation mechanism
+synthesizes observations as a linear combination between $x^c$ and $x^{nn}$,
+it restricts or expands this range by setting $\alpha \sim \mathcal{U}(0, M)$,
+where $M$ is a ratio between the average euclidean distance of each cluster's
+minority class observations to $x^c$ and the euclidean distance between $x^c$
+and $x^{nn}$.
+
 The Minority Oversampling Kernel Adaptive Subspaces algorithm
 (MOKAS)~\cite{lin2017minority} adopts a different approach when compared to
-SMOTE-based mechanisms. It uses 
+SMOTE-based mechanisms. It uses the adaptive subspace self-organizing map
+(ASSOM)~\cite{kohonen1996emergence} algorithm to learn sub-spaces
+(\textit{i.e.}, different feature spaces for each unit in the SOM), out of
+which synthetic data is generated. The synthetic data is generated using a
+lower dimensional representation of the input data to ensure the reconstructed
+data is different from the original observations. Overall, the usage of SOMs
+for oversampling is uncommon. Another two examples of this approach,
+SOMO~\cite{douzas2017self} and G-SOMO~\cite{douzas2021g} use a similar
+approach as K-means SMOTE\@. In the case of G-SOMO, instead of using SMOTE's
+generation mechanism, it uses G-SMOTE's instead.
 
-G-SMOTE~\cite{douzas2019geometric}
-
-Safe-level SMOTE~\cite{bunkhumpornpat2009safe}
-
-LR-SMOTE~\cite{liang2020lr}
-
-K-means SMOTE~\cite{douzas2018improving}
-
-CGAN~\cite{douzas2018effective}
-
-K-means CTGAN~\cite{an2021k}
-
-Fair SMOTE
-
-The original author of SMOTE recently published the paper ``Efficient Augmentation for Imbalanced Deep
-Learning''~\cite{dablain2022efficient}
+Another set of network-based methods that fully replace SMOTE-based mechanisms
+are GAN-based architectures. One example of this approach is
+CGAN~\cite{douzas2018effective}. It uses an adversarial training approach to
+generate data that approximates the original data distribution and
+indistinguishable from the original dataset (according to the adversarial
+classifier). A more recent GAN-based oversampler, K-means CTGAN~\cite{an2021k}
+uses a K-means clustering method as an additional attribute to train the
+CTGAN\@. In this case, cluster labels allow the reduction of within-class
+imbalance. These types of approaches benefit from learning the overall
+per-class distribution, instead of using local information only. However, GANs
+reqtuire more computational power to train, their performance is sensitive to
+the initialization and are prone to the ``mode collapse'' problem.
 
 \subsection{Active Learning}~\label{sec:active-learning}
 
@@ -1126,6 +1191,8 @@ data regarding the COVID-19 pandemic~\cite{das2022conditional}.
 Extensive literature review on semi-supervised learning~\cite{van2020survey}
 
 \subsection{Self-supervised Learning}~\label{sec:self-supervised-learning}
+
+Masking~\cite{yoon2020vime}
 
 \section{Evaluating the Quality of Synthetic Data
 }~\label{sec:evaluating-synthetic-data}
@@ -1177,6 +1244,13 @@ data applications~\cite{bayer2021survey} and image data \textbf{[CITATION]}.
 
 Research across the different applications appears to be sandboxed even though
 all techniques integrate synthetic data in its core.
+
+It is generally understood that, if learned properly, the feature space is
+expected to be convex and isotropic. In that case, using linear generation
+techniques in the feature space would produce synthetic data without
+introducing noise~\cite{cheung2020modals}. However, it is unclear which types
+of model/architectures and training procedures contribute to the learning of a
+good feature space according to the context.
 
 Given the breadth and complexity of input-level and feature-level data
 generation mechanisms, it is increasingly important to find a method to
@@ -1279,7 +1353,7 @@ Therefore, the application of oversampling methods on user data may further
 increase the bias in classification/discrimination between gender or ethnicity
 groups.
 
-% Maybe discuss adversarial attacks?
+% Maybe discuss adversarial attacks and re-identification attacks?
 
 \subsection{Research directions}
 
