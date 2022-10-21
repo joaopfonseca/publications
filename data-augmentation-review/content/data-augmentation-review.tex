@@ -131,6 +131,13 @@ data generation to produce deep neural networks without labeled data
 % (such as spatial relationships in images or semantic relationships in
 % language). They are not adaptable to general tabular data which does not
 % have the same explicit structure as image and language data.
+%
+%
+% Own authorship:
+%
+% Data generation techniques in tabular data settings are not as explored as
+% in image or text formats, depite its popularity and
+% ubiquity~\cite{fakoor2020fast}.
 
 The breadth of these techniques span multiple domains, such as facial
 recognition~\cite{lv2017data}, Land Use/Land Cover mapping
@@ -600,50 +607,59 @@ Table~\ref{tbl:generators}.
     
     \bottomrule
     \endlastfoot
-      SynSys~\cite{dahmen2019synsys} & Regression & HMM & Probabilistic & External & Input & Global \\
-      CTGAN~\cite{xu2019modeling} & --- & GAN & Network & External & Feature & Global \\
-      SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & GMM & Net. + Prob. & External & Input & Global \\
-      SDV~\cite{patki2016synthetic} & Anon. & Copula & Probabilistic & External & Input & Global \\
-      MST~\cite{mckenna2021winning} & DP & Marginal & Probabilistic & External & Input & Global \\
-      QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & Global \\
-      SuperQUAIL~\cite{rosenblatt2022spending} & DP & --- & --- & External & --- & Global \\
-      MWEM~\cite{hardt2012simple} & DP & Marginal & Probabilistic & External & Input & Global \\
-      MWEM-PGM~\cite{mckenna2019graphical} & DP & Marginal & Probabilistic & External & Input & Global \\
-      PrivBayes~\cite{zhang2017privbayes} & DP & Marginal & Probabilistic & External & Input & Global \\
-      DPGAN~\cite{xie2018differentially} & DP & GAN & Network & External & Feature & Global \\
-      DPCTGAN~\cite{rosenblatt2020differentially} & DP & GAN &  Network & External & Feature & Global \\
-      PATE-GAN~\cite{jordon2018pate} & DP & GAN & Network & External & Feat. + Out. & Global \\
-      PATECTGAN~\cite{rosenblatt2020differentially} & DP & GAN & Network & External & Feat. + Out. & Global \\
-      FEM~\cite{vietri2020new} & DP & Workload & Probabilistic & External & Input & Global \\
-      RAP~\cite{aydore2021differentially} & DP & Workload & Probabilistic & External & Input & Global \\
-      PDF~\cite{de2019formal, suciu2011probabilistic} & --- &  & Probabilistic & External & Input & Global \\
-      Kamino~\cite{ge2021kamino} & DP  &  & Probabilistic & External & Input & Global \\
-      RON-GAUSS~\cite{chanyaswad2019ron} & DP & Gaussian & Probabilistic & Internal & Feature & Global \\
-      HDMM~\cite{mckenna2018optimizing} & DP &  & Probabilistic & External & Input & Global \\
-      DualQuery~\cite{gaboardi2014dual} & DP &  & Probabilistic & External & Input & Global \\
-      ROS(E)~\cite{menardi2014training} & Ovs & Bootstrap & Randomized & External & Input & Local \\ 
-      SMOTE~\cite{chawla2002smote} & Ovs & Linear & Randomized & External & Input & Local \\
-      SMOTENC~\cite{chawla2002smote} & Ovs \\
-      SMOTEN~\cite{chawla2002smote} & Ovs \\
-      Borderline-SMOTE~\cite{han2005borderline} & Ovs & Linear & Randomized & External & Input & Local \\
-      G-SMOTE~\cite{douzas2019geometric} & Ovs & Geometric & Randomized & External & Input & Local \\
-      ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local \\
-      KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & Gaussian & Probabilistic & External & Input & Local \\
-      MOKAS~\cite{lin2017minority} & Ovs & Rec. Err. & Network & External & Feature & Global \\
-      SOMO~\cite{douzas2017self} & Ovs & Linear & Net.+Rand. & External & Input & Global \\
-      G-SOMO~\cite{douzas2021g} & Ovs & Geometric & Net.+Rand. & External & Input & Global \\
-      Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs & Linear & Randomized & External & Input & Local \\
-      LR-SMOTE~\cite{liang2020lr} & Ovs & Linear & Randomized & External & Input & Global \\
-      K-means SMOTE~\cite{douzas2018improving} & Ovs & Linear & Randomized & External & Input & Global\\
-      DBSMOTE~\cite{bunkhumpornpat2012dbsmote} & Ovs & Linear & Randomized & External & Input & Local\\
-      CGAN~\cite{douzas2018effective} & Ovs & GAN & Network & External & Feature & Global \\
-      K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Feature & Global \\
-      SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
-      G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
-      AE-DA~\cite{feng2020autuencoder} & DA & AE & Network \\
-      Masking~\cite{yoon2020vime} & DA & Mask & Randomized \\
-      MixUp~\cite{zhang2017mixup} & DA \\
-      MODALS~\cite{cheung2020modals} & DA \\
+    SynSys~\cite{dahmen2019synsys} & Regression & HMM & Probabilistic & External & Input & Global \\
+    CTGAN~\cite{xu2019modeling} & --- & GAN & Network & External & Feature & Global \\
+    SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & GMM & Net. + Prob. & External & Input & Global \\
+    SDV~\cite{patki2016synthetic} & Anon. & Copula & Probabilistic & External & Input & Global \\
+    MST~\cite{mckenna2021winning} & DP & \hl{Marginal} & Probabilistic & External & Input & Global \\
+    QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & Global \\
+    SuperQUAIL~\cite{rosenblatt2022spending} & DP & --- & --- & External & --- & Global \\
+    MWEM~\cite{hardt2012simple} & DP & \hl{Marginal} & Probabilistic & External & Input & Global \\
+    MWEM-PGM~\cite{mckenna2019graphical} & DP & \hl{PGM} & Probabilistic & External & Input & Global \\
+    PrivBayes~\cite{zhang2017privbayes} & DP & \hl{PGM} & Probabilistic & External & Input & Global \\
+    DPGAN~\cite{xie2018differentially} & DP & GAN & Network & External & Feature & Global \\
+    DPCTGAN~\cite{rosenblatt2020differentially} & DP & GAN &  Network & External & Feature & Global \\
+    PATE-GAN~\cite{jordon2018pate} & DP & GAN & Network & External & Feat. + Out. & Global \\
+    PATECTGAN~\cite{rosenblatt2020differentially} & DP & GAN & Network & External & Feat. + Out. & Global \\
+    FEM~\cite{vietri2020new} & DP & Workload & Probabilistic & External & Input & Global \\
+    RAP~\cite{aydore2021differentially} & DP & Workload & Probabilistic & External & Input & Global \\
+    PDF~\cite{de2019formal, suciu2011probabilistic} & --- &  & Probabilistic & External & Input & Global \\
+    Kamino~\cite{ge2021kamino} & DP  &  & Probabilistic & External & Input & Global \\
+    RON-GAUSS~\cite{chanyaswad2019ron} & DP & Gaussian & Probabilistic & Internal & Feature & Global \\
+    HDMM~\cite{mckenna2018optimizing} & DP &  & Probabilistic & External & Input & Global \\
+    DualQuery~\cite{gaboardi2014dual} & DP &  & Probabilistic & External & Input & Global \\
+    ROS(E)~\cite{menardi2014training} & Ovs & Bootstrap & Randomized & External & Input & Local \\ 
+    SMOTE~\cite{chawla2002smote} & Ovs & Linear & Randomized & External & Input & Local \\
+    SMOTENC~\cite{chawla2002smote} & Ovs \\
+    SMOTEN~\cite{chawla2002smote} & Ovs \\
+    Borderline-SMOTE~\cite{han2005borderline} & Ovs & Linear & Randomized & External & Input & Local \\
+    G-SMOTE~\cite{douzas2019geometric} & Ovs & Geometric & Randomized & External & Input & Local \\
+    ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local \\
+    KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & Gaussian & Probabilistic & External & Input & Local \\
+    MOKAS~\cite{lin2017minority} & Ovs & Rec. Err. & Network & External & Feature & Global \\
+    SOMO~\cite{douzas2017self} & Ovs & Linear & Net.+Rand. & External & Input & Global \\
+    G-SOMO~\cite{douzas2021g} & Ovs & Geometric & Net.+Rand. & External & Input & Global \\
+    Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs & Linear & Randomized & External & Input & Local \\
+    LR-SMOTE~\cite{liang2020lr} & Ovs & Linear & Randomized & External & Input & Global \\
+    K-means SMOTE~\cite{douzas2018improving} & Ovs & Linear & Randomized & External & Input & Global\\
+    DBSMOTE~\cite{bunkhumpornpat2012dbsmote} & Ovs & Linear & Randomized & External & Input & Local\\
+    CGAN~\cite{douzas2018effective} & Ovs & GAN & Network & External & Feature & Global \\
+    K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Feature & Global \\
+    SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
+    G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
+    AE-DA~\cite{feng2020autuencoder} & DA & AE & Network \\
+    Masking~\cite{yoon2020vime} & DA & Mask & Randomized \\
+    MixUp~\cite{zhang2018mixup} & DA & Linear & & & In./Feat.+Out.\\
+    NL-MixUp~\cite{guo2020nonlinear} & DA & Geometric \\
+    MODALS~\cite{cheung2020modals} & DA \\
+    FAST-DAD~\cite{fakoor2020fast} & DA & MCMC & & Internal \\
+    GANBLR~\cite{zhang2021ganblr} & & PGM\\
+    Table-GAN~\cite{park2018data} \\
+    MedGAN~\cite{armanious2020medgan} \\
+    Under-AE~\cite{delgado2021deep} \\
+    Sparse-AE~\cite{delgado2021deep} \\
+    Deep-AE~\cite{delgado2021deep} \\
+    Var-AE~\cite{delgado2021deep} \\
 \end{longtable}
 \endgroup
 
@@ -757,15 +773,20 @@ feature values follows some given constraint.
 Distribution approximation (discuss marginal inference)
 
 Copula-based mechanisms
-
 \begin{itemize}
     \item Gaussian generative model 
     \item Gaussian mixture model 
     \item Kernel Density Estimation
 \end{itemize}
 
-Linear transformations
+Probabilistic graphical models
+\begin{itemize}
+    \item Hidden Markov model
+    \item Bayesian network
+\end{itemize}
 
+
+Linear transformations
 \begin{itemize}
     \item Linear interpolation
     \item Linear extrapolation
@@ -773,8 +794,17 @@ Linear transformations
 \end{itemize}
 
 Geometric transformations
+\begin{itemize}
+    \item Hypersphere (G-SMOTE)
+    \item Rectangle (NLMixup)
+\end{itemize}
 
 Difference transform~\cite{cheung2020modals}
+
+Markov Chain Monte Carlo
+\begin{itemize}
+    \item Gibbs sampling
+\end{itemize}
 
 GANs
 
@@ -946,25 +976,23 @@ the generator network.
 \subsection{Regularization}\label{sec:regularization}
 
 % Introduce data augmentation
-The performance of Machine Learning models is highly dependent on the quality
-of the training dataset used~\cite{Fenza2021, Halevy2009}. The presence of
-imbalanced and/or small datasets, target labels incorrectly assigned, outliers
-and high dimensional input spaces reduce the prospects of a successful machine
-learning (ML) model implementation~\cite{Halevy2009, Domingos2012,
-Salman2019}. In the case of deep learning, for example, these
-models are often limited by a natural inclination to overfitting, label noise
-memorization and catastrophic forgetting~\cite{Xie2021}. Regularization
-methods are the typical approach to address these problems, but producing
-robust ML solutions is still a challenge~\cite{Zhang2021}.
+The performance of ML models depends on the quality and size of the training
+dataset~\cite{Fenza2021, Halevy2009}. The presence of imbalanced and/or small
+datasets, target labels incorrectly assigned, outliers and high dimensional
+input spaces reduce the prospects of a successful machine learning (ML) model
+implementation~\cite{Halevy2009, Domingos2012, Salman2019}. In the case of
+deep learning, for example, it is often limited by a natural
+inclination to overfitting, label noise memorization and catastrophic
+forgetting~\cite{Xie2021}. Regularization techniques are often used to address
+these problems.
 
-It is frequently assumed that the training data is sampled from a fixed data
-source, it is balanced and does not contain label noise. Under these
-conditions, the resulting ML classifier is expected to achieve good
-generalization performance~\cite{benning2018modern}. Although, in practical
-applications, this is rarely the case. When the training data is not
-representative of the true population, or the model is over-parametrized, it
-becomes particularly prone to overfitting~\cite{Bartlett2021}. Regularization
-methods attempt to address these limitations. They can be divided into three
+When the training data is sampled from a fixed data source, it is balanced and
+does not contain label noise, the resulting ML classifier is expected to
+achieve good generalization performance~\cite{benning2018modern}. However,
+when the training data is not representative of the true population, or the
+model is over-parametrized, it becomes particularly prone to
+overfitting~\cite{Bartlett2021}. Regularization methods attempt to address
+these limitations. They can be divided into three
 categories~\cite{santos2022avoiding}:
 
 \begin{enumerate}
@@ -981,7 +1009,9 @@ The last approach, input level modifications, is known as data augmentation.
 Data augmentation is used to increase the size and data variability of data in
 a training dataset, by producing synthetic observations~\cite{Van2001,
 Wong2016}. Since it is applied at the data level, it can be used for various
-types of problems and classifiers~\cite{Behpour2019}. 
+types of problems and classifiers~\cite{Behpour2019}. Although data
+augmentation is commonly used and extensively studied in computer vision and
+natural language processing, research on 
 
 Problems such as fraud detection and healthcare are frequently tackled via
 synthetic data generation~\cite{ekbatani2017synthetic}.
@@ -1021,6 +1051,10 @@ an input. Finally, the GMM estimations are used to sample synthetic data.
 
 Generative adversarial networks in time series 
 
+
+Some of the methods previously discussed can also be used for time-series. For
+example, \citet{cheung2020modals} show improved performance with time-series
+data using MixUp and MODALS
 
 \subsection{Oversampling}\label{sec:oversampling}
 
@@ -1166,7 +1200,7 @@ uses a K-means clustering method as an additional attribute to train the
 CTGAN\@. In this case, cluster labels allow the reduction of within-class
 imbalance. These types of approaches benefit from learning the overall
 per-class distribution, instead of using local information only. However, GANs
-reqtuire more computational power to train, their performance is sensitive to
+require more computational power to train, their performance is sensitive to
 the initialization and are prone to the ``mode collapse'' problem.
 
 \subsection{Active Learning}~\label{sec:active-learning}
@@ -1193,6 +1227,8 @@ Extensive literature review on semi-supervised learning~\cite{van2020survey}
 \subsection{Self-supervised Learning}~\label{sec:self-supervised-learning}
 
 Masking~\cite{yoon2020vime}
+
+SubTab~\cite{ucar2021subtab}
 
 \section{Evaluating the Quality of Synthetic Data
 }~\label{sec:evaluating-synthetic-data}
@@ -1268,6 +1304,14 @@ greatly focused on GAN architectures, which require significant computational
 power. Other methods for learning manifold space embeddings could be explored
 to address this limitation.
 
+To the best of our knowledge, research on data augmentation using auto-encoder
+architectures is sparse. There is, however, a few studies performing data
+augmentation in different domains using tabular data~\cite{delgado2021deep}.
+More commonly, autoencoders are used to learn a manifold features space for
+more complex data types. As long as the method used to generate the feature
+space is appropriate, the methods discussed in this study can be used in the
+feature space regardless of the type of data.
+
 % Synthetic data generation with a real valued y?
 
 % Data generation in the feature vs input vs output
@@ -1314,6 +1358,13 @@ In addition, it is still unclear \textit{why} data augmentation works.
 Research on this topic lacks depth and fails to address the theoretical
 underpinnings~\cite{feng2021survey}.
 
+In some domains, a common approach for data augmentation is the combination of
+several data augmentation methods to increase the diversification of synthetic
+data. This is true for both text classification~\cite{bayer2021survey} and
+image classification \textbf{[CITATION]}.  However, for tabular data, no
+similar approach was found.
+
+
 ``Dao et al. (2019) note that ``data augmentation is typically performed in an
 ad-hoc manner with little understanding of the underlying theoretical
 principles'', and claim the typical explanation of DA as regularization to be
@@ -1354,6 +1405,16 @@ increase the bias in classification/discrimination between gender or ethnicity
 groups.
 
 % Maybe discuss adversarial attacks and re-identification attacks?
+
+% Accessibility of research to practitioners
+
+% Taken from \citet{bayer2021survey}
+% 
+% Most data augmentation methods are still research-based in their incremental
+% development progress and therefore not suitable for every practitioner. A
+% simple way to improve the usability is to publish code and, in the
+% best-case, develop libraries that can be used out of the box for augmenting
+% a text dataset. 
 
 \subsection{Research directions}
 
