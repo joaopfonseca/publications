@@ -647,19 +647,21 @@ Table~\ref{tbl:generators}.
     K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Feature & Global \\
     SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
     G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
-    AE-DA~\cite{feng2020autuencoder} & DA & AE & Network \\
-    Masking~\cite{yoon2020vime} & DA & Mask & Randomized \\
     MixUp~\cite{zhang2018mixup} & DA & Linear & & & In./Feat.+Out.\\
     NL-MixUp~\cite{guo2020nonlinear} & DA & Geometric \\
-    MODALS~\cite{cheung2020modals} & DA \\
+    AE-DA~\cite{feng2020autuencoder} & DA & AE & Network & External & In./Feat.+Out. & Local \\
+    MODALS~\cite{cheung2020modals} & DA & \\
+    LSI~\cite{liu2018data} & DA & AE & Network & External & Feat.+Out. & Global \\
+    M-MixUp~\cite{verma2019manifold} & DA & AE & Network & External & Feat.+Out. & Global \\
     FAST-DAD~\cite{fakoor2020fast} & DA & MCMC & & Internal \\
-    GANBLR~\cite{zhang2021ganblr} & & PGM\\
-    Table-GAN~\cite{park2018data} \\
+    GANBLR~\cite{zhang2021ganblr} & & \hl{PGM}\\
+    Table-GAN~\cite{park2018data} & & \\
     MedGAN~\cite{armanious2020medgan} \\
     Under-AE~\cite{delgado2021deep} \\
     Sparse-AE~\cite{delgado2021deep} \\
     Deep-AE~\cite{delgado2021deep} \\
     Var-AE~\cite{delgado2021deep} \\
+    Masking~\cite{yoon2020vime} & Self-SL & Mask & Randomized \\
 \end{longtable}
 \endgroup
 
@@ -772,6 +774,8 @@ feature values follows some given constraint.
 
 Distribution approximation (discuss marginal inference)
 
+Expectation Maximization algorithm (deterministic)
+
 Copula-based mechanisms
 \begin{itemize}
     \item Gaussian generative model 
@@ -789,6 +793,10 @@ Probabilistic graphical models
 Linear transformations
 \begin{itemize}
     \item Linear interpolation
+        \begin{itemize}
+            \item Inter-class interpolation (MixUp)
+            \item Inner-class interpolation (SMOTE)
+        \end{itemize}
     \item Linear extrapolation
     \item Both
 \end{itemize}
@@ -811,6 +819,8 @@ GANs
 Autoencoders
 
 Reconstruction error-based
+
+Random erasing (?)
 
 
 \section{Algorithmic applications}\label{sec:algorithmic-applications}
@@ -975,25 +985,15 @@ the generator network.
 
 \subsection{Regularization}\label{sec:regularization}
 
-% Introduce data augmentation
-The performance of ML models depends on the quality and size of the training
-dataset~\cite{Fenza2021, Halevy2009}. The presence of imbalanced and/or small
-datasets, target labels incorrectly assigned, outliers and high dimensional
-input spaces reduce the prospects of a successful machine learning (ML) model
-implementation~\cite{Halevy2009, Domingos2012, Salman2019}. In the case of
-deep learning, for example, it is often limited by a natural
-inclination to overfitting, label noise memorization and catastrophic
-forgetting~\cite{Xie2021}. Regularization techniques are often used to address
-these problems.
-
-When the training data is sampled from a fixed data source, it is balanced and
-does not contain label noise, the resulting ML classifier is expected to
-achieve good generalization performance~\cite{benning2018modern}. However,
-when the training data is not representative of the true population, or the
-model is over-parametrized, it becomes particularly prone to
-overfitting~\cite{Bartlett2021}. Regularization methods attempt to address
-these limitations. They can be divided into three
-categories~\cite{santos2022avoiding}:
+When there are no underlying problems in the training data, it is sampled from
+a fixed data source, is labeled, and balanced, the resulting ML classifier is
+expected to achieve good generalization performance~\cite{benning2018modern}.
+However, if one or more of these assumptions does not hold, the ML model
+becomes prone to overfitting~\cite{Bartlett2021}.  Regularization techniques
+are often used to address problems like overfitting, small training dataset,
+high dimensionality, outliers, label noise and catastrophic
+forgetting~\cite{Halevy2009, Domingos2012, Salman2019, Xie2021}.  They can be
+divided into three groups~\cite{santos2022avoiding}:
 
 \begin{enumerate}
     \item Output level modifications. Transforms the labels in the training
@@ -1006,27 +1006,54 @@ categories~\cite{santos2022avoiding}:
 \end{enumerate}
 
 The last approach, input level modifications, is known as data augmentation.
-Data augmentation is used to increase the size and data variability of data in
-a training dataset, by producing synthetic observations~\cite{Van2001,
-Wong2016}. Since it is applied at the data level, it can be used for various
-types of problems and classifiers~\cite{Behpour2019}. Although data
-augmentation is commonly used and extensively studied in computer vision and
-natural language processing, research on 
+It is used to increase the size and data variability of data in a training
+dataset, by producing synthetic observations~\cite{Van2001, Wong2016}. Since
+it is applied at the data level, it can be used for various types of problems
+and classifiers~\cite{Behpour2019}.  Earlier definitions of data augmentation
+refer to methods based on iterative optimization or sampling algorithms that
+introduce unobserved data or latent variables~\cite{van2001art}. In the
+current ML literature, data augmentation techniques mostly refer to the
+former, while the latter is better known as feature extraction. Although data
+augmentation is commonly used and extensively studied in computer
+vision~\cite{shorten2019survey} and natural language
+processing~\cite{feng2021survey}, research on tabular data augmentation is
+sparse.
 
-Problems such as fraud detection and healthcare are frequently tackled via
-synthetic data generation~\cite{ekbatani2017synthetic}.
+\citet{feng2020autuencoder} proposed an autoencoder-based data augmentation (AE-DA)
+approach where the training of the autoencoder is done for each target class,
+non-iteratively, which reduces the amount of time required compared to the
+batch processing approach. The decoding weights of an autoencoder is 
+scaled and linearly combined with an observation from another class using a
+coefficient that follows the beta distribution. The latter step varies from
+typical interpolation-based approaches, since this coefficient is usually
+drawn from a uniform distribution.
 
-``Su et al. [78] show that 70.97\% of images can be misclassified by changing
-just one pixel'' \citet{shorten2019survey}
+The Modality-Agnostic Automated Data Augmentation in the Latent Space model
+(MODALS)~\cite{cheung2020modals} leverages on the concept discussed
+by~\citet{devries2017dataset}, as well as the Latent Space Interpolation
+method (LSI)~\cite{liu2018data} and Manifold Mixup~\cite{verma2019manifold}.
+However, MODALS introduces a framework for data augmentation internally. It
+contains a feature extraction step, trained using a combination of adversarial
+loss, classification loss and triplet loss, where latent space generation
+mechanisms are applied. The classifier is trained using the original and the
+synthetic observations generated in the feature space.
 
-``Moreover, the current research about so called adversarial attacks on CNNs
-showed that deep neural networks can be easily fooled into misclassification
-of images just by partial rotations and image translation [1], adding the
-noise to images [5] and even changing one, skillfully selected pixel in the
-image [6].'' \citet{mikolajczyk2018data}
 
-Data augmentation can also be used to improve a model's robustness against
-adversarial attacks. 
+
+% Problems such as fraud detection and healthcare are frequently tackled via
+% synthetic data generation~\cite{ekbatani2017synthetic}.
+% 
+% ``Su et al. [78] show that 70.97\% of images can be misclassified by changing
+% just one pixel'' \citet{shorten2019survey}
+% 
+% ``Moreover, the current research about so called adversarial attacks on CNNs
+% showed that deep neural networks can be easily fooled into misclassification
+% of images just by partial rotations and image translation [1], adding the
+% noise to images [5] and even changing one, skillfully selected pixel in the
+% image [6].'' \citet{mikolajczyk2018data}
+% 
+% Data augmentation can also be used to improve a model's robustness against
+% adversarial attacks. 
 
 % NOTE: Using an ensemble of views of the same observation to the same
 % classifier and checking the different predictions has surely been explored
@@ -1075,6 +1102,7 @@ combination of both. However, since undersampling removes observations from
 $\mathcal{D}_L$, it has the disadvantage of information
 loss~\cite{feng2019imbalanced} and lacks effectiveness when compared to
 oversampling methods~\cite{mohammed2020machine, hernandez2013empirical}.
+Oversampling can be considered a specific setting of data augmentation.
 
 Oversampling is an appropriate technique when, given a set of $n$ target
 classes, there is a collection $C_{maj}$ containing the majority class
@@ -1311,6 +1339,9 @@ More commonly, autoencoders are used to learn a manifold features space for
 more complex data types. As long as the method used to generate the feature
 space is appropriate, the methods discussed in this study can be used in the
 feature space regardless of the type of data.
+
+It remains an open question which feature space transformations, or types of
+transformations, create better synthetic data~\cite{cheung2020modals}.
 
 % Synthetic data generation with a real valued y?
 
