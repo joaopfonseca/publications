@@ -387,7 +387,7 @@ datasets, especially when it concerns personal
 information~\cite{dankar2021fake}. A common solution for this problem is the
 generation of synthetic data without identifiable information. Generally
 speaking, ML tasks that require data with sensitive information are not
-compromised when using synthetic data.  The experiment conducted by
+compromised when using synthetic data. The experiment conducted by
 \citet{patki2016synthetic} using relational datasets showed that in 11 out 15
 comparisons ($\approx 73\%$), practitioners performing predictive modelling
 tasks using fully synthetic datasets performed the same or better than those
@@ -512,7 +512,7 @@ Decomposition. With exception to generative models, the majority of the
 methods presented in the remaining families are well established and domain
 specific. \citet{hernandez2022synthetic} defines a taxonomy for synthetic
 tabular data generation approaches divided in three types of approaches: (1)
-Classical, (2) Deep learning and (3) Others.  Most taxonomies found followed
+Classical, (2) Deep learning and (3) Others. Most taxonomies found followed
 similar definitions with variations in terminology or distinction criteria. In
 addition, all taxonomies with categories defined as ``basic'', ``traditional''
 or ``classical'' use these to characterize domain-specific transformations.
@@ -608,9 +608,8 @@ Table~\ref{tbl:generators}.
     \bottomrule
     \endlastfoot
     SynSys~\cite{dahmen2019synsys} & Regression & HMM & Probabilistic & External & Input & Global \\
-    CTGAN~\cite{xu2019modeling} & --- & GAN & Network & External & Feature & Global \\
     SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & GMM & Net. + Prob. & External & Input & Global \\
-    SDV~\cite{patki2016synthetic} & Anon. & Copula & Probabilistic & External & Input & Global \\
+    SDV~\cite{patki2016synthetic} & Anon. & \textbf{Copula} & Probabilistic & External & Input & Global \\
     MST~\cite{mckenna2021winning} & DP & \hl{Marginal} & Probabilistic & External & Input & Global \\
     QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & Global \\
     SuperQUAIL~\cite{rosenblatt2022spending} & DP & --- & --- & External & --- & Global \\
@@ -625,7 +624,7 @@ Table~\ref{tbl:generators}.
     RAP~\cite{aydore2021differentially} & DP & Workload & Probabilistic & External & Input & Global \\
     PDF~\cite{de2019formal, suciu2011probabilistic} & --- &  & Probabilistic & External & Input & Global \\
     Kamino~\cite{ge2021kamino} & DP  &  & Probabilistic & External & Input & Global \\
-    RON-GAUSS~\cite{chanyaswad2019ron} & DP & Gaussian & Probabilistic & Internal & Feature & Global \\
+    RON-GAUSS~\cite{chanyaswad2019ron} & DP & \textbf{Gaussian} & Probabilistic & Internal & Feature & Global \\
     HDMM~\cite{mckenna2018optimizing} & DP &  & Probabilistic & External & Input & Global \\
     DualQuery~\cite{gaboardi2014dual} & DP &  & Probabilistic & External & Input & Global \\
     ROS(E)~\cite{menardi2014training} & Ovs & Bootstrap & Randomized & External & Input & Local \\ 
@@ -635,7 +634,7 @@ Table~\ref{tbl:generators}.
     Borderline-SMOTE~\cite{han2005borderline} & Ovs & Linear & Randomized & External & Input & Local \\
     G-SMOTE~\cite{douzas2019geometric} & Ovs & Geometric & Randomized & External & Input & Local \\
     ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local \\
-    KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & Gaussian & Probabilistic & External & Input & Local \\
+    KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & \textbf{Gaussian} & Probabilistic & External & Input & Local \\
     MOKAS~\cite{lin2017minority} & Ovs & Rec. Err. & Network & External & Feature & Global \\
     SOMO~\cite{douzas2017self} & Ovs & Linear & Net.+Rand. & External & Input & Global \\
     G-SOMO~\cite{douzas2021g} & Ovs & Geometric & Net.+Rand. & External & Input & Global \\
@@ -647,20 +646,23 @@ Table~\ref{tbl:generators}.
     K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Feature & Global \\
     SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
     G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
+    RACOG~\cite{das2014racog} & Ovs & PGM & Probabilistic & External & Input & Global \\
+    wRACOG~\cite{das2014racog} & Ovs & PGM & Probabilistic & External & Input & Global \\
+    RWO~\cite{zhang2014rwo} & Ovs & RW & Probabilistic & External & Input & Global \\
+    PDFOS~\cite{gao2014pdfos} & Ovs & \textbf{PDF} & Probabilistic & External & Input & Global \\
     MixUp~\cite{zhang2018mixup} & DA & Linear & & & In./Feat.+Out.\\
     NL-MixUp~\cite{guo2020nonlinear} & DA & Geometric \\
     AE-DA~\cite{feng2020autuencoder} & DA & AE & Network & External & In./Feat.+Out. & Local \\
-    MODALS~\cite{cheung2020modals} & DA & \\
+    MODALS~\cite{cheung2020modals} & DA & --- & Network & Internal & Feat. & Global \\
     LSI~\cite{liu2018data} & DA & AE & Network & External & Feat.+Out. & Global \\
     M-MixUp~\cite{verma2019manifold} & DA & AE & Network & External & Feat.+Out. & Global \\
-    FAST-DAD~\cite{fakoor2020fast} & DA & MCMC & & Internal \\
-    GANBLR~\cite{zhang2021ganblr} & & \hl{PGM}\\
-    Table-GAN~\cite{park2018data} & & \\
-    MedGAN~\cite{armanious2020medgan} \\
-    Under-AE~\cite{delgado2021deep} \\
-    Sparse-AE~\cite{delgado2021deep} \\
-    Deep-AE~\cite{delgado2021deep} \\
-    Var-AE~\cite{delgado2021deep} \\
+    Gibbs~\cite{fakoor2020fast} & DA & \hl{PGM} & Probabilistic & External & Input & Global \\
+    MedGAN~\cite{armanious2020medgan} & DA & GAN & Network & External & Feature & Global \\
+    GANBLR~\cite{zhang2021ganblr} & DA & \hl{PGM} & Probabilistic & External & Input & Global \\
+    Table-GAN~\cite{park2018data} & DA & GAN & Network & External & Feature & Global \\
+    CTGAN~\cite{xu2019modeling} & DA & GAN & Network & External & Feature & Global \\
+    TVAE~\cite{xu2019modeling} & DA & AE & Network & External & Feature & Global \\
+    AE~\cite{delgado2021deep} & DA & AE & Network & External & Feature & Global \\
     Masking~\cite{yoon2020vime} & Self-SL & Mask & Randomized \\
 \end{longtable}
 \endgroup
@@ -781,14 +783,18 @@ Copula-based mechanisms
     \item Gaussian generative model 
     \item Gaussian mixture model 
     \item Kernel Density Estimation
+    \item Probability density function estimation
 \end{itemize}
 
 Probabilistic graphical models
 \begin{itemize}
     \item Hidden Markov model
+    \item MCMC
     \item Bayesian network
+    \item Gibbs sampling
 \end{itemize}
 
+Random walk
 
 Linear transformations
 \begin{itemize}
@@ -809,11 +815,6 @@ Geometric transformations
 
 Difference transform~\cite{cheung2020modals}
 
-Markov Chain Monte Carlo
-\begin{itemize}
-    \item Gibbs sampling
-\end{itemize}
-
 GANs
 
 Autoencoders
@@ -828,8 +829,6 @@ Random erasing (?)
 In this section we discuss the data generation mechanisms for the different
 contexts where they are applied. We emphasize the constraints in each problem
 that condition the way generation mechanisms are used.
-
-CTGAN~\cite{xu2019modeling}
 
 \subsection{Privacy}\label{sec:data-privacy}
 
@@ -989,10 +988,10 @@ When there are no underlying problems in the training data, it is sampled from
 a fixed data source, is labeled, and balanced, the resulting ML classifier is
 expected to achieve good generalization performance~\cite{benning2018modern}.
 However, if one or more of these assumptions does not hold, the ML model
-becomes prone to overfitting~\cite{Bartlett2021}.  Regularization techniques
+becomes prone to overfitting~\cite{Bartlett2021}. Regularization techniques
 are often used to address problems like overfitting, small training dataset,
 high dimensionality, outliers, label noise and catastrophic
-forgetting~\cite{Halevy2009, Domingos2012, Salman2019, Xie2021}.  They can be
+forgetting~\cite{Halevy2009, Domingos2012, Salman2019, Xie2021}. They can be
 divided into three groups~\cite{santos2022avoiding}:
 
 \begin{enumerate}
@@ -1009,7 +1008,7 @@ The last approach, input level modifications, is known as data augmentation.
 It is used to increase the size and data variability of data in a training
 dataset, by producing synthetic observations~\cite{Van2001, Wong2016}. Since
 it is applied at the data level, it can be used for various types of problems
-and classifiers~\cite{Behpour2019}.  Earlier definitions of data augmentation
+and classifiers~\cite{Behpour2019}. Earlier definitions of data augmentation
 refer to methods based on iterative optimization or sampling algorithms that
 introduce unobserved data or latent variables~\cite{van2001art}. In the
 current ML literature, data augmentation techniques mostly refer to the
@@ -1019,10 +1018,10 @@ vision~\cite{shorten2019survey} and natural language
 processing~\cite{feng2021survey}, research on tabular data augmentation is
 sparse.
 
-\citet{feng2020autuencoder} proposed an autoencoder-based data augmentation (AE-DA)
-approach where the training of the autoencoder is done for each target class,
-non-iteratively, which reduces the amount of time required compared to the
-batch processing approach. The decoding weights of an autoencoder is 
+\citet{feng2020autuencoder} proposed an autoencoder-based data augmentation
+(AE-DA) approach where the training of the autoencoder is done for each target
+class, non-iteratively, which reduces the amount of time required compared to
+the batch processing approach. The decoding weights of an autoencoder is
 scaled and linearly combined with an observation from another class using a
 coefficient that follows the beta distribution. The latter step varies from
 typical interpolation-based approaches, since this coefficient is usually
@@ -1038,28 +1037,50 @@ loss, classification loss and triplet loss, where latent space generation
 mechanisms are applied. The classifier is trained using the original and the
 synthetic observations generated in the feature space.
 
+In the model distillation approach proposed in~\cite{fakoor2020fast} the
+student model is trained with synthetic data generated with Gibbs sampling.
+Although Gibbs sampling is infrequently used in recent literature, two
+oversampling methods using Gibbs sampling appear to achieve state-of-the-art
+performance~\cite{das2014racog}. However, probabilistic-based approaches for
+data augmentation are uncommon; there are some methods proposed for the more
+specific case of oversampling, but no more related methods for data
+augmentation were found.
 
+A well-known approach to GAN-based data augmentation is
+Table-GAN~\cite{park2018data}. It utilizes the vanilla GAN approach to the
+generation of synthetic data. However, vanilla GAN does not allow the
+controlled generation of synthetic data given conditional attributes such as
+the target feature values in supervised learning tasks and may be the cause
+for aggravated categorical feature imbalance. These limitations were addressed
+with the CTGAN~\cite{xu2019modeling} algorithm, which implements the
+conditional GAN approach to tabular data. Another GAN-based architecture,
+MedGAN~\cite{armanious2020medgan}, can also be adapted for tabular data and is
+used as a benchmark in related studies (\textit{e.g.},~\cite{xu2019modeling,
+zhang2021ganblr}). When compared to the remaining GAN-based approaches,
+MedGAN's architecture is more complex and is generally outperformed in the
+experiments reported in the literature. The GANBLR~\cite{zhang2021ganblr}
+modifies vanilla GAN architectures with a Bayesian network as both generator
+and discriminator to create synthetic data that is expected to be
+indistinguishable from real data. This approach benefits from its
+interpretability and reduced complexity, while maintaining state-of-the-art
+performance across various evaluation criteria.
 
-% Problems such as fraud detection and healthcare are frequently tackled via
-% synthetic data generation~\cite{ekbatani2017synthetic}.
-% 
-% ``Su et al. [78] show that 70.97\% of images can be misclassified by changing
-% just one pixel'' \citet{shorten2019survey}
-% 
-% ``Moreover, the current research about so called adversarial attacks on CNNs
-% showed that deep neural networks can be easily fooled into misclassification
-% of images just by partial rotations and image translation [1], adding the
-% noise to images [5] and even changing one, skillfully selected pixel in the
-% image [6].'' \citet{mikolajczyk2018data}
-% 
-% Data augmentation can also be used to improve a model's robustness against
-% adversarial attacks. 
+Another less popular approach for network-based synthetic data generation are
+autoencoder architectures. TVAE, proposed in~\cite{xu2019modeling} achieved
+state-of-the art performance.  It consists of the VAE algorithm with an
+architecture modified for tabular data (\textit{i.e.}, 1-dimensional).
+However, as discussed by the authors, this method contains limitations since
+it is difficult to achieve DP with AE-based models since they access the
+original data during the training procedure, unlike GANs.
+\citet{delgado2021deep} studies the impact of data augmentation on supervised
+learning with small datasets. The authors compare four different AE
+architectures: Undercomplete, Sparse, Deep and Variational AE\@. Although any
+of the tested AE architectures improved classification performance, the deep
+and variational autoencoders were the best overall performing models.
 
-% NOTE: Using an ensemble of views of the same observation to the same
-% classifier and checking the different predictions has surely been explored
-% (?) 
-% i.e., augmentation at inference time, instead of training
+Mixup~\cite{zhang2018mixup}
 
+\textbf{Automated Data Augmentation} --- See MODALS paper.
 
 \subsection{Time Series}
 % TODO: 
@@ -1231,6 +1252,11 @@ per-class distribution, instead of using local information only. However, GANs
 require more computational power to train, their performance is sensitive to
 the initialization and are prone to the ``mode collapse'' problem.
 
+Statistical-based oversampling approaches are less common. Some methods, such
+as RACOG and wRACOG~\cite{das2014racog} are based on Gibbs sampling,
+PDFOS~\cite{gao2014pdfos} is based on probability density function
+estimations and RWO~\cite{zhang2014rwo} uses a random walk algorithm.
+
 \subsection{Active Learning}~\label{sec:active-learning}
 
 \subsection{Few-shot Learning}~\label{sec:few-shot-learning}
@@ -1282,6 +1308,13 @@ synthetic data~\cite{alaa2022faithful}:
 The 3-dimensional metric proposed by~\citet{alaa2022faithful} quantifies these
 aspects via the combination of three metrics ($\alpha$-Precision,
 $\beta$-Recall and Authenticity) for various application domains.
+
+The vast majority of synthetic data generation models are evaluated on a ML
+utility basis. However, the GANBLR model~\cite{zhang2021ganblr} was evaluated
+based on three aspects: (1) ML utility, (2) Statistical similarity, and (3)
+Interpretability. In \citet{xu2019modeling}, the authors evaluate the proposed
+method using a likelihood fitness metric (to measure statistical similarity)
+and ML efficacy (\textit{i.e.}, utility).
 
 \subsection{Statistical Divergence Metrics} 
 
