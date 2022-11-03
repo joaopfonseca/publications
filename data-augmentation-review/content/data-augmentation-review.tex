@@ -193,7 +193,12 @@ literature are discussed in Section~\ref{sec:evaluating-synthetic-data}.
 % - Exclude Generation techniques with an internal application level
 % - Preference for methods published in 2019 or later, 
 %   non-traditional methods, or unique/uncommon approaches
-% - 
+% - To avoid redundancy, this is a non-comprehensive analysis of algorithms
+%   and problems using synthetic data. Instead, we show the most important
+%   methods using each of the data generation mechanisms found. For example,
+%   there are several oversampling algorithms available, but most of those
+%   excluded from this analysis use a linear (SMOTE-based) generation
+%   mechanism.
 
 This literature review focuses on generation mechanisms applied to tabular
 data and the different ML techniques where tabular synthetic data is used. In
@@ -650,12 +655,12 @@ Table~\ref{tbl:generators}.
     wRACOG~\cite{das2014racog} & Ovs & PGM & Probabilistic & External & Input & Global \\
     RWO~\cite{zhang2014rwo} & Ovs & RW & Probabilistic & External & Input & Global \\
     PDFOS~\cite{gao2014pdfos} & Ovs & \textbf{PDF} & Probabilistic & External & Input & Global \\
-    MixUp~\cite{zhang2018mixup} & DA & Linear & & & In./Feat.+Out.\\
-    NL-MixUp~\cite{guo2020nonlinear} & DA & Geometric \\
+    MixUp~\cite{zhang2018mixup} & DA & Linear & Randomized & External & In.+Out. & Local \\
+    M-MixUp~\cite{verma2019manifold} & DA & --- & Network & Internal & Feat.+Out. & Global \\
+    NL-MixUp~\cite{guo2020nonlinear} & DA & Geometric & Randomized & External & In.+Out. & Local \\
     AE-DA~\cite{feng2020autuencoder} & DA & AE & Network & External & In./Feat.+Out. & Local \\
     MODALS~\cite{cheung2020modals} & DA & --- & Network & Internal & Feat. & Global \\
     LSI~\cite{liu2018data} & DA & AE & Network & External & Feat.+Out. & Global \\
-    M-MixUp~\cite{verma2019manifold} & DA & AE & Network & External & Feat.+Out. & Global \\
     Gibbs~\cite{fakoor2020fast} & DA & \hl{PGM} & Probabilistic & External & Input & Global \\
     MedGAN~\cite{armanious2020medgan} & DA & GAN & Network & External & Feature & Global \\
     GANBLR~\cite{zhang2021ganblr} & DA & \hl{PGM} & Probabilistic & External & Input & Global \\
@@ -663,6 +668,9 @@ Table~\ref{tbl:generators}.
     CTGAN~\cite{xu2019modeling} & DA & GAN & Network & External & Feature & Global \\
     TVAE~\cite{xu2019modeling} & DA & AE & Network & External & Feature & Global \\
     AE~\cite{delgado2021deep} & DA & AE & Network & External & Feature & Global \\
+    InfoMixup~\cite{kim2021lada} & AL \\
+    VAEACGAN~\cite{tran2019bayesian} & AL & VAE & Network & Internal \\
+    AL-G-SMOTE~\cite{fonseca2021increasing} & AL \\
     Masking~\cite{yoon2020vime} & Self-SL & Mask & Randomized \\
 \end{longtable}
 \endgroup
@@ -1018,6 +1026,20 @@ vision~\cite{shorten2019survey} and natural language
 processing~\cite{feng2021survey}, research on tabular data augmentation is
 sparse.
 
+Mixup~\cite{zhang2018mixup} consists of a linear interpolation between two
+randomly selected observations and their target feature values, $(x_i, y_i),
+(x_j, y_j) \in \mathcal{D}_L$, such that given $\alpha \sim \mathcal{U}(0,1)$,
+$x^s = \alpha x_i + (1-\alpha) x_j$ and $y^s = \alpha y_i + (1-\alpha) y_j$.
+This method was the source to Manifold Mixup
+(M-Mixup)~\cite{verma2019manifold}. It generates synthetic data in the feature
+spaces of a neural network classifier's hidden layers. Another Mixup-based
+data augmentation approach, Nonlinear Mixup
+(NL-Mixup)~\cite{guo2020nonlinear}, applies a nonlinear interpolation policy.
+In this case, $A$ is a set of mixing policies sampled from a beta distribution
+applied to each feature. This approach modifies the original mixup approach to
+generate data within a hyperrectangle/orthotope: $x^s = A \odot x_i + (1-A)
+\odot x_j$, where $\odot$ denotes the Hadamard product.
+
 \citet{feng2020autuencoder} proposed an autoencoder-based data augmentation
 (AE-DA) approach where the training of the autoencoder is done for each target
 class, non-iteratively, which reduces the amount of time required compared to
@@ -1030,7 +1052,7 @@ drawn from a uniform distribution.
 The Modality-Agnostic Automated Data Augmentation in the Latent Space model
 (MODALS)~\cite{cheung2020modals} leverages on the concept discussed
 by~\citet{devries2017dataset}, as well as the Latent Space Interpolation
-method (LSI)~\cite{liu2018data} and Manifold Mixup~\cite{verma2019manifold}.
+method (LSI)~\cite{liu2018data} and M-Mixup~\cite{verma2019manifold}.
 However, MODALS introduces a framework for data augmentation internally. It
 contains a feature extraction step, trained using a combination of adversarial
 loss, classification loss and triplet loss, where latent space generation
@@ -1078,31 +1100,7 @@ architectures: Undercomplete, Sparse, Deep and Variational AE\@. Although any
 of the tested AE architectures improved classification performance, the deep
 and variational autoencoders were the best overall performing models.
 
-Mixup~\cite{zhang2018mixup}
-
 \textbf{Automated Data Augmentation} --- See MODALS paper.
-
-\subsection{Time Series}
-% TODO: 
-% - Table with literature review references 
-
-% A general description of time series data
-
-Synsys~\cite{dahmen2019synsys} approaches time-series using both Hidden Markov
-and regression models. They show the method's effectiveness in the Healthcare
-domain with limited ground truth data by comparing it to models trained using
-only real data. A related model, Sensegen~\cite{alzantot2017sensegen}, uses an
-adversarial training approach to train an LSTM that predicts the parameters
-of Gaussian Mixture Models (GMM) at each time stamp, using real data as
-an input. Finally, the GMM estimations are used to sample synthetic data. 
-
-
-Generative adversarial networks in time series 
-
-
-Some of the methods previously discussed can also be used for time-series. For
-example, \citet{cheung2020modals} show improved performance with time-series
-data using MixUp and MODALS
 
 \subsection{Oversampling}\label{sec:oversampling}
 
@@ -1257,7 +1255,74 @@ as RACOG and wRACOG~\cite{das2014racog} are based on Gibbs sampling,
 PDFOS~\cite{gao2014pdfos} is based on probability density function
 estimations and RWO~\cite{zhang2014rwo} uses a random walk algorithm.
 
-\subsection{Active Learning}~\label{sec:active-learning}
+\subsection{Time-Series}
+% TODO: 
+% - Table with literature review references 
+
+% A general description of time series data
+
+Synsys~\cite{dahmen2019synsys} approaches time-series using both Hidden Markov
+and regression models. They show the method's effectiveness in the Healthcare
+domain with limited ground truth data by comparing it to models trained using
+only real data. A related model, Sensegen~\cite{alzantot2017sensegen}, uses an
+adversarial training approach to train an LSTM that predicts the parameters
+of Gaussian Mixture Models (GMM) at each time stamp, using real data as
+an input. Finally, the GMM estimations are used to sample synthetic data. 
+
+
+Generative adversarial networks in time series 
+
+
+Some of the methods previously discussed can also be used for time-series. For
+example, \citet{cheung2020modals} show improved performance with time-series
+data using MixUp and MODALS
+
+
+\subsection{Active Learning}\label{sec:active-learning}
+
+AL is an informed approach to data collection and labeling. In classification
+problems, when $|\mathcal{D}_U| \gg |\mathcal{D}_L|$ and it is possible to
+label data according to a given budget, AL methods will search for the most
+informative unlabeled observations. Once labeled and included into the
+training set, these observations are expected to improve the performance of
+the classifier to a greater extent when compared to randomly selecting
+observations. AL is an iterative process where, at each iteration, an
+acquisition function $f_{acq}(x, f_\theta): \mathcal{D}_U \to \mathbb{R}$
+computes a classification uncertainty score for each unlabeled observation.
+$f_{acq}$ provides the selection criteria based on the uncertainty scores,
+$f_\theta$ and the labeling budget~\cite{kim2021lada}.
+
+One way to improve an AL process is via the generation of synthetic data. In
+this case, synthetic data is expected to improve classification with a better
+definition of the classifier's decision boundaries. This allows the allocation
+of the data collection budget over a larger area of the input space. However,
+research focused on this topic is both recent and limited \textbf{[CITATION]}.
+These methods can be divided into AL with pipelined data augmentation
+approaches and AL with within-acquisition data augmentation. Pipelined data
+augmentation is the more intuitive approach, where at each training phase data
+augmentation is done to improve the quality of the classifier and is
+independent from $f_{acq}$. In \citet{fonseca2021increasing}, the pipelined
+approach in tabular data achieves a superior performance compared to the
+traditional AL framework using the G-SMOTE algorithm and the oversampling
+generation policy. Other methods, although developed and tested on image data,
+could also be adapted for tabular data: in the Bayesian Generative Active Deep
+Learning framework~\cite{tran2019bayesian} the authors propose VAEACGAN, which
+uses a VAE architecture along with an auxiliary-classifier generative
+adversarial network (ACGAN)~\cite{odena2017conditional} to generate synthetic
+data.
+
+The Look-Ahead Data Acquisition via augmentation algorithm~\cite{kim2021lada}
+proposes an acquisition function that considers the classification uncertainty
+of synthetic data generated using a given unlabeled observation, instead of
+only estimating classification uncertainty of the unlabeled observation
+itself. This approach considers both the utility of the augmented data and the
+utility of the unlabeled observation. This goal is achieved with the data
+augmentation method InfoMixup, which uses M-Mixup~\cite{verma2019manifold}
+along with the distillation of the generated synthetic data using $f_{acq}$.
+The authors additionally propose InfoSTN, although the original Spatial
+Transform Networks (STN)~\cite{jaderberg2015spatial} were originally designed
+for image data augmentation.
+
 
 \subsection{Few-shot Learning}~\label{sec:few-shot-learning}
 
@@ -1467,6 +1532,12 @@ for features with sensitive information (\textit{e.g.}, gender or ethnicity).
 Therefore, the application of oversampling methods on user data may further
 increase the bias in classification/discrimination between gender or ethnicity
 groups.
+
+Although common in synthetic data generation applications for image data,
+there is a lack of studies on the potential of ensembles of generation
+mechanisms on tabular data, \textit{i.e.}, understanding how selecting with
+different probabilities different generation mechanisms to generate synthetic
+data would affect the performance of the primary ML task.
 
 % Maybe discuss adversarial attacks and re-identification attacks?
 
