@@ -384,7 +384,7 @@ original data, while following the same statistical properties
 relationships among features into the generative process.
 
 
-\subsection{Use Cases}
+\subsection{Relevant Learning Problems}
 
 %% Anonymize datasets (differential privacy)
 The breach of sensitive information is an important barrier to the sharing of
@@ -655,9 +655,9 @@ Table~\ref{tbl:generators}.
     wRACOG~\cite{das2014racog} & Ovs & PGM & Probabilistic & External & Input & Global \\
     RWO~\cite{zhang2014rwo} & Ovs & RW & Probabilistic & External & Input & Global \\
     PDFOS~\cite{gao2014pdfos} & Ovs & \textbf{PDF} & Probabilistic & External & Input & Global \\
-    MixUp~\cite{zhang2018mixup} & DA & Linear & Randomized & External & In.+Out. & Local \\
-    M-MixUp~\cite{verma2019manifold} & DA & --- & Network & Internal & Feat.+Out. & Global \\
-    NL-MixUp~\cite{guo2020nonlinear} & DA & Geometric & Randomized & External & In.+Out. & Local \\
+    Mixup~\cite{zhang2018mixup} & DA & Linear & Randomized & External & In.+Out. & Local \\
+    M-Mixup~\cite{verma2019manifold} & DA & --- & Network & Internal & Feat.+Out. & Global \\
+    NL-Mixup~\cite{guo2020nonlinear} & DA & Geometric & Randomized & External & In.+Out. & Local \\
     AE-DA~\cite{feng2020autuencoder} & DA & AE & Network & External & In./Feat.+Out. & Local \\
     MODALS~\cite{cheung2020modals} & DA & --- & Network & Internal & Feat. & Global \\
     LSI~\cite{liu2018data} & DA & AE & Network & External & Feat.+Out. & Global \\
@@ -669,9 +669,17 @@ Table~\ref{tbl:generators}.
     TVAE~\cite{xu2019modeling} & DA & AE & Network & External & Feature & Global \\
     AE~\cite{delgado2021deep} & DA & AE & Network & External & Feature & Global \\
     InfoMixup~\cite{kim2021lada} & AL \\
-    VAEACGAN~\cite{tran2019bayesian} & AL & VAE & Network & Internal \\
+    VAEACGAN~\cite{tran2019bayesian} & AL & AE & Network & Internal \\
     AL-G-SMOTE~\cite{fonseca2021increasing} & AL \\
-    Masking~\cite{yoon2020vime} & Self-SL & Mask & Randomized \\
+    DAE~\cite{rasmus2015semi} & Semi-SL & AE & Network & Internal & Input & Global \\ 
+    $\Pi$-model~\cite{samuli2017temporal} & Semi-SL & Gaussian & Randomized & Internal & In.+Feat. & Local \\
+    Mean Teacher~\cite{tarvainen2017mean} & Semi-SL & Gaussian & Randomized & Internal & In.+Feat. & Local \\
+    ICT~\cite{verma2022interpolation} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
+    Mixmatch~\cite{berthelot2019mixmatch} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
+    SDAT~\cite{fang2022semi} & Semi-SL & AE+Gauss. & Net.+Prob. & Internal & Feature & Global \\
+    MCoM~\cite{li2022mcom} & Semi-SL & Linear & Randomized & Int.+Ext. & Inp.+Feat. & Global \\
+    C-Mixup~\cite{darabi2021contrastive} & Semi/Self-SL & AE+Lin. & Net+Rand.  & Internal & Feature & Global \\
+    VIME~\cite{yoon2020vime} & Self-SL & Mask & Randomized \\
 \end{longtable}
 \endgroup
 
@@ -776,11 +784,37 @@ Table~\ref{tbl:generators}.
 
 \section{Generation mechanisms}
 
+\begingroup\small
+\begin{longtable}{ccccccccc}
+    \caption{Assumptions.}
+    \label{tbl:generators}\\
+    \toprule
+        Mechanism & Smoothness & Manifold & ? & Notes \\
+    \midrule
+    \endfirsthead
+    \caption[]{Assumptions.} \\
+    \toprule
+        Mechanism & Smoothness & Manifold & ? & Notes \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{9}{r}{{Continued on next page}} \\
+    \midrule
+    \endfoot
+    
+    \bottomrule
+    \endlastfoot
+    Laplace perturbations & ? & ? & ? & ? \\
+\end{longtable}
+\endgroup
+
 Laplace perturbations (commonly used as a baseline approach for DP
 algorithms). Categorical features use n-way marginals (also known as
 conjunctions or contingency tables~\cite{gaboardi2014dual}) to ensure the generated data contains
 variability in the categorical features and the distribution of categorical
 feature values follows some given constraint.
+
+Random perturbations (non-informed equivalent of PGMs)
 
 Distribution approximation (discuss marginal inference)
 
@@ -833,6 +867,8 @@ Random erasing (?)
 
 
 \section{Algorithmic applications}\label{sec:algorithmic-applications}
+
+% TODO: Introduce figures to depict each learning problem
 
 In this section we discuss the data generation mechanisms for the different
 contexts where they are applied. We emphasize the constraints in each problem
@@ -1028,17 +1064,19 @@ sparse.
 
 Mixup~\cite{zhang2018mixup} consists of a linear interpolation between two
 randomly selected observations and their target feature values, $(x_i, y_i),
-(x_j, y_j) \in \mathcal{D}_L$, such that given $\alpha \sim \mathcal{U}(0,1)$,
-$x^s = \alpha x_i + (1-\alpha) x_j$ and $y^s = \alpha y_i + (1-\alpha) y_j$.
-This method was the source to Manifold Mixup
+(x_j, y_j) \in \mathcal{D}_L$, such that given $\lambda \sim
+\text{Beta}(\alpha,\alpha)$, $x^s = \lambda x_i + (1-\lambda) x_j$ and $y^s =
+\lambda y_i + (1-\lambda) y_j$, where $\alpha$ is a predetermined
+hyperparameter. This method was the source to Manifold Mixup
 (M-Mixup)~\cite{verma2019manifold}. It generates synthetic data in the feature
 spaces of a neural network classifier's hidden layers. Another Mixup-based
 data augmentation approach, Nonlinear Mixup
 (NL-Mixup)~\cite{guo2020nonlinear}, applies a nonlinear interpolation policy.
-In this case, $A$ is a set of mixing policies sampled from a beta distribution
-applied to each feature. This approach modifies the original mixup approach to
-generate data within a hyperrectangle/orthotope: $x^s = A \odot x_i + (1-A)
-\odot x_j$, where $\odot$ denotes the Hadamard product.
+In this case, $\Lambda$ is a set of mixing policies sampled from a beta
+distribution applied to each feature. This approach modifies the original
+mixup approach to generate data within a hyperrectangle/orthotope: $x^s =
+\Lambda \odot x_i + (1-\Lambda) \odot x_j$, where $\odot$ denotes the Hadamard
+product.
 
 \citet{feng2020autuencoder} proposed an autoencoder-based data augmentation
 (AE-DA) approach where the training of the autoencoder is done for each target
@@ -1324,28 +1362,84 @@ Transform Networks (STN)~\cite{jaderberg2015spatial} were originally designed
 for image data augmentation.
 
 
-\subsection{Few-shot Learning}~\label{sec:few-shot-learning}
+% \subsection{Few-shot Learning}~\label{sec:few-shot-learning}
+% 
+% Few-shot learning (FSL) techniques attempt to address the limitation of small
+% training datasets. The goal is to improve ML algorithms' capability for
+% generalization in the same way a human is able to generalize knowledge from
+% few examples. FSL is typically used when labeled data is impossible or
+% difficult to acquire due to privacy, safety or ethic
+% issues~\cite{wang2020generalizing}.
+% 
+% Analysis of six feature space data augmentation techniques for few-shot
+% learning~\cite{kumar2019closer}
+% 
+% FlipDA~\cite{zhou2021flipda}
+% 
+% Data generation can be used to address Few-shot learning in three
+% ways~\cite{wang2020generalizing}: (1) transforming samples from the dataset,
+% (2) transforming samples from a weakly labeled or unlabeled dataset, or (3)
+% transforming samples from similar datasets.
 
-Analysis of six feature space data augmentation techniques for few-shot
-learning~\cite{kumar2019closer}
+\subsection{Semi-supervised Learning}\label{sec:semi-supervised-learning}
 
-FlipDA~\cite{zhou2021flipda}
+Semi-supervised learning (Semi-SL) techniques modify the learning phase of ML
+algorithms to leverage both labeled and unlabeled data. This approach is used
+when $|\mathcal{D}_U| \gg |\mathcal{D}_L|$ (similarly to AL settings), but
+additional labeled data is impossible or difficult to acquire. In recent years
+the research developed in this area directs much of its focus to neural
+network-based models and generative learning~\cite{van2020survey}. Overall,
+Semi-SL can be distinguished between transductive and inductive methods. In
+this section, we will focus on synthetic data generation mechanisms in
+inductive, perturbation-based Semi-SL algorithms applicable to tabular or
+feature space data.
 
-Data generation can be used to address Few-shot learning in three
-ways~\cite{wang2020generalizing}: (1) transforming samples from the dataset,
-(2) transforming samples from a weakly labeled or unlabeled dataset, or (3)
-transforming samples from similar datasets.
+Ladder networks~\cite{rasmus2015semi} is semi-supervised learning architecture
+that learns a manifold feature space using a Denoising Autoencoder (DAE). The
+synthetic data is generated during the learning phase; random noise introduced
+into the input data and the DAE learns to predict the original observation.
+Although this method was developed for image data, DAE networks can be adapted
+for tabular data~\cite{sattarov2022explaining}.
 
-\subsection{Semi-supervised Learning}~\label{sec:semi-supervised-learning}
+The $\Pi$-model uses labeled and unlabeled data jointly in the training
+phase~\cite{samuli2017temporal}. Besides minimizing cross-entropy, they add to
+the loss function the squared difference between two input level
+transformations (Gaussian noise and other image-specific methods) in the
+network's output layer (with dropout). In this case, the perturbations are
+applied both in the input space (via Gaussian noise) and feature space (via
+dropout). This model served as the source for the Mean Teacher
+algorithm~\cite{tarvainen2017mean}, which used the same types of augmentation.
+The Interpolation Consistency Training (ICT)~\cite{verma2022interpolation}
+method combined the mean teacher and the Mixup approach, where synthetic
+observations are generated using only the unlabeled observations and their
+predicted label using the teacher model. In
+Mixmatch~\cite{berthelot2019mixmatch}, the Mixup method is used by randomly
+selecting any pair of observations and their true labels (if it's a labeled
+observation) or predicted label (if it's unlabeled).
 
-Synthetic data generation for semi-supervised learning given limited labeled
-data regarding the COVID-19 pandemic~\cite{das2022conditional}.
+The development of Semi-SL algorithms specifically adapted for tabular data is
+limited. The Semi-SL data augmentation for tabular data (SDAT)
+algorithm~\cite{fang2022semi} uses an autoencoder to generate synthetic data
+in the feature space with Gaussian perturbations. The Contrastive Mixup
+(C-Mixup)~\cite{darabi2021contrastive} algorithm generates synthetic data
+using the Mixup mechanism with observation pairs within the same target label.
+The Mixup Contrastive Mixup algorithm (MCoM)~\cite{li2022mcom} proposes the triplet Mixup
+method using three observations where $x^s = \lambda_ix_i + \lambda_jx_j +
+(1-\lambda_i-\lambda_j)x_k$, where $\lambda_i, \lambda_j \sim \mathcal{U}(0,
+\alpha)$, $\alpha \in (0, 0.5]$ and $x_i$, $x_j$ and $x_k$ belong to the same
+target class. The same algorithm also uses the M-Mixup method as part of the
+feature space learning phase.
 
-Extensive literature review on semi-supervised learning~\cite{van2020survey}
 
-\subsection{Self-supervised Learning}~\label{sec:self-supervised-learning}
+\subsection{Self-supervised Learning}\label{sec:self-supervised-learning}
 
-Masking~\cite{yoon2020vime}
+Self-supervised learning (Self-SL), although closely related to Semi-SL,
+assumes $\mathcal{D}_L$ to be either empty or very small.
+
+The core concept in Self-SL is that feature space learning with
+secondary objectives can also facilitate class prediction.
+
+Masking (VIME)~\cite{yoon2020vime}
 
 SubTab~\cite{ucar2021subtab}
 
@@ -1391,10 +1485,6 @@ and ML efficacy (\textit{i.e.}, utility).
 
 \subsection{Main Findings}
 
-The combination of data generation strategies is an approach commonly found in
-different problems, such as self-supervised
-learning~\cite{grill2020bootstrap}. It can be more frequently found in text
-data applications~\cite{bayer2021survey} and image data \textbf{[CITATION]}.
 
 \subsubsection{RQ1: bla bla bla}
 
@@ -1513,6 +1603,13 @@ mechanisms in oversampling.
 
 % Active Learning
 
+To the best of our knowledge, research on few-shot learning for tabular data
+is residual to non-existent. Few-shot learning research using synthetic data
+generation techniques has been extensively developed using
+image~\cite{cubuk2019autoaugment, zhao2019data} and text
+data~\cite{zhou2021flipda}, but they are rarely adapted or tested in tabular
+data.
+
 % Semi-supervised Learning
 
 % Self-supervised Learning
@@ -1533,6 +1630,11 @@ Therefore, the application of oversampling methods on user data may further
 increase the bias in classification/discrimination between gender or ethnicity
 groups.
 
+
+The combination of data generation strategies is an approach commonly found in
+different problems, such as self-supervised
+learning~\cite{grill2020bootstrap}. It can be more frequently found in text
+data applications~\cite{bayer2021survey} and image data \textbf{[CITATION]}.
 Although common in synthetic data generation applications for image data,
 there is a lack of studies on the potential of ensembles of generation
 mechanisms on tabular data, \textit{i.e.}, understanding how selecting with
