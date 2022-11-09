@@ -612,9 +612,9 @@ Table~\ref{tbl:generators}.
     
     \bottomrule
     \endlastfoot
-    SynSys~\cite{dahmen2019synsys} & Regression & HMM & Probabilistic & External & Input & Global \\
-    SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & GMM & Net. + Prob. & External & Input & Global \\
-    SDV~\cite{patki2016synthetic} & Anon. & \textbf{Copula} & Probabilistic & External & Input & Global \\
+    % SynSys~\cite{dahmen2019synsys} & Regression & HMM & Probabilistic & External & Input & Global \\
+    % SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & GMM & Net. + Prob. & External & Input & Global \\
+    SDV~\cite{patki2016synthetic} & Anon. & PDF & Probabilistic & External & Input & Global \\
     MST~\cite{mckenna2021winning} & DP & \hl{Marginal} & Probabilistic & External & Input & Global \\
     QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & Global \\
     SuperQUAIL~\cite{rosenblatt2022spending} & DP & --- & --- & External & --- & Global \\
@@ -629,17 +629,17 @@ Table~\ref{tbl:generators}.
     RAP~\cite{aydore2021differentially} & DP & Workload & Probabilistic & External & Input & Global \\
     PDF~\cite{de2019formal, suciu2011probabilistic} & --- &  & Probabilistic & External & Input & Global \\
     Kamino~\cite{ge2021kamino} & DP  &  & Probabilistic & External & Input & Global \\
-    RON-GAUSS~\cite{chanyaswad2019ron} & DP & \textbf{Gaussian} & Probabilistic & Internal & Feature & Global \\
+    RON-GAUSS~\cite{chanyaswad2019ron} & DP & PDF & Probabilistic & Internal & Feature & Global \\
     HDMM~\cite{mckenna2018optimizing} & DP &  & Probabilistic & External & Input & Global \\
     DualQuery~\cite{gaboardi2014dual} & DP &  & Probabilistic & External & Input & Global \\
     ROS(E)~\cite{menardi2014training} & Ovs & Bootstrap & Randomized & External & Input & Local \\ 
     SMOTE~\cite{chawla2002smote} & Ovs & Linear & Randomized & External & Input & Local \\
-    SMOTENC~\cite{chawla2002smote} & Ovs \\
-    SMOTEN~\cite{chawla2002smote} & Ovs \\
+    SMOTENC~\cite{chawla2002smote} & Ovs & Linear & Randomized & External & Input & Local \\
+    SMOTEN~\cite{chawla2002smote} & Ovs & Linear & --- & External & Input & Local \\
     Borderline-SMOTE~\cite{han2005borderline} & Ovs & Linear & Randomized & External & Input & Local \\
     G-SMOTE~\cite{douzas2019geometric} & Ovs & Geometric & Randomized & External & Input & Local \\
     ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local \\
-    KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & \textbf{Gaussian} & Probabilistic & External & Input & Local \\
+    KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & PDF & Probabilistic & External & Input & Local \\
     MOKAS~\cite{lin2017minority} & Ovs & Rec. Err. & Network & External & Feature & Global \\
     SOMO~\cite{douzas2017self} & Ovs & Linear & Net.+Rand. & External & Input & Global \\
     G-SOMO~\cite{douzas2021g} & Ovs & Geometric & Net.+Rand. & External & Input & Global \\
@@ -649,14 +649,14 @@ Table~\ref{tbl:generators}.
     DBSMOTE~\cite{bunkhumpornpat2012dbsmote} & Ovs & Linear & Randomized & External & Input & Local\\
     CGAN~\cite{douzas2018effective} & Ovs & GAN & Network & External & Feature & Global \\
     K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Feature & Global \\
-    SMOTER~\cite{torgo2013smote} & Ovs + Reg \\
-    G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg \\
+    SMOTER~\cite{torgo2013smote} & Ovs + Reg & Linear & Randomized & External & Input & Local \\
+    G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg & Linear & Randomized & External & Input & Local \\
     RACOG~\cite{das2014racog} & Ovs & PGM & Probabilistic & External & Input & Global \\
     wRACOG~\cite{das2014racog} & Ovs & PGM & Probabilistic & External & Input & Global \\
     RWO~\cite{zhang2014rwo} & Ovs & RW & Probabilistic & External & Input & Global \\
-    PDFOS~\cite{gao2014pdfos} & Ovs & \textbf{PDF} & Probabilistic & External & Input & Global \\
+    PDFOS~\cite{gao2014pdfos} & Ovs & PDF & Probabilistic & External & Input & Global \\
     Mixup~\cite{zhang2018mixup} & DA & Linear & Randomized & External & In.+Out. & Local \\
-    M-Mixup~\cite{verma2019manifold} & DA & --- & Network & Internal & Feat.+Out. & Global \\
+    M-Mixup~\cite{verma2019manifold} & DA & Linear & Network & Internal & Feat.+Out. & Global \\
     NL-Mixup~\cite{guo2020nonlinear} & DA & Geometric & Randomized & External & In.+Out. & Local \\
     AE-DA~\cite{feng2020autuencoder} & DA & AE & Network & External & In./Feat.+Out. & Local \\
     MODALS~\cite{cheung2020modals} & DA & --- & Network & Internal & Feat. & Global \\
@@ -668,18 +668,21 @@ Table~\ref{tbl:generators}.
     CTGAN~\cite{xu2019modeling} & DA & GAN & Network & External & Feature & Global \\
     TVAE~\cite{xu2019modeling} & DA & AE & Network & External & Feature & Global \\
     AE~\cite{delgado2021deep} & DA & AE & Network & External & Feature & Global \\
-    InfoMixup~\cite{kim2021lada} & AL \\
-    VAEACGAN~\cite{tran2019bayesian} & AL & AE & Network & Internal \\
-    AL-G-SMOTE~\cite{fonseca2021increasing} & AL \\
+    InfoMixup~\cite{kim2021lada} & AL & Linear & Network & Internal & Feat.+Out. & Global \\
+    VAEACGAN~\cite{tran2019bayesian} & AL & AE & Network & Internal & Feature & Global\\
+    AL-G-SMOTE~\cite{fonseca2021increasing} & AL & Geometric & Randomized & Internal & Input & Local\\
     DAE~\cite{rasmus2015semi} & Semi-SL & AE & Network & Internal & Input & Global \\ 
-    $\Pi$-model~\cite{samuli2017temporal} & Semi-SL & Gaussian & Randomized & Internal & In.+Feat. & Local \\
-    Mean Teacher~\cite{tarvainen2017mean} & Semi-SL & Gaussian & Randomized & Internal & In.+Feat. & Local \\
+    $\Pi$-model~\cite{samuli2017temporal} & Semi-SL & PDF & Randomized & Internal & In.+Feat. & Local \\
+    Mean Teacher~\cite{tarvainen2017mean} & Semi-SL & PDF & Randomized & Internal & In.+Feat. & Local \\
     ICT~\cite{verma2022interpolation} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
     Mixmatch~\cite{berthelot2019mixmatch} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
-    SDAT~\cite{fang2022semi} & Semi-SL & AE+Gauss. & Net.+Prob. & Internal & Feature & Global \\
+    SDAT~\cite{fang2022semi} & Semi-SL & AE+PDF & Net.+Prob. & Internal & Feature & Global \\
     MCoM~\cite{li2022mcom} & Semi-SL & Linear & Randomized & Int.+Ext. & Inp.+Feat. & Global \\
     C-Mixup~\cite{darabi2021contrastive} & Semi/Self-SL & AE+Lin. & Net+Rand.  & Internal & Feature & Global \\
-    VIME~\cite{yoon2020vime} & Self-SL & Mask & Randomized \\
+    VIME~\cite{yoon2020vime} & Semi/Self-SL & Mask & Randomized & Internal & Input & Local \\
+    SubTab~\cite{ucar2021subtab} & Self-SL & Mask & Rand.+Prob. & Internal & Input & Local \\
+    Scarf~\cite{bahri2022scarf} & Self-SL & Mask & Randomized & Internal & Input & Local \\
+    A-SFS~\cite{qiu2022sfs} & Self-SL & Mask & Randomized & Internal & Input & Local \\
 \end{longtable}
 \endgroup
 
@@ -786,15 +789,15 @@ Table~\ref{tbl:generators}.
 
 \begingroup\small
 \begin{longtable}{ccccccccc}
-    \caption{Assumptions.}
+    \caption{Analysis of synthetic data generation mechanisms.}
     \label{tbl:generators}\\
     \toprule
-        Mechanism & Smoothness & Manifold & ? & Notes \\
+        Mechanism & Smoothness & Manifold & Priv. & DA & Ovs. & AL & Semi-SL & Self-SL \\
     \midrule
     \endfirsthead
-    \caption[]{Assumptions.} \\
+    \caption[]{Analysis of synthetic data generation mechanisms.} \\
     \toprule
-        Mechanism & Smoothness & Manifold & ? & Notes \\
+        Mechanism & Smoothness & Manifold & Priv. & DA & Ovs. & AL & Semi-SL & Self-SL \\
     \midrule
     \endhead
     \midrule
@@ -820,7 +823,7 @@ Distribution approximation (discuss marginal inference)
 
 Expectation Maximization algorithm (deterministic)
 
-Copula-based mechanisms
+Copula-based mechanisms (it's the same as PDF)
 \begin{itemize}
     \item Gaussian generative model 
     \item Gaussian mixture model 
@@ -864,6 +867,13 @@ Autoencoders
 Reconstruction error-based
 
 Random erasing (?)
+
+Masking~\cite{yoon2020vime}
+\begin{itemize}
+    \item Gaussian noise
+    \item swap-noise
+    \item zero-out noise
+\end{itemize}
 
 
 \section{Algorithmic applications}\label{sec:algorithmic-applications}
@@ -1138,7 +1148,7 @@ architectures: Undercomplete, Sparse, Deep and Variational AE\@. Although any
 of the tested AE architectures improved classification performance, the deep
 and variational autoencoders were the best overall performing models.
 
-\textbf{Automated Data Augmentation} --- See MODALS paper.
+% \textbf{Automated Data Augmentation} --- See MODALS paper.
 
 \subsection{Oversampling}\label{sec:oversampling}
 
@@ -1293,27 +1303,45 @@ as RACOG and wRACOG~\cite{das2014racog} are based on Gibbs sampling,
 PDFOS~\cite{gao2014pdfos} is based on probability density function
 estimations and RWO~\cite{zhang2014rwo} uses a random walk algorithm.
 
-\subsection{Time-Series}
-% TODO: 
-% - Table with literature review references 
+Although oversampling for classification problems using continuous features
+appears as a relatively well explored problem, there is a general lack of
+research on oversampling using nominal features or mixed data types
+(\textit{i.e.}, using both nominal and continuous features) and regression
+problems. SMOTENC~\cite{chawla2002smote} introduces a SMOTE adaptation for
+mixed data types. It calculates the nearest neighbors of $x^c$ by including in
+the euclidean distance metric the median of the standard deviations of the
+continuous features for every nominal feature values that are different
+between $x^c$ and $x^{nn}$. The generation is done using the normal SMOTE
+procedure for the continuous features and the nominal features are determined
+with their modes within $x^c$'s nearest neighbors. The
+SMOTEN~\cite{chawla2002smote} is an oversampling algorithm for nominal
+features only. It uses the nearest neighbor approach proposed in
+\citet{cost1993weighted} and generates $x^s$ using the modes of the features
+in $x^c$'s nearest neighbors. Solutions to oversampling in regression problems
+are generally also based on SMOTE, such as SMOTER~\cite{torgo2013smote} and
+G-SMOTER~\cite{camacho2022geometric}.
 
-% A general description of time series data
-
-Synsys~\cite{dahmen2019synsys} approaches time-series using both Hidden Markov
-and regression models. They show the method's effectiveness in the Healthcare
-domain with limited ground truth data by comparing it to models trained using
-only real data. A related model, Sensegen~\cite{alzantot2017sensegen}, uses an
-adversarial training approach to train an LSTM that predicts the parameters
-of Gaussian Mixture Models (GMM) at each time stamp, using real data as
-an input. Finally, the GMM estimations are used to sample synthetic data. 
-
-
-Generative adversarial networks in time series 
-
-
-Some of the methods previously discussed can also be used for time-series. For
-example, \citet{cheung2020modals} show improved performance with time-series
-data using MixUp and MODALS
+% \subsection{Time-Series}
+% % TODO: 
+% % - Table with literature review references 
+% 
+% % A general description of time series data
+% 
+% Synsys~\cite{dahmen2019synsys} approaches time-series using both Hidden Markov
+% and regression models. They show the method's effectiveness in the Healthcare
+% domain with limited ground truth data by comparing it to models trained using
+% only real data. A related model, Sensegen~\cite{alzantot2017sensegen}, uses an
+% adversarial training approach to train an LSTM that predicts the parameters
+% of Gaussian Mixture Models (GMM) at each time stamp, using real data as
+% an input. Finally, the GMM estimations are used to sample synthetic data. 
+% 
+% 
+% Generative adversarial networks in time series 
+% 
+% 
+% Some of the methods previously discussed can also be used for time-series. For
+% example, \citet{cheung2020modals} show improved performance with time-series
+% data using MixUp and MODALS
 
 
 \subsection{Active Learning}\label{sec:active-learning}
@@ -1434,14 +1462,49 @@ feature space learning phase.
 \subsection{Self-supervised Learning}\label{sec:self-supervised-learning}
 
 Self-supervised learning (Self-SL), although closely related to Semi-SL,
-assumes $\mathcal{D}_L$ to be either empty or very small.
+assumes $\mathcal{D}_L$ to be either empty or very small. These models focus
+on representation learning using $\mathcal{D}_U$ using secondary learning
+tasks, which can be adapted to almost all types of downstream
+tasks~\cite{liu2021self}. This family of techniques allow the usage of raw,
+unlabeled data, which is generally cheaper to acquire when compared to
+processed, curated and labeled data. Although not all Self-SL methods rely on
+data augmentation (\textit{i.e.}, STab~\cite{hajiramezanali2022stab}), the
+majority of state-of-the-art tabular Self-SL methods use data augmentation as
+a central concept for the training phase.
 
-The core concept in Self-SL is that feature space learning with
-secondary objectives can also facilitate class prediction.
+The value imputation and mask estimation method (VIME)~\cite{yoon2020vime} is
+a Semi-SL and Self-SL approach that introduces Masking, a tabular data
+augmentation method. It is motivated by the need to generate corrupted,
+difficult to distinguish synthetic data in a computationally efficient way for
+Self-SL training. They replace with probability $p_m$ feature values in $x_i$
+with another randomly selected value of each corresponding feature. To do
+this, the authors use a binomial mask vector $m=[m_1, \ldots, m_d]^\bot \in
+\{0,1\}^d$, $m_j \sim \text{Bern}(p_m)$, observation $x_i$ and the noise vector
+$\epsilon$ (\textit{i.e.}, the vector of possible replacement values). A
+synthetic observation is produced as $x^s=(1-m) \odot x_i + m \odot \epsilon$.
+A subsequent study proposed the SubTab~\cite{ucar2021subtab} framework present
+a multi-view approach; analogous to cropping in image data or feature bagging
+in ensemble learning. In addition the authors propose an extension of the
+masking approach proposed in VIME by introducing noise using different
+approaches: Gaussian noise, swap-noise (\textit{i.e.}, the approach proposed
+in VIME) and zero-out noise (\textit{i.e.}, randomly replace a feature value
+by zero).
 
-Masking (VIME)~\cite{yoon2020vime}
+The Self-supervised contrastive learning using random feature corruption
+method (Scarf)~\cite{bahri2022scarf} uses a similar synthetic data generation
+approach as VIME. Scarf differs from VIME by using contrastive loss instead of
+the denoising auto-encoder loss used in VIME, but this topic is out of the
+scope of this paper.  A-SFS~\cite{qiu2022sfs} is a Self-SL algorithm designed
+for feature extraction. It achieved higher performance compared to equivalent
+state-of-the-art augmentation-free approaches such as
+Tabnet~\cite{arik2021tabnet} and uses the masking generation mechanism
+described in VIME.
 
-SubTab~\cite{ucar2021subtab}
+
+% STab~\cite{hajiramezanali2022stab} --- Augmentation free
+% RegCLR~\cite{wang2022regclr}
+% Tabnet~\cite{arik2021tabnet}
+% SELF-LLP~\cite{liu2022self} --- image data
 
 \section{Evaluating the Quality of Synthetic Data
 }~\label{sec:evaluating-synthetic-data}
