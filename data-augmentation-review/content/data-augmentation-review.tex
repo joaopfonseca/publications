@@ -647,6 +647,8 @@ Table~\ref{tbl:generators}.
     SOMO~\cite{douzas2017self} & Ovs & Linear & Net.+Rand. & External & Input & Global \\
     G-SOMO~\cite{douzas2021g} & Ovs & Geometric & Net.+Rand. & External & Input & Global \\
     \hl{VAE}~\cite{dai2019generative} & Ovs \\
+    \hl{GMM}~\cite{xing2022predict} \\
+    \hl{GMM}~\cite{xu2022synthetic} \\
     Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs & Linear & Randomized & External & Input & Local \\
     LR-SMOTE~\cite{liang2020lr} & Ovs & Linear & Randomized & External & Input & Global \\
     K-means SMOTE~\cite{douzas2018improving} & Ovs & Linear & Randomized & External & Input & Global\\
@@ -1206,6 +1208,8 @@ generation mechanism, it uses G-SMOTE's instead.
 
 \hl{Oversampling via VAE}~\cite{dai2019generative}
 
+\hl{Oversampling via GMM}~\cite{xing2022predict, xu2022synthetic}
+
 Another set of network-based methods that fully replace SMOTE-based mechanisms
 are GAN-based architectures. One example of this approach is
 CGAN~\cite{douzas2018effective}. It uses an adversarial training approach to
@@ -1433,7 +1437,7 @@ In this section we provide a general description of the synthetic data
 generation mechanisms found in the learning problems in
 Section~\ref{sec:algorithmic-applications}.
 Table~\ref{tbl:generation-mechanisms} summarizes the assumptions and
-popularity of the generation mechanisms across the selected works and learning
+usage of the generation mechanisms across the selected works and learning
 problems.
 
 \begingroup\small
@@ -1467,10 +1471,10 @@ problems.
                          & \checkmark & \checkmark & $\times$ & $\times$ & \checkmark & \checkmark \\
 
         & Swap-noise     & $\times$ & $\times$ 
-                         & $\times$ & ? & ? & ? & \checkmark & \checkmark \\
+                         & $\times$ & $\times$ & $\times$ & $\times$ & \checkmark & \checkmark \\
 
         & Zero-out noise & $\times$ & $\times$ 
-                         & $\times$ & ? & ? & ? & $\times$ & \checkmark \\
+                         & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ & \checkmark \\
 
     \midrule
     \multirow{3}{*}{PDF} 
@@ -1478,47 +1482,52 @@ problems.
                         & \checkmark & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
 
         & Gaussian Mix. & $\times$ & \checkmark 
-                        & \checkmark & ? & ? & ? & $\times$ & $\times$ \\
+                        & \checkmark & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
 
         & KDE           & $\times$ & \checkmark 
-                        & $\times$ & ? & \checkmark & ? & $\times$ & $\times$ \\
+                        & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
 
     \midrule
-    \multirow{4}{*}{PGM} 
-        & HMM           & ? & ? 
-                        & $\times$ & ? & ? & ? & $\times$ & $\times$ \\
+    \multirow{5}{*}{PGM} 
+        & HMM           & $\times$ & $\times$ 
+                        & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ \\
 
-        & MCMC          & ? & ? 
-                        & $\times$ & ? & ? & ? & $\times$ & $\times$ \\
+        & MCMC          & $\times$ & $\times$ 
+                        & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ \\
 
-        & Bayesian Net. & ? & ? 
-                        & \checkmark & ? & ? & ? & $\times$ & $\times$ \\
+        & Bayesian Net. & $\times$ & $\times$ 
+                        & \checkmark & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ \\
 
-        & Gibbs         & ? & ? 
-                        & $\times$ & \checkmark & ? & ? & $\times$ & $\times$ \\
+        & Gibbs         & $\times$ & $\times$ 
+                        & $\times$ & \checkmark & \checkmark & $\times$ & $\times$ & $\times$ \\
+
+        & Random Walk & $\times$ & $\times$
+                      & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
+
 
     \midrule
-    \multirow{5}{*}{Linear} 
+    \multirow{6}{*}{Linear} 
         & Inter-class Interp. & $\times$ & \checkmark   
-                              & $\times$ & \checkmark & ? & ? & ? & ? \\
+                              & $\times$ & \checkmark & $\times$ & \checkmark & \checkmark & $\times$ \\
 
         & Inner-class Interp. & \checkmark & \checkmark 
-                              & $\times$ & \checkmark & \checkmark & ? & ? & ? \\
+                              & $\times$ & \checkmark & \checkmark & \checkmark & \checkmark & $\times$ \\
         
         & Extrapolation       & \checkmark & \checkmark 
-                              & $\times$ & ? & \checkmark & ? & ? & ? \\
+                              & $\times$ & \checkmark & \checkmark & $\times$ & $\times$ & $\times$ \\
 
         & Inter.+Extra.       & \checkmark & \checkmark 
-                              & $\times$ & ? & \checkmark & ? & ? & ? \\
+                              & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
 
         & Difference Transf.  & \checkmark & \checkmark 
                               & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ \\
+
 
         & Hard Extra.         & \checkmark & \checkmark 
                               & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ \\
 
     \midrule
-    \multirow{2}{*}{Geometric} 
+    \multirow{3}{*}{Geometric} 
         & Hypersphere & \checkmark & \checkmark 
                       & $\times$ & $\times$ & \checkmark & \checkmark & $\times$ & $\times$ \\
 
@@ -1535,85 +1544,115 @@ problems.
         & AE & $\times$ & $\times$ 
              & $\times$ & \checkmark & \checkmark & \checkmark & \checkmark & $\times$ \\
     \midrule
-    \multirow{3}{*}{Others}
-        & Random Walk & ? & ?
-                      & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
-
+    \multirow{2}{*}{Others}
         & Exponential M. & $\times$ & $\times$
                          & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ \\
 
-        & Difference transform & \checkmark & \checkmark 
-                               & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ \\
-
-        & Reconstruction error & $\times$ & $\times$ 
+        & Reconstruction err. & $\times$ & $\times$ 
                                & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
 \end{longtable}
 \endgroup
 
-Laplace perturbations (commonly used as a baseline approach for DP
-algorithms). Categorical features use n-way marginals (also known as
-conjunctions or contingency tables~\cite{gaboardi2014dual}) to ensure the generated data contains
-variability in the categorical features and the distribution of categorical
-feature values follows some given constraint.
+We focus on 2 key conditions for the data generation process, smoothness and
+manifold space. The smoothness condition requires that if two observations
+$x_i, x_j$ are close, then it's expected that $y_i, y_j$ have the same value.
+The manifold condition requires synthetic data generation to occur within
+locally euclidean topological spaces. Therefore, a generation mechanism with
+the smoothness requirement also requires a manifold, while the opposite is not
+necessarily true.
 
-Random perturbations (non-informed equivalent of PGMs)
+In the remaining subsections we will describe the main synthetic data
+generation mechanisms found in the literature, based on the studies discussed
+in Section~\ref{sec:algorithmic-applications}.
 
-Distribution approximation (discuss marginal inference)
+\subsection{Perturbation Mechanisms}
 
-Expectation Maximization algorithm (deterministic)
+The general perturbation-based synthetic data generation mechanism is defined
+as $x^s = x_i + \epsilon$, where $\epsilon$ is the noise vector sampled from a
+certain distribution. The random perturbation mechanism can be though of as
+the non-informed equivalent of PGMs. It samples $|\epsilon|$ values from a
+uniform distribution, \textit{i.e.}, $e_i \sim \mathcal{U}(\cdot, \cdot),
+\forall e_i \in \epsilon$, while the minimum and maximum values depend on the
+context and level of perturbation desired, typically centered around zero.
 
-Copula-based mechanisms (it's the same as PDF)
-\begin{itemize}
-    \item Gaussian generative model 
-    \item Gaussian mixture model 
-    \item Kernel Density Estimation
-    \item Probability density function estimation
-\end{itemize}
+Laplace (commonly used in DP algorithms) and Gaussian perturbations sample
+$\epsilon$ with $e_i \sim \text{Lap}(\cdot, \cdot)$ and $e_i \sim
+\mathcal{N}(\cdot, \cdot)$. Within the applications found, in the presence of
+categorical features, these methods tend to use n-way marginals (also known as
+conjunctions or contingency tables~\cite{gaboardi2014dual}) to ensure the
+generated data contains variability in the categorical features and the
+distribution of categorical feature values follows some given constraint.
+Although various other distributions could be used to apply perturbations, the
+literature found primarily focuses on introducing noise via random, Laplace
+and Gaussian distributions.
 
-Probabilistic graphical models
-\begin{itemize}
-    \item Hidden Markov model
-    \item MCMC
-    \item Bayesian network
-    \item Gibbs sampling
-\end{itemize}
+Masking modifies the original perturbation based approach by introducing a
+binomial mask vector, $m = [m_1, \ldots, m_d]^\bot \in \{0,1\}^d, m_i \sim
+\text{Bern}(p_m)$ and the generation mechanism is defined as $x^s = (1 -
+m)\odot x_i + m \odot \epsilon$~\cite{yoon2020vime}. The $\epsilon$ variable
+is defined according to the perturbation used. The Gaussian approach generates
+the noise vector as $\epsilon = x_i + \epsilon'$, where $e_i' \sim
+\mathcal{N}(\cdot, \cdot), \forall e_i' \in \epsilon'$. The swap-noise
+approach randomly selects values from other observations (per feature) to form
+$\epsilon$, while the zero-out noise approach sets all $\epsilon$ values to
+zero.
+
+\subsection{Probability Density Function Mechanisms}
+
+Gaussian generative model 
+
+Gaussian mixture model 
+
+Kernel Density Estimation
+
+Probability density function estimation + Distribution approximation (discuss marginal inference)
+
+\subsection{Probabilistic Graphical Models}
+
+Hidden Markov model
+
+MCMC
+
+Bayesian network
+
+Gibbs sampling
 
 Random walk
 
-Linear transformations
+\subsection{Linear Transformations}
+
+Linear interpolation
+
 \begin{itemize}
-    \item Linear interpolation
-        \begin{itemize}
-            \item Inter-class interpolation (MixUp)
-            \item Inner-class interpolation (SMOTE)
-        \end{itemize}
-    \item Linear extrapolation
-    \item Both
+    \item Inter-class interpolation (MixUp)
+    \item Inner-class interpolation (SMOTE)
 \end{itemize}
 
-Geometric transformations
+Linear extrapolation
 \begin{itemize}
-    \item Hypersphere (G-SMOTE)
-    \item Rectangle (NLMixup)
+    \item Mean-based
+    \item Observation-based
 \end{itemize}
+
+Both
 
 Difference transform~\cite{cheung2020modals}
+
+Hard Extrapolation
+
+\subsection{Geometric Transformations}
+
+Hypersphere (G-SMOTE)
+
+Triangular
+
+Hyperrectangle (NLMixup)
+
+\subsection{Neural Networks}
 
 GANs
 
 Autoencoders
-
-Reconstruction error-based
-
-Random erasing (?)
-
-Masking~\cite{yoon2020vime}
-\begin{itemize}
-    \item Gaussian noise
-    \item swap-noise
-    \item zero-out noise
-\end{itemize}
-
 
 \section{Evaluating the Quality of Synthetic Data
 }~\label{sec:evaluating-synthetic-data}
