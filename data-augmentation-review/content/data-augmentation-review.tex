@@ -1577,14 +1577,23 @@ context and level of perturbation desired, typically centered around zero.
 
 Laplace (commonly used in DP algorithms) and Gaussian perturbations sample
 $\epsilon$ with $e_i \sim \text{Lap}(\cdot, \cdot)$ and $e_i \sim
-\mathcal{N}(\cdot, \cdot)$. Within the applications found, in the presence of
-categorical features, these methods tend to use n-way marginals (also known as
-conjunctions or contingency tables~\cite{gaboardi2014dual}) to ensure the
-generated data contains variability in the categorical features and the
-distribution of categorical feature values follows some given constraint.
-Although various other distributions could be used to apply perturbations, the
-literature found primarily focuses on introducing noise via random, Laplace
-and Gaussian distributions.
+\mathcal{N}(\cdot, \cdot)$, respectively. Within the applications found, in
+the presence of categorical features, these methods tend to use n-way
+marginals (also known as conjunctions or contingency
+tables~\cite{gaboardi2014dual}) to ensure the generated data contains
+variability in the categorical features and the distribution of categorical
+feature values follows some given constraint.  Although various other
+distributions could be used to apply perturbations, the literature found
+primarily focuses on introducing noise via random, Laplace and Gaussian
+distributions.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{../analysis/masking-example}
+    \caption{Examples of synthetic observations generated with different
+        masking approaches.
+    }~\label{fig:masking-example}
+\end{figure}
 
 Masking modifies the original perturbation based approach by introducing a
 binomial mask vector, $m = [m_1, \ldots, m_d]^\bot \in \{0,1\}^d, m_i \sim
@@ -1593,19 +1602,68 @@ m)\odot x_i + m \odot \epsilon$~\cite{yoon2020vime}. The $\epsilon$ variable
 is defined according to the perturbation used. The Gaussian approach generates
 the noise vector as $\epsilon = x_i + \epsilon'$, where $e_i' \sim
 \mathcal{N}(\cdot, \cdot), \forall e_i' \in \epsilon'$. The swap-noise
-approach randomly selects values from other observations (per feature) to form
+approach shuffles the feature values from all observations to form
 $\epsilon$, while the zero-out noise approach sets all $\epsilon$ values to
-zero.
+zero. Intuitively, the masking technique modifies an observation's feature
+values with probability $p_m$, instead of adding perturbations over the
+entire observation. Figure~\ref{fig:masking-example} shows a visual depiction
+of the masking technique.
 
 \subsection{Probability Density Function Mechanisms}
 
-Gaussian generative model 
+The Gaussian generative model, despite unfrequently used when compared to the
+remaining Probaility Density Function mechanisms discussed in this subsection,
+is an essential building block for these mechanisms. In particular, we
+describe the multivariate gaussian approach, which follows near-Gaussian
+distribution assumptions. However, in high-dimensional data, it is possible to
+motivate this approach via the \textit{Diaconis-Freedman-Meckes}
+effect~\cite{meckes2012projections}, which states that high-dimensional data
+projections generally follow a nearly Gaussian distribution.  The Gaussian
+generative model produces synthetic data from a Gaussian distribution $x^s
+\sim \mathcal{N}(\mu, \Sigma)$, where $\mu \in \mathbb{R}^m$ is a vector with
+the features' means and $\Sigma \in \mathbb{R}^{m \times m}$ is the covariance
+matrix. It follows the following density function~\cite{chanyaswad2019ron}:
 
-Gaussian mixture model 
+\begin{equation}\label{eq:gaussian}
+    f(x) =
+    \frac{1}{\sqrt{(2\pi)^m\text{det}(\Sigma)}}\text{exp}\left(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\right)
+\end{equation}
 
-Kernel Density Estimation
+Consequently, to define a Gaussian generative model it is only necessary to
+estimate the dataset's mean and covariance matrix.
 
-Probability density function estimation + Distribution approximation (discuss marginal inference)
+A Gaussian mixture model (GMM) comprises several Gaussians that aim to represent
+normally distributed subpopulations within a dataset. Its training procedure
+allows the model to iteratively learn the subpopulations using the Expectation
+Maximization algorithm. A GMM becomes more appropriate than the Gaussian
+generative model when the data is expected to have more than one higher-density
+regions, leading to a poor fit of unimodal Gaussian models.
+
+Kernel Density Estimation (KDE) methods use a kernel function to estimate the
+density of the dataset's distribution at each region of the input/feature
+space. Despite the various kernel options, the Gaussian kernel is commonly
+used for synthetic data generation~\cite{tang2015kerneladasyn}. The general
+kernel estimator is defined as follows: 
+
+\begin{equation}
+    \hat{p}(x) = \frac{1}{N+h}
+    \sum_{i=1}^{N}K\left(\frac{x-x_i}{h}\right)
+\end{equation}
+
+Where $N = |\mathcal{D}|$, $h$ is a smoothing parameter known as bandwidth and
+$K$ is the kernel function. The Gaussian kernel is defined as follows:
+
+\begin{equation}
+    G_i(x) = K\left(\frac{x-x_i}{h} \right) = \frac{1}{(\sqrt{2\pi} h)^m} 
+    \text{exp}\left(-\frac{1}{2}\frac{(x-x_i)^T(x-x_i)}{h}\right) 
+\end{equation}
+
+Therefore, the Gaussian KDE approach can also be expressed as $\hat{p}(x) =
+\frac{1}{N+h}\sum_{i=1}^{N}G_i(x)$, while the data is sampled from the
+estimated probability distribution. 
+
+% Probability density function estimation + Distribution approximation
+% (discuss marginal inference)
 
 \subsection{Probabilistic Graphical Models}
 
