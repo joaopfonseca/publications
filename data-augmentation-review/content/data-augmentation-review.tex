@@ -1488,13 +1488,7 @@ problems.
                         & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
 
     \midrule
-    \multirow{5}{*}{PGM} 
-        & HMM           & $\times$ & $\times$ 
-                        & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ \\
-
-        & MCMC          & $\times$ & $\times$ 
-                        & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ & $\times$ \\
-
+    \multirow{3}{*}{PGM} 
         & Bayesian Net. & $\times$ & $\times$ 
                         & \checkmark & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ \\
 
@@ -1660,22 +1654,62 @@ $K$ is the kernel function. The Gaussian kernel is defined as follows:
 
 Therefore, the Gaussian KDE approach can also be expressed as $\hat{p}(x) =
 \frac{1}{N+h}\sum_{i=1}^{N}G_i(x)$, while the data is sampled from the
-estimated probability distribution. 
+estimated probability distribution. Figure~\ref{fig:pdf-example} shows a
+visualization of the PDF mechanisms discussed, applied to a mock dataset.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{../analysis/pdf-example}
+    \caption{%
+        Examples of PDF mechanisms fitted to a mock dataset. Legend: (a)
+        Original dataset, (b) Gaussian generative model, (c) Gaussian Mixture
+        Model and (d) Gaussian Kernel Density Estimation.
+    }~\label{fig:pdf-example}
+\end{figure}
 
 % Probability density function estimation + Distribution approximation
 % (discuss marginal inference)
 
 \subsection{Probabilistic Graphical Models}
 
-Hidden Markov model
+A Bayesian network can be thought of as a collection of as a collection of
+conditional distributions. It represents the joint probability distribution
+over the cross-product of the feature domains in $\mathcal{D}$. It is a
+directed acyclic graph that represents $\mathcal{D}$'s features as nodes and
+their conditional dependencies as directed edges. The set of features pointing
+directly to feature $v \in V, |V|=m$ via a single edge are known as the parent
+variables, $pa(v)$. A Bayesian network calculates $p(x)$ as the product of the
+individual density functions, based on the conditional probabilities of the
+parent variables:
 
-MCMC
+\begin{equation}
+    p(x) = \prod_{v \in V} p(x_v | x_{pa(v)})
+\end{equation}
 
-Bayesian network
+Although this method requires the construction of a directed acyclic graph,
+there is research on ML approaches for the learning of these
+structures~\cite{yu2019dag}. Bayesian networks can be used for synthetic data
+generation when the relationship between variables is known (or can be
+learned) and when the data is high dimensional, making the sampling process
+non-trivial.
 
-Gibbs sampling
+Random walk algorithms comprise the general process of iterating through a set
+of random steps. Although uncommon, random walk approaches may be used to
+sample data. The random walk approach described in \citet{zhang2014rwo} uses
+the Gaussian noise mechanism over minority class observations to create
+synthetic observations. The Gibbs sampling mechanism also performs a random
+walk by iterating through sampled feature values.
 
-Random walk
+Gibbs sampling is a Markov Chain Monte Carlo algorithm that iteratively
+samples a synthetic observation's feature values. It is a suitable method to
+sample synthetic data from a Bayesian network. The process starts with an
+initial observation selected from $\mathcal{D}$, $x_0$ and is used to begin
+the sampling process. In its original format, the sampling of each feature
+value $v$ in $x^s_i$ is conditioned by $x^s_{i-1}$ and the feature values
+already sampled from $x^s_i$, such that $x^s_{i, v} \sim p(x^s_{i, v} |
+x^s_{i, 1}, \ldots, x^s_{i, v-1}, x^s_{i-1, v+1}, \dots, x^s_{i-1, m})$.
+Therefore, Gibbs sampling is a special case of the Metropolis-Hastings
+algorithm.
 
 \subsection{Linear Transformations}
 
@@ -1754,12 +1788,15 @@ and ML efficacy (\textit{i.e.}, utility).
 
 \subsection{Main Findings}
 
+Scaling data in different mechanism types
 
-\subsubsection{RQ1: bla bla bla}
+Manifold data spaces
 
-\subsubsection{RQ2: bla bla bla}
+Smoothness assumption
 
-\subsubsection{RQ3: bla bla bla}
+Technical difficulty in implementation of different mechanisms
+
+Computational requirements
 
 \subsection{Limitations}
 
