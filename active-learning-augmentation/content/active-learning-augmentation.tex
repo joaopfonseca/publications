@@ -78,16 +78,6 @@
     urlcolor={hypecol}
 }
 
-
-
-
-
-
-
-
-
-
-
 \begin{document}
 
 \maketitle
@@ -113,7 +103,11 @@
     classification performance metrics over 15 different datasets. We
     demonstrate that the proposed framework, using data augmentation,
     significantly improves the performance of AL, both in terms of
-    classification performance and data selection efficiency. 
+    classification performance and data selection efficiency.\footnote{
+        \hl{All the code and preprocessed data developed for this study is
+        available at}
+        \href{https://github.com/joaopfonseca/publications/}{https://github.com/joaopfonseca/publications/}.
+    } 
 
 \end{abstract}
 
@@ -159,9 +153,9 @@ classifier-level modifications, such as the Weighted Extreme Learning
 Machine~\cite{Yu2019, Zong2013, Qin2021}. However, classifier or query
 function-level modifications (See Section~\ref{sec:active_learning_methods})
 have limited applicability since a universally good AL strategy has not yet
-been found~\cite{Sener2018}. Other methods address imbalance learning by
+been found~\cite{Sener2018}. Other methods address imbalance\hl{d} learning by
 weighing the observations as the function of the observation's class imbalance
-ratio~\cite{Liu2021}.  Alternatively, other techniques reduce the imbalanced
+ratio~\cite{Liu2021}. Alternatively, other techniques reduce the imbalanced
 learning bias by combining Informative and Representative-based query
 approaches (see Section~\ref{sec:active_learning_methods})~\cite{Tharwat2020}.
 Another approach to deal with imbalanced data and data scarcity, in general,
@@ -171,18 +165,54 @@ learning bias, and also works as a regularization method in data-scarce
 environments, such as AL implementations~\cite{Kim2021}. However, most recent
 studies improve the AL performance by modifying the design/choice of the
 classifier and query functions used.
+
+\hl{Recently, data augmentation gathered attention among ML researchers due to
+its effectiveness over a wide range of applications: regularization,
+oversampling, semi-supervised learning, self-supervised learning, etc.  Data
+augmentation generates synthetic observations to complement naturally
+occurring observations. It aims to reinforce the definition of a ML
+classifier's decision boundary during the learning phase and improve the
+generalization of the algorithm. These techniques have the advantage of being
+a data level technique (despite the existence of augmentation methods applied
+internally in the ML classifier). Therefore, they can be implemented in a way
+that will not affect the choice of classifier and does not exclude the usage
+of other regularization approaches. In an AL context, the generation of
+synthetic data becomes particularly appealing, especially with randomized and
+statistical-based approaches; it ensures better model performance with reduced
+involvement of a human agent, at the expense of a marginal increase in
+computational power. In addition, synthetic data is expected to reduce the
+amount labeled data required for a good AL implementation.}
  
-The usage of data augmentation in AL is not new. The literature found on the
+\subsection{Motivation and contributions}
+
+\hl{The} usage of data augmentation in AL is not new. The literature found on the
 topic (see Section~\ref{sec:data_augmentation_in_al}) focuses on either image
 classification or Natural Language Processing and uses Deep Learning-based
 data augmentation to improve the performance of neural network architectures
 in AL\@. These methods, although showing promising results, represent a
 limited perspective of the potential of data augmentation in a real-world
-setting. First, using Deep Learning in an iterative setting requires access to
-significant computational power. Second, these models tend to use
-sophisticated data augmentation methods, whose implementation may not be
-accessible to non-sophisticated users. Third, the studies found on the topic
-are specific to the domain, classifier, and data augmentation method.
+setting\hl{:} 
+
+\begin{enumerate}
+
+    \item \hl{U}sing Deep Learning in an iterative setting requires access to
+        significant computational power.
+
+    \item \hl{T}hese models tend to use sophisticated data augmentation methods,
+        whose implementation may not be accessible to non-sophisticated users.
+
+    \item \hl{They require a significant amount of processing time per
+        iteration and are inappropriate for settings with limited time
+        budgets.}
+
+    \item \hl{T}he studies found on the topic are specific to the domain,
+        classifier, and data augmentation method.
+        \hl{In addition, all of the related methods found (except one) focus
+        on either image or natural language processing classification
+        problems.}
+
+\end{enumerate}
+
 Consequently, the direct effect of data augmentation is unclear: these studies
 implement different neural network-based techniques for different
 classification problems, whose performance may be attributed to various
@@ -199,7 +229,29 @@ elements, as well as the modifications involved to implement data augmentation
 in the AL iterative process. We argue that simple, non-domain specific data
 augmentation heuristics are sufficient to improve the performance of AL
 implementations, without the need to resort to deep learning-based data
-augmentation algorithms.
+augmentation algorithms. \hl{These contributions can be summarized as
+follows:}
+
+\begin{enumerate}
+
+    \item \hl{We propose a flexible AL framework with pipelined data
+        augmentation for tabular data that may be adapted for any domain or
+        data type. This implementation is directed towards use cases with
+        limited computational power and/or processing time.}
+
+    \item \hl{We use a geometric-based data augmentation method for
+        non-network based classifiers and adapt it to leverage information
+        from the AL process. To the best of our knowledge, most
+        existing methods use domain/classifier-specific augmentations or the
+        Mixup approach, which is incompatible with most classifiers that are
+        not neural network-based.}
+
+    \item \hl{We provide empirical evidence that the integration of varying data
+        augmentation policies between iterations in the AL framework not only further
+        reduces the amount of labeled data required, but is also a viable training
+        strategy for fully supervised learning settings.}
+
+\end{enumerate}
 
 When compared to the standard AL framework, the proposed framework contains
 two additional components: the Generator and the Hyperparameter Optimizer. We
@@ -225,6 +277,53 @@ this study.
  
 \section{Background}~\label{sec:background}
 
+In this section we describe the AL problem, data augmentation techniques, and review the
+literature that combines AL with data augmentation. \hl{Table}~\ref{tbl:generators}
+\hl{describes the notations used throughout the rest of this study.}
+
+\begingroup\small
+\begin{longtable}{clccccccc}
+    \caption{%
+        \hl{Description of all notations and symbols used throughout the
+        manuscript.}
+    }\label{tbl:generators}\\
+    \toprule
+               Symbol & Meaning \\
+    \midrule
+    \endfirsthead%
+    \caption[]{%
+        Description of all notations and symbols used throughout the
+        manuscript.
+    } \\
+    \toprule
+               Symbol & Meaning \\
+    \midrule
+    \endhead%
+    \midrule
+    \multicolumn{9}{r}{{Continued on next page}} \\
+    \midrule
+    \endfoot%
+    
+    \bottomrule
+    \endlastfoot%
+               $f_{c}$ & ML classifier. \\
+               $x_i$ & Observation at index $i$. \\
+               $f_{acq}(x_i;f_c)$ & Acquisition function. \\
+               $f_{aug}(x_i;\tau)$ & Augmentation function. \\
+               $\tau$ & Augmentation policy. \\
+               $\mathcal{D}$ & Data pool. Contains both labeled and unlabeled
+                               data. \\
+               $\mathcal{D}_{lab}^t$ & Labeled data set at iteration $t$. \\
+               $\mathcal{D}_{pool}^t$ & Unlabeled data pool at iteration $t$. \\
+               $\mathcal{D}_{new}^t$ & Set of observations from
+                                       $\mathcal{D}_{pool}^t$to be labeled
+                                       and added to $\mathcal{D}_{lab}^{t+1}$. \\
+               $T$ & Iteration budget.\\
+               $n$ & Annotation budget per iteration.\\
+\end{longtable}
+\endgroup
+
+
 \subsection{Active Learning}~\label{sec:active_learning_methods}
 
 This paper focuses on pool-based AL methods as defined
@@ -234,11 +333,11 @@ $x_i$, as possible. They use a data pool, $\mathcal{D}$, where $\mathcal{D} =
 \mathcal{D}_{lab} \cup \mathcal{D}_{pool}$ and $|\mathcal{D}_{pool}| \gg
 |\mathcal{D}_{lab}|$. $\mathcal{D}_{pool}$ and $\mathcal{D}_{lab}$ refer to
 the sets of unlabeled and labeled data, respectively. Having a budget of $T$
-iterations (where $t = 1, 2, \ldots, T$) and $n$ annotations per iteration, at
+iterations (\hl{where }$t \in \{1, 2, \ldots, T\}$) and $n$ annotations per iteration, at
 iteration $t$, $f_c$ is trained using $\mathcal{D}_{lab}^t$ to produce, for
 each $x_i \in \mathcal{D}_{pool}^t$, an uncertainty score using an acquisition
 function $f_{acq}(x_i;f_c)$. These uncertainty scores are used to annotate the
-$n$ observations with highest ucertainty from $\mathcal{D}_{pool}^t$ to form
+$n$ observations with highest u\hl{n}certainty from $\mathcal{D}_{pool}^t$ to form
 $\mathcal{D}_{new}^t$. The iteration ends with the update of
 $\mathcal{D}_{lab}^{t+1} = \mathcal{D}_{lab}^t \cup \mathcal{D}_{new}^t$ and
 $\mathcal{D}_{pool}^{t+1} = \mathcal{D}_{pool}^t \setminus
@@ -287,7 +386,46 @@ of the original classifier) and return the unlabeled observations with the
 highest expected loss. However, this contribution is specific to deep neural
 networks and was only tested for image classification.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+1. Wu, X., Zheng, W., Xia, X., \& Lo, D. (2021). Data Quality Matters: A Case
+Study on Data Label Correctness for Security Bug Report Prediction. IEEE
+transactions on software engineering, 1. doi: 10.1109/TSE.2021.3063727
+
+2. Li, J., Xu, K., Chaudhuri, S., Yumer, E., Zhang, H.,... Guibas, L. (2017).
+GRASS: generative recursive autoencoders for shape structures. ACM
+transactions on graphics, 36(4), 1-14. doi: 10.1145/3072959.3073637
+
+3. Zhang, K., Wang, Z., Chen, G., Zhang, L., Yang, Y., Yao, C.,... Yao, J.
+(2022). Training effective deep reinforcement learning agents for real-time
+life-cycle production optimization. Journal of Petroleum Science and
+Engineering, 208, 109766. doi: https://doi.org/10.1016/j.petrol.2021.109766
+
+4. Zheng, W., Liu, X., \& Yin, L. (2021). Sentence Representation Method Based
+on Multi-Layer Semantic Network. Applied sciences, 11(3), 1316. doi:
+10.3390/app11031316
+
+"Open Set Domain Adaptation In Machinery Fault Diagnostics Using
+Instance-Level Weighted Adversarial Learning"
+
+"Deep learning based approach for bearing fault diagnosis" 
+
+"Blockchain-Based Decentralized Federated Transfer Learning Methodology for
+Collaborative Machinery Fault Diagnosis"
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Data Augmentation}~\label{sec:data_augmentation}
+
+\hl{The standard AL model can be complemented with a data augmentation function,
+$f_{aug}(x_i;\tau)$, where $\tau$ defines the augmentation policy. In this
+context, $\tau$ refers to the transformation applied and its hyperparameters
+and $f_{aug}$ produces a modified observation, $\tilde{x} \in
+\mathcal{D}_{aug}$ where $\mathcal{D}_{aug}$ is the set of modified
+observations. This involves the usage of a new set of data,
+$\mathcal{D}_{train}^t = \mathcal{D}_{lab}^t \cup \mathcal{D}_{aug}^t$, to
+train the classifier.}
 
 Data Augmentation methods expand the training dataset by introducing new and
 informative observations \cite{Behpour2019}. The production of artificial data
@@ -319,25 +457,8 @@ methods, such as autoencoders, may be considered domain agnostic.
 \subsection{Data Augmentation in Active Learning
 }~\label{sec:data_augmentation_in_al}
 
-The standard AL model can be complemented with a data augmentation function,
-$f_{aug}(x_i;\tau)$, where $\tau$ defines the augmentation policy. In this
-context, $\tau$ refers to the transformation applied and its hyperparameters
-and $f_{aug}(x;\tau): \mathcal{D} \rightarrow \mathcal{D}_{aug}(\mathcal{D})$
-produces a modified observation, $\tilde{x} \in
-\mathcal{D}_{aug}(\mathcal{D})$ where $\mathcal{D}_{aug}(\mathcal{D})$ is the
-set of modified observations. This involves the usage of a new set of data,
-$\mathcal{D}_{train}^t = \mathcal{D}_{lab}^t \cup \mathcal{D}_{aug}^t$, to
-train the classifier.
-
-
-As found in Section~\ref{sec:active_learning_methods}, improvements proposed
-in the AL framework are primarily focused on modifications of the classifier
-or query strategy. Furthermore, the few recent AL contributions implementing
-data augmentation were all (except one) applied to the computer vision or
-natural language processing (NLP) realm. 
-
 % Pipelined approach
-The only AL model found that uses data augmentation outside of the computer
+\hl{T}he only AL model found that uses data augmentation outside of the computer
 vision or NLP domains implements a pipelined approach, described
 in~\cite{Fonseca2021}. In this study, the AL model proposed is applied for
 tabular data using an oversampling data augmentation policy (\textit{i.e.},
@@ -349,7 +470,7 @@ datasets are high dimensional and have limited data variability within each
 class (\textit{i.e.,} cohesive spectral signatures within classes) due to
 their geographical proximity. Furthermore, this method does not allow
 augmentation policy optimization (i.e., every hyperparameter has to be
-hardcoded \textit{a priori}).
+hard\hl{-}coded \textit{a priori}).
 
 The Bayesian Generative Active Deep Learning (BGDAL)~\cite{tran2019bayesian}
 is another example of a pipelined combination of $f_{acq}$ and $f_{aug}$,
@@ -373,8 +494,8 @@ model~\cite{sinha2019variational} is a deep AL approach to image
 classification that uses as inputs the embeddings produced by a VAE into a
 secondary classifier, working as $f_{acq}$, to predict if $x_i \in
 \mathcal{D}$ belongs to $\mathcal{D}_{pool}$. The $n$ true positives with the
-highest certainty are labeled by the supervisor and $\mathcal{D}_{pool}$ and
-$\mathcal{D}_{lab}$ are updated as described in
+highest \hl{un}certainty are labeled by the supervisor and
+$\mathcal{D}_{pool}$ and $\mathcal{D}_{lab}$ are updated as described in
 Section~\ref{sec:active_learning_methods}. The Task-aware VAAL
 model~\cite{kim2021task} extends the VAAL model by introducing a ranker, which
 consists of the Learning Loss module introduced in~\cite{Yoo2019}. These
@@ -443,7 +564,8 @@ Algorithm~\ref{alg:al-framework}.
 	\includegraphics[width=.6\linewidth]{../analysis/al_proposed}
     \caption{%
         Diagram depicting the proposed AL iteration. The proposed
-        modifications are marked with a boldface ``C.''
+        modifications are \hl{comprised within the red polygon and }marked
+        with a boldface ``C.''
     }~\label{fig:al_proposed}
 \end{figure}
 
@@ -598,9 +720,7 @@ The classifiers used in the experiment are defined in
 Subsection~\ref{sec:machine_learning_algorithms}. The metrics chosen to
 measure AL performance and overall classification performance are defined in
 Subsection~\ref{sec:evaluation_metrics}. The experimental procedure is
-described in Subsection~\ref{sec:experimental_procedure}. The implementation
-of the experiment and resources used to do so are described in
-Subsection~\ref{sec:software_implementation}.
+described in Subsection~\ref{sec:experimental_procedure}.
 
 The methodology developed serves a two-fold purpose: (1) Compare
 classification performance once all the AL procedures are completed
@@ -667,7 +787,7 @@ features.
 
 The preprocessed datasets were stored into an SQLite database file and is
 available along with the experiment's source code in the project's GitHub
-repository (see Subsection~\ref{sec:software_implementation}).
+repository (see \hl{final remarks regarding data and software availability}).
  
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
@@ -710,12 +830,12 @@ metric, similar to OA, is also biased towards high-frequency classes since its
 definition is closely related to the OA metric, making its behavior consistent
 with OA~\cite{Fatourechi2008}. However, these metrics remain popular choices
 for the evaluation of classification performance. Other performance metrics
-like $Precision = \frac{TP}{TP+TN}$, $Recall = \frac{TP}{TP+FN}$ or
-$Specificity = \frac{TN}{TN + FP}$ are calculated as a function of True/False
-Positives (TP and FP) and True/False Negatives (TN and FN) and can be used on
-a per-class basis instead. In a multiple dataset scenario with varying amounts
-of target classes and meanings, comparing the performance of different models
-using these metrics becomes impractical.
+like $Precision = \frac{TP}{TP+FP}$, $Recall = \frac{TP}{TP+FN}$ \hl{(also
+known as Sensitivity)} or $Specificity = \frac{TN}{TN + FP}$ are calculated as
+a function of True/False Positives (TP and FP) and True/False Negatives (TN
+and FN) and can be used on a per-class basis instead. In a multiple dataset
+scenario with varying amounts of target classes and meanings, comparing the
+performance of different models using these metrics becomes impractical.
  
 Based on the recommendations found in~\cite{Jeni2013, Kubat1997}, we used two
 metrics found to be less sensitive to the class imbalance bias, along with OA
@@ -729,7 +849,7 @@ as a reference for easier interpretability:
         per class values: 
         
         \begin{equation*}
-            \textit{G-mean} = \sqrt{\overline{Sensitivity} \times
+            \textit{G-mean} = \sqrt{\overline{Recall} \times
             \overline{Specificity}}
         \end{equation*}
 
@@ -890,19 +1010,19 @@ defined as a list of various possible values.
 	\end{tabular}
 \end{table}
  
-\subsection{Software Implementation}~\label{sec:software_implementation}
-
-The experiment was implemented using the Python programming language, along
-with the Python libraries
-\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
-\href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
-\href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE}~\cite{Douzas2019},
-\href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
-and
-\href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
-libraries. All functions, algorithms, experiments, and results are provided in
-the \href{https://github.com/joaopfonseca/publications/}{project's GitHub
-repository}.
+% \subsection{Software Implementation}~\label{sec:software_implementation}
+% 
+% The experiment was implemented using the Python programming language, along
+% with the Python libraries
+% \href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
+% \href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
+% \href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE}~\cite{Douzas2019},
+% \href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
+% and
+% \href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
+% libraries. All functions, algorithms, experiments, and results are provided in
+% the \href{https://github.com/joaopfonseca/publications/}{project's GitHub
+% repository}.
 
 \section{Results \& Discussion}~\label{sec:results_discussion}
 
@@ -1209,7 +1329,7 @@ more robust generators did not decrease the standard error of AL performance.
 Instead, AL's performance variability is likely dependent on the quality of
 its initialization.
 
-\section{Conclusion}~\label{sec:conclusion}
+\section{Conclusion and Future Directions}~\label{sec:conclusion}
 
 The ability to train ML classifiers is usually limited to the availability of
 labeled data. However, manually labeling data is often expensive, which makes
@@ -1243,18 +1363,36 @@ to further improve the proposed method, future work should (1) focus on the
 development of methods with varying data augmentation policies depending on
 the different input space regions, (2) develop augmentation-sensitive query
 functions capable of avoiding the unnecessary selection of similar
-observations from the unlabeled dataset and (3) understand the gap between
-heuristic/input space data augmentation techniques and neural network/feature
-space data augmentation techniques in an AL context better.
+observations from the unlabeled dataset\hl{,} (3) understand the gap between
+\hl{randomized} data augmentation techniques and neural network/feature
+space data augmentation techniques in an AL context better\hl{, (4) explore
+more efficient ways to leverage the information collected in AL queries for
+better augmentation strategies and (5) expand the current framework to
+integrate alternative learning strategies using unlabeled data, such as self
+and semi supervised learning techniques}.
 
-\section*{Data Availability}
+\hl{Finally, the proposed method may be applied to any classification problem
+where labeled data is not readily available and an easily accessible unlabeled
+data pool. For more complex data structures, the application of this framework
+will require the learning of a manifold space as an additional preprocessing
+step. After that, this AL framework may be used as is.}
 
-The original datasets used in this study are publicly available in open data
-repositories. They were retrieved from OpenML and the UCI Machine Learning
-Repository. All functions, algorithms, experiments, results and preprocessed
-data are provided in the
-\href{https://github.com/joaopfonseca/publications}{project’s GitHub
-repository}.
+\section*{Data and Software Availability}
+
+
+\hl{The experiment was implemented using the Python programming language, along
+with the Python libraries}
+\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
+\href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
+\href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE}~\cite{Douzas2019},
+\href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
+\hl{and}
+\href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
+\hl{libraries. All functions, algorithms, experiments, and results are provided in
+the} \href{https://github.com/joaopfonseca/publications/}{project's GitHub
+repository}. The original datasets used in this study are publicly available
+in open data repositories. They were retrieved from OpenML and the UCI Machine
+Learning Repository. 
 
 \section*{Acknowledgments}
 
