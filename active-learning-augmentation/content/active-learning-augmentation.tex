@@ -92,20 +92,26 @@
     data related costs. The literature describes several methods to improve
     the effectiveness of this process. Nonetheless, there is a paucity of
     research developed around the application of artificial data sources in
-    AL\@. This paper proposes a new AL framework, which relies on the
-    effective use of artificial data. Our method uses a hyperparameter
-    optimization component to improve the generation of artificial instances
-    during the AL process, as well as an uncertainty-based data selection
-    method for the data generation mechanism. We compare the proposed method
-    to the standard framework along with another active learning method that
-    uses data augmentation. The models' performance was tested using four
-    different classifiers, two AL-specific performance metrics and three
-    classification performance metrics over 15 different datasets. We
-    demonstrate that the proposed framework, using data augmentation,
-    significantly improves the performance of AL, both in terms of
-    classification performance and data selection efficiency.\footnote{
-        \hl{All the code and preprocessed data developed for this study is
-        available at}
+    AL\hl{, especially outside image classification or NLP}. This paper
+    proposes a new AL framework, which relies on the effective use of
+    artificial data\hl{. It may be used with any classifier, generation mechanism
+    and data type, and can be integrated with multiple other state-of-the-art
+    AL contributions}. \hl{This combination is expected to increase the ML
+    classifier's performance and reduce both the supervisor's involvement and
+    the amount of required labeled data, at the expense of a marginal increase
+    in computational time.} \hl{The proposed} method \hl{introduces} a
+    hyperparameter optimization component to improve the generation of
+    artificial instances during the AL process, as well as an
+    uncertainty-based\hl{ }data generation mechanism. We compare the proposed
+    method to the standard framework \hl{and an oversampling-based} active
+    learning method for more informed data generation in an AL context\hl{.}
+    The models' performance was tested using four different classifiers, two
+    AL-specific performance metrics and three classification performance
+    metrics over 15 different datasets. We demonstrate that the proposed
+    framework, using data augmentation, significantly improves the performance
+    of AL, both in terms of classification performance and data selection
+    efficiency.\footnote{ \hl{All the code and preprocessed data developed for
+        this study is available at}
         \href{https://github.com/joaopfonseca/publications/}{https://github.com/joaopfonseca/publications/}.
     } 
 
@@ -166,9 +172,9 @@ environments, such as AL implementations~\cite{Kim2021}. However, most recent
 studies improve the AL performance by modifying the design/choice of the
 classifier and query functions used.
 
-\hl{Recently, data augmentation gathered attention among ML researchers due to
+\hl{Recently, data augmentation gathered attention among ML researchers for
 its effectiveness over a wide range of applications: regularization,
-oversampling, semi-supervised learning, self-supervised learning, etc.  Data
+oversampling, semi-supervised learning, self-supervised learning, etc. Data
 augmentation generates synthetic observations to complement naturally
 occurring observations. It aims to reinforce the definition of a ML
 classifier's decision boundary during the learning phase and improve the
@@ -389,30 +395,28 @@ networks and was only tested for image classification.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-1. Wu, X., Zheng, W., Xia, X., \& Lo, D. (2021). Data Quality Matters: A Case
-Study on Data Label Correctness for Security Bug Report Prediction. IEEE
-transactions on software engineering, 1. doi: 10.1109/TSE.2021.3063727
+\hl{AL techniques may also be used to complement other well-known learning
+challenges. For example, security bug report prediction tasks are typically
+developed in imbalanced learning environment, where it is necessary to
+manually label large amounts of data, which may result in mislabeled
+data}~\cite{wu2021data}\hl{. Another related example is machinery fault
+diagnostics, where the quality and quantity of the data collected is often
+recognized as a bottleneck}~\cite{zhang2023blockchain}\hl{. In this case,
+ML-based techniques frequently leverage unlabeled data to improve the
+classification performance}~\cite{zhang2021open}\hl{ and rely on manual data
+acquisition}~\cite{he2017deep}\hl{. In these examples, the application of an
+AL technique could reduce the amount of labeled data required, reduce the
+strain in the supervisor's labeling process and reduce the amount of label
+noise. 
 
-2. Li, J., Xu, K., Chaudhuri, S., Yumer, E., Zhang, H.,... Guibas, L. (2017).
-GRASS: generative recursive autoencoders for shape structures. ACM
-transactions on graphics, 36(4), 1-14. doi: 10.1145/3072959.3073637
-
-3. Zhang, K., Wang, Z., Chen, G., Zhang, L., Yang, Y., Yao, C.,... Yao, J.
-(2022). Training effective deep reinforcement learning agents for real-time
-life-cycle production optimization. Journal of Petroleum Science and
-Engineering, 208, 109766. doi: https://doi.org/10.1016/j.petrol.2021.109766
-
-4. Zheng, W., Liu, X., \& Yin, L. (2021). Sentence Representation Method Based
-on Multi-Layer Semantic Network. Applied sciences, 11(3), 1316. doi:
-10.3390/app11031316
-
-"Open Set Domain Adaptation In Machinery Fault Diagnostics Using
-Instance-Level Weighted Adversarial Learning"
-
-"Deep learning based approach for bearing fault diagnosis" 
-
-"Blockchain-Based Decentralized Federated Transfer Learning Methodology for
-Collaborative Machinery Fault Diagnosis"
+An under explored challenge in the AL literature is the effective handling of
+different data structures. One method to address this problem are autoencoder
+architectures}~\cite{li2017grass}\hl{ or, in the case of text data, semantic
+representation networks}~\cite{zheng2021sentence}\hl{. However, understanding
+how to integrate these two types of methods is a subject of future research.
+Within other research streams, such as deep reinforcement learning, some
+research also focus on optimizing observation efficiency during the learning
+process}~\cite{zhang2022training}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -958,7 +962,14 @@ G-SMOTE algorithm working as a normal oversampling method from G-SMOTE-AUGM,
 which generates additional artificial data on top of the usual oversampling
 mechanism. Since the G-SMOTE-AUGM method is intended to be used with varying
 parameter values (via within-iteration parameter tuning), the parameters were
-defined as a list of various possible values.
+defined as a list of various possible values.\hl{ The remaining parameters
+were selected based on knowledge gathered in previous literature and
+typical default values for each of the algorithms. This choice was motivated
+by the impossibility of parameter tuning in a real-world setting when applying
+the benchmark AL methods. Although the proposed method addresses this
+limitation, we show that exclusively tuning the parameters on the augmentation
+policy is already sufficient to achieve superior, statistically significant
+performance.}
 
 \begin{table}
 	\centering
@@ -1251,7 +1262,20 @@ statistically significant in 9 out of 12 cases.
 In this paper, we study the application of data augmentation methods through
 the modification of the standard AL framework. This is done to further reduce
 the amount of labeled data required to produce a reliable classifier, at the
-expense of artificial data generation.
+expense of artificial data generation. \hl{Overall, the proposed method
+achieves better and more consistent performance when compared to the remaining
+benchmark approaches. It was implemented to focus on the optimization of the
+data augmentation policy, as well as the introduction of a more informed
+AL-based data augmentation approach. The proposed method could be further
+extended and achieve an even higher performance by optimizing parameters of
+the ML classification using the hyperparameter optimizer. In addition, this
+framework could be further generalized by searching, within AL iterations, for
+the optimal ML classifier as well; at different stages of the data collection
+procedure some ML classifiers might be more useful than others. Although the
+proposed framework significantly improves the flexibility of AL
+implementations, we found that even a superficial parameter search is
+sufficient to ensure a superior performance when compared to related
+approaches.}
  
 % a different data generation strategy
 % - Superiority of AL proposed vs standard (AULC + statistical analysis)
