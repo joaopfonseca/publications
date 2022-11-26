@@ -172,22 +172,52 @@ environments, such as AL implementations~\cite{Kim2021}. However, most recent
 studies improve the AL performance by modifying the design/choice of the
 classifier and query functions used.
 
-\hl{Recently, data augmentation gathered attention among ML researchers for
-its effectiveness over a wide range of applications: regularization,
-oversampling, semi-supervised learning, self-supervised learning, etc. Data
-augmentation generates synthetic observations to complement naturally
-occurring observations. It aims to reinforce the definition of a ML
-classifier's decision boundary during the learning phase and improve the
-generalization of the algorithm. These techniques have the advantage of being
-a data level technique (despite the existence of augmentation methods applied
-internally in the ML classifier). Therefore, they can be implemented in a way
-that will not affect the choice of classifier and does not exclude the usage
-of other regularization approaches. In an AL context, the generation of
-synthetic data becomes particularly appealing, especially with randomized and
-statistical-based approaches; it ensures better model performance with reduced
-involvement of a human agent, at the expense of a marginal increase in
-computational power. In addition, synthetic data is expected to reduce the
-amount labeled data required for a good AL implementation.}
+\hl{Recently, synthetic data generation techniques gathered attention among ML
+researchers for its effectiveness over a wide range of applications:
+regularization, oversampling, semi-supervised learning, self-supervised
+learning, etc. Data augmentation generates synthetic observations to
+complement naturally occurring observations. It aims to reinforce the
+definition of a ML classifier's decision boundary during the learning phase
+and improve the generalization of the algorithm. These techniques have the
+advantage of being a data level technique (despite the existence of
+augmentation methods applied internally in the ML classifier). Therefore, they
+can be implemented in a way that will not affect the choice of classifier and
+does not exclude the usage of other regularization approaches. In an AL
+context, the generation of synthetic data becomes particularly appealing,
+especially with randomized and statistical-based approaches; it ensures better
+model performance with reduced involvement of a human agent, at the expense of
+a marginal increase in computational power. In addition, synthetic data is
+expected to reduce the amount labeled data required for a good AL
+implementation.}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\linewidth]{../analysis/al-example}
+    \caption{%
+        \hl{Illustration of the different acquisition processes in AL using a
+        K-Nearest Neighbors classifier and Shannon's entropy as the
+        uncertainty estimation function, with five observations being
+        collected and labeled per iteration. The top row shows the behavior of
+        a standard AL implementation, while the bottom row shows the behavior
+        of the proposed method. Column (a), (b) and (c) show the decision
+        boundaries at iterations 1 (after the collection of five random initial training
+        observations), 2 (with 10 labeled observations) and 3 (with 15 labeled
+        observations), respectively. The initial labeled dataset for both approaches is
+        the same. The two classes are distinguished with $\triangle$ and
+        $\times$, and are colored as red and blue (respectively) if they are
+        labeled. The transparent green observations are synthetic observations
+        (bottow row only).}
+    }~\label{fig:al-example}
+\end{figure}
+
+\hl{Figure}~\ref{fig:al-example}\hl{ illustrates the difference across AL
+iterations between the standard AL approach and the proposed method. Synthetic
+data allowed for a quicker expansion of the labeled input area at an early
+stage of the process, with better defined decision boundaries and
+near-covergence of the ML classifier's performance at the third iteration.
+Data augmentation influences the choice of unlabeled observations for labeling
+into regions where synthetic data is not being able to represent the unlabeled
+data pool.}
  
 \subsection{Motivation and contributions}
 
