@@ -212,38 +212,38 @@ secondary asset for tasks like education, software development, or systems
 demonstrations~\cite{mannino2019real}. 
 
 We focus on data generation techniques in the tabular and feature space
-(\textit{i.e.}, embedded inputs), given its breadth in scope. Related
-literature reviews are mostly focused on specific algorithmic or domain
-applications, with little to no emphasis on the core generative process. For
-this reason, these techniques often appear ``sandboxed'', even though there is
-a significant overlap between them. There are some related reviews published
-since 2019. \citet{assefa2020generating} provides a general overview of
-synthetic data generation for time series data anonymization in the finance
-sector. \citet{hernandez2022synthetic} reviews data generation techniques for
-tabular health records anonymization. \citet{raghunathan2021synthetic} reviews
-synthetic data anonymization techniques that preserve the statistical
-properties of a dataset. \citet{nalepa2019data} reviews data augmentation
-techniques for brain-tumor segmentation. \citet{bayer2021survey} distinguishes
-augmentation techniques for text classification into feature and data space,
-while providing an extensive overview of augmentation methods within this
-domain. However, the taxonomy proposed and feature space augmentation methods
-are not necessarily specific to the domain. \citet{shorten2021text},
-\citet{chen2021empirical}, \citet{feng2021survey} and \citet{liu2020survey}
-also review data augmentation techniques for text data.
-\citet{yi2019generative} review Generative Adversarial Network architectures
-for medical imaging. \citet{wang2020survey} reviews face data augmentation
-techniques. \citet{shorten2019survey} and \citet{khosla2020enhancing} discuss
-techniques for image data augmentation. \citet{iwana2021empirical} and
-\citet{wen2020time} also review time series data augmentation techniques.
-\citet{zhao2022graph} review data augmentation techniques for graph data. The
-analysis of related literature reviews~\footnote{%
-    Results obtained using Google Scholar, limited to articles published since
-    2019, using the search query {\fontfamily{qcr}\selectfont (``synthetic
-    data generation'' OR ``oversampling'' OR ``imbalanced learning'' OR ``data
-    augmentation'') AND (``literature review'' OR ``survey'')}. Retrieved on
-    August $11^{th}$, 2022. More articles were added later whenever found
-    relevant.
-} is shown in Table~\ref{tab:literature-reviews}.
+(\textit{i.e.}, embedded inputs) with a focus on classification and associated
+ML problems. Related literature reviews are mostly focused on specific
+algorithmic or domain applications, with little to no emphasis on the core
+generative process. For this reason, these techniques often appear
+``sandboxed'', even though there is a significant overlap between them. There
+are some related reviews published since 2019. \citet{assefa2020generating}
+provides a general overview of synthetic data generation for time series data
+anonymization in the finance sector. \citet{hernandez2022synthetic} reviews
+data generation techniques for tabular health records anonymization.
+\citet{raghunathan2021synthetic} reviews synthetic data anonymization
+techniques that preserve the statistical properties of a dataset.
+\citet{nalepa2019data} reviews data augmentation techniques for brain-tumor
+segmentation. \citet{bayer2021survey} distinguishes augmentation techniques
+for text classification into feature and data space, while providing an
+extensive overview of augmentation methods within this domain. However, the
+taxonomy proposed and feature space augmentation methods are not necessarily
+specific to the domain. \citet{shorten2021text}, \citet{chen2021empirical},
+\citet{feng2021survey} and \citet{liu2020survey} also review data augmentation
+techniques for text data.  \citet{yi2019generative} review Generative
+Adversarial Network architectures for medical imaging. \citet{wang2020survey}
+reviews face data augmentation techniques. \citet{shorten2019survey} and
+\citet{khosla2020enhancing} discuss techniques for image data augmentation.
+\citet{iwana2021empirical} and \citet{wen2020time} also review time series
+data augmentation techniques.  \citet{zhao2022graph} review data augmentation
+techniques for graph data. The analysis of related literature
+reviews~\footnote{% Results obtained using Google Scholar, limited to articles
+    published since 2019, using the search query {\fontfamily{qcr}\selectfont
+        (``synthetic data generation'' OR ``oversampling'' OR ``imbalanced
+    learning'' OR ``data augmentation'') AND (``literature review'' OR
+``survey'')}. Retrieved on August $11^{th}$, 2022. More articles were added
+later whenever found relevant.  } is shown in
+Table~\ref{tab:literature-reviews}.
 
 % TODO: move table to appendix (?)
 \begin{table}[t!]
@@ -1376,12 +1376,12 @@ algorithm~\cite{fang2022semi} uses an autoencoder to generate synthetic data
 in the feature space with Gaussian perturbations. The Contrastive Mixup
 (C-Mixup)~\cite{darabi2021contrastive} algorithm generates synthetic data
 using the Mixup mechanism with observation pairs within the same target label.
-The Mixup Contrastive Mixup algorithm (MCoM)~\cite{li2022mcom} proposes the triplet Mixup
-method using three observations where $x^s = \lambda_ix_i + \lambda_jx_j +
-(1-\lambda_i-\lambda_j)x_k$, where $\lambda_i, \lambda_j \sim \mathcal{U}(0,
-\alpha)$, $\alpha \in (0, 0.5]$ and $x_i$, $x_j$ and $x_k$ belong to the same
-target class. The same algorithm also uses the M-Mixup method as part of the
-feature space learning phase.
+The Mixup Contrastive Mixup algorithm (MCoM)~\cite{li2022mcom} proposes the
+triplet Mixup method using three observations where $x^s = \lambda_ix_i +
+\lambda_jx_j + (1-\lambda_i-\lambda_j)x_k$, where $\lambda_i, \lambda_j \sim
+\mathcal{U}(0, \alpha)$, $\alpha \in (0, 0.5]$ and $x_i$, $x_j$ and $x_k$
+belong to the same target class. The same algorithm also uses the M-Mixup
+method as part of the feature space learning phase.
 
 
 \subsection{Self-supervised Learning}\label{sec:self-supervised-learning}
@@ -1501,10 +1501,10 @@ problems.
 
     \midrule
     \multirow{6}{*}{Linear} 
-        & Inter-class Interp. & $\times$ & \checkmark   
+        & Between-class Int.  & $\times$ & \checkmark   
                               & $\times$ & \checkmark & $\times$ & \checkmark & \checkmark & $\times$ \\
 
-        & Inner-class Interp. & \checkmark & \checkmark 
+        & Within-class Int.   & \checkmark & \checkmark 
                               & $\times$ & \checkmark & \checkmark & \checkmark & \checkmark & $\times$ \\
         
         & Extrapolation       & \checkmark & \checkmark 
@@ -1564,10 +1564,11 @@ in Section~\ref{sec:algorithmic-applications}.
 The general perturbation-based synthetic data generation mechanism is defined
 as $x^s = x_i + \epsilon$, where $\epsilon$ is the noise vector sampled from a
 certain distribution. The random perturbation mechanism can be though of as
-the non-informed equivalent of PGMs. It samples $|\epsilon|$ values from a
-uniform distribution, \textit{i.e.}, $e_i \sim \mathcal{U}(\cdot, \cdot),
-\forall e_i \in \epsilon$, while the minimum and maximum values depend on the
-context and level of perturbation desired, typically centered around zero.
+the non-informed equivalent of PGMs and PDFs. It samples $|\epsilon|$ values
+from a uniform distribution, \textit{i.e.}, $e_i \sim \mathcal{U}(\cdot,
+\cdot), \forall e_i \in \epsilon$, while the minimum and maximum values depend
+on the context and level of perturbation desired, typically centered around
+zero.
 
 Laplace (commonly used in DP algorithms) and Gaussian perturbations sample
 $\epsilon$ with $e_i \sim \text{Lap}(\cdot, \cdot)$ and $e_i \sim
@@ -1614,13 +1615,13 @@ motivate this approach via the \textit{Diaconis-Freedman-Meckes}
 effect~\cite{meckes2012projections}, which states that high-dimensional data
 projections generally follow a nearly Gaussian distribution.  The Gaussian
 generative model produces synthetic data from a Gaussian distribution $x^s
-\sim \mathcal{N}(\mu, \Sigma)$, where $\mu \in \mathbb{R}^m$ is a vector with
-the features' means and $\Sigma \in \mathbb{R}^{m \times m}$ is the covariance
+\sim \mathcal{N}(\mu, \Sigma)$, where $\mu \in \mathbb{R}^d$ is a vector with
+the features' means and $\Sigma \in \mathbb{R}^{d \times d}$ is the covariance
 matrix. It follows the following density function~\cite{chanyaswad2019ron}:
 
 \begin{equation}\label{eq:gaussian}
     f(x) =
-    \frac{1}{\sqrt{(2\pi)^m\text{det}(\Sigma)}}\text{exp}\left(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\right)
+    \frac{1}{\sqrt{(2\pi)^d\text{det}(\Sigma)}}\text{exp}\left(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\right)
 \end{equation}
 
 Consequently, to define a Gaussian generative model it is only necessary to
@@ -1648,7 +1649,7 @@ Where $N = |\mathcal{D}|$, $h$ is a smoothing parameter known as bandwidth and
 $K$ is the kernel function. The Gaussian kernel is defined as follows:
 
 \begin{equation}
-    G_i(x) = K\left(\frac{x-x_i}{h} \right) = \frac{1}{(\sqrt{2\pi} h)^m} 
+    G_i(x) = K\left(\frac{x-x_i}{h} \right) = \frac{1}{(\sqrt{2\pi} h)^d} 
     \text{exp}\left(-\frac{1}{2}\frac{(x-x_i)^T(x-x_i)}{h}\right) 
 \end{equation}
 
@@ -1667,7 +1668,7 @@ visualization of the PDF mechanisms discussed, applied to a mock dataset.
     }~\label{fig:pdf-example}
 \end{figure}
 
-% Probability density function estimation + Distribution approximation
+% TODO: Probability density function estimation + Distribution approximation
 % (discuss marginal inference)
 
 \subsection{Probabilistic Graphical Models}
@@ -1677,7 +1678,7 @@ conditional distributions. It represents the joint probability distribution
 over the cross-product of the feature domains in $\mathcal{D}$. It is a
 directed acyclic graph that represents $\mathcal{D}$'s features as nodes and
 their conditional dependencies as directed edges. The set of features pointing
-directly to feature $v \in V, |V|=m$ via a single edge are known as the parent
+directly to feature $v \in V, d=|V|$ via a single edge are known as the parent
 variables, $pa(v)$. A Bayesian network calculates $p(x)$ as the product of the
 individual density functions, based on the conditional probabilities of the
 parent variables:
@@ -1707,47 +1708,198 @@ initial observation selected from $\mathcal{D}$, $x_0$ and is used to begin
 the sampling process. In its original format, the sampling of each feature
 value $v$ in $x^s_i$ is conditioned by $x^s_{i-1}$ and the feature values
 already sampled from $x^s_i$, such that $x^s_{i, v} \sim p(x^s_{i, v} |
-x^s_{i, 1}, \ldots, x^s_{i, v-1}, x^s_{i-1, v+1}, \dots, x^s_{i-1, m})$.
+x^s_{i, 1}, \ldots, x^s_{i, v-1}, x^s_{i-1, v+1}, \dots, x^s_{i-1, d})$.
 Therefore, Gibbs sampling is a special case of the Metropolis-Hastings
 algorithm.
 
 \subsection{Linear Transformations}
 
-Linear interpolation
+Linear interpolation mechanisms can be split into two subgroups: between and
+within-class interpolation. Both mechanisms follow a similar approach; they
+use a scaling factor $\lambda$, typically sampled from either
+$\mathcal{U}(0,1)$ or $\text{Beta}(\alpha, \alpha)$: 
 
-\begin{itemize}
-    \item Inter-class interpolation (MixUp)
-    \item Inner-class interpolation (SMOTE)
-\end{itemize}
+\begin{equation}~\label{eq:interpolation}
+    x^s = \lambda x_i + (1-\lambda)x_j = x_j + \lambda(x_i - x_j)
+\end{equation}
 
-Linear extrapolation
-\begin{itemize}
-    \item Mean-based
-    \item Observation-based
-\end{itemize}
+The within-class interpolation mechanism selects two observations from the
+same class, while the between-class interpolation mechanism selects two
+observations from different classes and also interpolates the one-hot encoded
+target classes $y_i$ and $y_j$. However, the approach to select observations
+might vary according to the ML task and data generation algorithm. For
+example, most SMOTE-based methods select a center observation and a random
+observation within its $k$-nearest neighbors belonging to the same class,
+while the Mixup method selects two random observations, regardless of their
+class membership.
 
-Both
+\begin{figure}
+	\centering
+	\includegraphics[width=.7\linewidth]{../analysis/linear-transformations}
+    \caption{%
+        Examples of linear transformation mechanisms. Legend: (a)
+        Between-class interpolation, (b) Within-class interpolation, (c)
+        Observation-based extrapolation, (d) Mean-based extrapolation, (e)
+        Combination of interpolation and extrapolation and (f) Difference
+        transform.
+    }~\label{fig:linear-transformations}
+\end{figure}
 
-Difference transform~\cite{cheung2020modals}
+The observation-based linear extrapolation mechanism modifies
+Equation~\ref{eq:interpolation} such that $x^s = x_i + \lambda(x_i - x_j)$,
+while the mean-based extrapolation mechanism uses the mean of a class'
+observations, $\mu^c$ and a randomly selected observation to generate $x^s =
+x_i^c + \lambda(x_i^c - \mu^c)$. The combination of both interpolation and
+extrapolation mechanisms was found in the literature. This mechanism can be
+achieved using Equation~\ref{eq:interpolation} and modifying $\lambda$'s range
+to either decreasing its minimum value below zero or increasing its maximum
+value above one.
 
-Hard Extrapolation
+The difference transform mechanism uses two observations to compute a
+translation vector (multiplied by the scaling factor $\lambda$) and apply it on
+a third observation:
+\begin{equation}
+    x^s = x_i + \lambda(x_j - x_k)
+\end{equation}
+
+Although there are various linear transformation mechanisms in the literature,
+the majority of the relevant studies found applied linear interpolation
+mechanisms. Within-class interpolation was frequently found in oversampling
+methods, while between-class interpolation was found most often in
+regularization methods. A depiction of the linear transformation mechanisms
+found in the literature are presented in
+Figure~\ref{fig:linear-transformations}.
 
 \subsection{Geometric Transformations}
 
-Hypersphere (G-SMOTE)
 
-Triangular
+\begin{figure}
+	\centering
+	\includegraphics[width=.7\linewidth]{../analysis/geometric-transformations}
+    \caption{%
+        Examples of geometric transformation mechanisms. Legend: (a)
+        hypersphere mechanism, (b) triangular mechanism and (c)
+        hyperrectangle mechanism.
+    }~\label{fig:geometric-transformations}
+\end{figure}
 
-Hyperrectangle (NLMixup)
+Overall, geometric transformation mechanisms were not frequently found in the
+literature. They are primarily used to develop Mixup or SMOTE-based variants.
+Figure~\ref{fig:geometric-transformations} shows a visual example of the
+related mechanisms.
+
+The hypersphere mechanism generates data within a distorted, n-dimensional
+hyperspheroid. It is formed using an observation to define the center of
+the geometry and another to define its edge.
+It is defined with two hyperparameters, the deformation
+factor, $\alpha_{def} \in [0, 1]$, and the truncation factor, $\alpha_{trunc}
+\in [-1, 1]$. The deformation factor deforms the hypersphere into an elliptic
+shape, where $\alpha_{def}=1$ applies no deformation and $\alpha_{def}=0$
+creates a line segment. The truncation factor limits the generation area of
+the hyperspheroid within a subset of the hypersphere, where $\alpha_{trunc}=0$
+applies no truncation, $\alpha_{trunc}=1$ uses the half of the area between
+the two selected observations and $\alpha_{trunc}=-1$ uses the opposing area.
+In Figure~\ref{fig:geometric-transformations}a, the two generation areas were
+formed using approximately $\alpha_{trunc} = \alpha_{def} = 0.5$.
+
+The triangular mechanism selects three observations to generate $x^s =
+\lambda_ix_i + \lambda_jx_j + (1-\lambda_i-\lambda_j)x_k$, where $\lambda_i,
+\lambda_j \sim \mathcal{U}(0, \alpha)$, $\alpha \in (0, 0.5]$. The
+hyperrectangle mechanism uses an approach similar similar to
+Equation~\ref{eq:interpolation}. However, the scaling factor is changed into a
+scaling vector, $\Lambda = [\lambda_1,\dots,\lambda_d ] \in [0,1]^d, \lambda_i
+\sim \text{Beta}(\alpha, \alpha)$, where $\alpha$ is a hyperparameter used to
+define the Beta distribution. A synthetic observation is generated with $x^s =
+\Lambda \odot x_i + (1-\Lambda) \odot x_j$, where $\odot$ denotes the Hadamard
+product. This operation originates a generation area like the ones presented
+in Figure~\ref{fig:geometric-transformations}c.
 
 \subsection{Neural Networks}
 
-GANs
+Generative Adversarial Network (GAN) architectures are structured as a minimax
+two-player game composed of two models, a generator and a discriminator. Both
+models are trained simultaneously throughout the learning phase to learn to
+generate data with similar statistical properties when compared to the
+original data. The generative model captures the data distribution, while the
+discriminator estimates the probability of an observation coming from the
+training data. The goal of the generator model is to produce synthetic
+observations that are capable of fooling the discriminator, making it
+impossible for the discriminator to distinguish real from synthetic
+observations.  Although they were originally developed in an unsupervised
+learning setting~\cite{goodfellow2020generative}, subsequent contributions
+proposed GANs for semi-SL, supervised learning and reinforcement learning.
 
-Autoencoders
+An autoencoder (AE) is a type of neural network architecture that learns
+manifold representations of an input space. These models are typically trained
+by regenerating the input and are designed with a bottleneck in the hidden
+layers that corresponds to the learned feature space. It contains two parts,
+an encoder and a decoder. The encoder transforms the input data into
+lower-dimensional representations (\textit{i.e.}, the feature space), while
+the decoder projects these representations into the original input space.
+Since it was first proposed~\cite{ackley1985learning}, many variants were
+developed for multiple purposes. However, based on the literature found for
+synthetic data generation, the variational AE appears to be the most popular
+approach.
 
 \section{Evaluating the Quality of Synthetic Data
-}~\label{sec:evaluating-synthetic-data}
+}\label{sec:evaluating-synthetic-data}
+
+The vast majority of synthetic data generation models are evaluated on a ML
+utility basis. There is a general lack of research on the development of
+metrics to evaluate the quality of synthetic data beyond common metrics such
+as Overall Accuracy (OA) or F1-score. One motivation to do this is the ability to
+anticipate the quality of the data after training a ML classifier, which may
+be an expensive and time-consuming task. This is a challenging problem, since
+the usefulness of synthetic data generators depend on the assumptions imposed
+according to the dataset, domain and ML problem.
+
+The GANBLR model~\cite{zhang2021ganblr} was evaluated on three aspects:
+(1) ML utility, (2) Statistical similarity, and (3) Interpretability. In
+\citet{xu2019modeling}, the authors evaluate the CTGAN and TVAE models using a
+likelihood fitness metric (to measure statistical similarity) and ML efficacy
+(\textit{i.e.}, utility). \citet{hittmeir2019utility} evaluate synthetic data
+generators by comparing synthetic data with the original data, as well as ML
+utility metrics. According to \citet{alaa2022faithful}, the evaluation of
+generative models should quantify three key aspects of synthetic data:
+
+\begin{enumerate}
+    \item Fidelity \hl{TODO: DEFINE}
+    \item Diversity 
+    \item Generalization
+\end{enumerate}
+
+\subsection{Quantitative methods}
+
+The propensity score was considered an appropriate performance metric to
+measure the utility of masked data~\cite{woo2009global}. This metric is
+estimated via the training of a classifier (typically a logistic regression)
+on a dataset merged with both the original and synthetic data and labeled
+information regarding the source of each observation (synthetic or original),
+to predict the likelihood of an observation to be synthetic. Therefore, this
+approach guarantees observation-level insights regarding the faithfulness of
+each observation. \citet{woo2009global} suggest a summarization of this
+metric by computing:
+
+\begin{equation}
+    U_p = \frac{1}{N} \Sigma^N_{i=1}{(\hat{p}_i - c)}^2
+\end{equation}
+
+Where $N = |\mathcal{D} \cup \mathcal{D}^s|$, $c = \frac{|\mathcal{D}^s|}{N}$
+and $\hat{p}_i$ is the estimated propensity score for unit $i$. When a
+synthetic dataset is relatively similar to the original dataset, $U_p$ will be
+close to zero. When the synthetic dataset is easily distinguishable from the
+original dataset, $U_p$ will be close to ${(1-c)}^2$. \citet{dankar2021fake},
+established a generally consistent negative correlation between $U_p$ and OA\@.
+
+\cite{el2020seven}
+
+The 3-dimensional metric proposed by~\citet{alaa2022faithful} quantifies these
+aspects via the combination of three metrics ($\alpha$-Precision,
+$\beta$-Recall and Authenticity) for various application domains.
+
+
+
+
 
 The log-likelihood (and equivalently the Kullback-Leibler Divergence) is a
 de-facto standard to train and evaluate generative
@@ -1757,32 +1909,28 @@ independently and should generally be avoided. Therefore, it is necessary
 to evaluate generative models with respect to the application these models are
 being developed for.
 
+Another popular evaluation approach is the computation of the average distance
+among synthetic observations and their nearest neighbors within the original
+dataset~\cite{hittmeir2019utility}.
 
-The evaluation of generative models should quantify three key aspects of
-synthetic data~\cite{alaa2022faithful}:
+A less common approach to compare the performance of synthetic data generators
+is to attempt to replicate the results of studies using synthetic
+data~\cite{benaim2020analyzing}.
 
-\begin{enumerate}
-    \item Fidelity
-    \item Diversity 
-    \item Generalization
-\end{enumerate}
 
-The 3-dimensional metric proposed by~\citet{alaa2022faithful} quantifies these
-aspects via the combination of three metrics ($\alpha$-Precision,
-$\beta$-Recall and Authenticity) for various application domains.
+% \subsection{Statistical Divergence Metrics} 
+% 
+% \subsection{Precision/Recall Metrics}
+% 
+% \subsection{Supervised Learning Metrics}
 
-The vast majority of synthetic data generation models are evaluated on a ML
-utility basis. However, the GANBLR model~\cite{zhang2021ganblr} was evaluated
-based on three aspects: (1) ML utility, (2) Statistical similarity, and (3)
-Interpretability. In \citet{xu2019modeling}, the authors evaluate the proposed
-method using a likelihood fitness metric (to measure statistical similarity)
-and ML efficacy (\textit{i.e.}, utility).
+\subsection{Qualitative approaches}
 
-\subsection{Statistical Divergence Metrics} 
-
-\subsection{Precision/Recall Metrics}
-
-\subsection{Supervised Learning Metrics}
+\citet{hittmeir2019utility} adopted an evaluation procedure using a 2-step
+approach: Similarity comparison and data utility. One of the evaluations is the
+comparison of the features' distributions with synthetic data and the original
+data using histogram plots. Another evaluation was the comparison of
+correlation matrices via heat map plots.
 
 \section{Discussion}~\label{sec:discussion}
 
