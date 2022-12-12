@@ -2,7 +2,7 @@
 
 \pdfoutput=1
 
-\title{Tabular synthetic data generation: A literature review}
+\title{Tabular and Feature Space Synthetic Data Generation: A Literature Review}
 
 \author{%
 	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
@@ -1852,7 +1852,11 @@ to anticipate the quality of the data after training a ML classifier, which
 may be an expensive and time-consuming task. This is a challenging problem,
 since the usefulness of synthetic data generators depend on the assumptions
 imposed according to the dataset, domain and ML
-problem~\cite{chundawat2022tabsyndex}.
+problem~\cite{chundawat2022tabsyndex}. This section focuses on the main
+evaluation approaches found in the literature, as well as recently proposed
+methods. For a more comprehensive analysis of performance metrics for
+synthetic data evaluation, the reader is referred to~\cite{dankar2022multi}
+and~\cite{theis2016note}.
 
 The GANBLR model~\cite{zhang2021ganblr} was evaluated on three aspects: (1) ML
 utility, (2) Statistical similarity, and (3) Interpretability. In
@@ -1877,7 +1881,7 @@ directly onto the target application is generally
 recommended~\cite{theis2016note}. Each evaluation procedure must be carefully
 implemented and adapted according to the use case.
 
-\subsection{Quantitative methods}
+\subsection{Quantitative approaches}
 
 The Kullback-Leibler (KL) divergence (and equivalently the log-likelihood) is a
 common approach to evaluate generative models~\cite{theis2016note}. Other
@@ -1971,20 +1975,12 @@ a lower Authenticity score and vice versa.
 
 A less common evaluation approach is to attempt to replicate the results of
 studies using synthetic data~\cite{el2020seven, benaim2020analyzing,
-rosenblatt2022epistemic}. Another method found is the computation of the
+rosenblatt2022epistemic}. Another method is the computation of the
 average distance among synthetic observations and their nearest neighbors
 within the original dataset~\cite{hittmeir2019utility}. The Confidence
 Interval Overlap and Average Percentage Overlap metrics may be used to
 evaluate synthetic data specifically for regression
 problems~\cite{khan2022utility, karr2006framework}.
-
-
-
-% \subsection{Statistical Divergence Metrics} 
-% 
-% \subsection{Precision/Recall Metrics}
-% 
-% \subsection{Supervised Learning Metrics}
 
 \subsection{Qualitative approaches}
 
@@ -2004,19 +2000,77 @@ distinguish from real data.
 
 \section{Discussion}~\label{sec:discussion}
 
-\subsection{Main Findings}
+The generation of tabular and feature space synthetic data has applications in
+multiple ML tasks and domains. Specifically, we found six areas that were
+proven to benefit from synthetic data: data privacy, regularization,
+oversampling, active learning, semi-supervised learning and self-supervised
+learning. Synthetic data may be used either as an accessory task to improve a
+ML model's performance over a primary task (\textit{e.g.}, regularization and
+oversampling), an intermediate task (\textit{e.g.}, feature extraction), or as
+a final product itself (\textit{e.g.}, data anonymization). The analysis of
+data generation algorithms for each relevant learning problem led to the
+proposal of a general purpose taxonomy primarily focused on the underlying
+mechanisms used for data generation. We characterized every algorithm
+discussed in this work into four categories: (1) architecture, (2) application
+level, (3) data space and (4) scope.
 
-Scaling data in different mechanism types
+This work focused primarily on the mechanisms used to generate synthetic
+observations; preprocessing, learning phase design, feature space learning and
+ML task-specific contributions were secondary objectives for analysis.
+Consequently, understanding of how the constraints within each task condition
+the choice and design of the synthetic data generator is a subject of future
+work.
 
-Manifold data spaces
+The successful implementation of synthetic data generation generally requires
+a few considerations:
 
-Smoothness assumption
+\begin{enumerate}
 
-Technical difficulty in implementation of different mechanisms
+    \item Ensuring the dataset's features are comprised within similar, fixed
+        boundaries. For example, any method using a neighbors-based approach
+        will rely on distance measurements (typically the euclidean distance),
+        which is sensitive to the scale of the data and a nearest-neighbors
+        estimation may vary depending on whether the data was scaled \textit{a
+        priori}. This can be achieved with data scaling. 
 
-Computational requirements
+    \item Various generation mechanisms require a manifold. There are two
+        approaches to address non-manifold input data: (1) Adopt methods
+        sensitive to the presence of non-metric features, or (2) project the
+        input data into a manifold (\textit{i.e.}, a feature space).
 
-\subsection{Limitations}
+    \item The smoothness assumption is prevalent in linear and
+        perturbation-based data generation mechanisms. If a classification
+        problem has low class separation and difficult to solve, the choice in
+        the design of the generator algorithm is also difficult. Generally,
+        generation algorithm with a global scope might adapt better to
+        classification problems with low separability. On the other hand,
+        problems with higher separability might require a definition of more
+        uniform decision boundaries to prevent overfitting, which can be
+        achieved with generation algorithms with a local scope.
+
+    \item Considering the trade-off between performance and computational
+        power. It is generally understood that computationally-intensive
+        approaches tend to produce synthetic data with higher quality. When
+        trained properly, neural network mechanisms typically lead to
+        synthetic data that is more difficult to distinguish compared to the
+        remaining approaches. Geometric mechanisms have also achieved good
+        results but often require a careful tuning of their hyperparameters.
+        Linear and perturbation mechanisms do not require much training and
+        use less hyperparameters, but have been know for often producing low
+        diversity synthetic data (\textit{vis a vis} the original dataset).
+
+\end{enumerate}
+
+Throughout the analysis of the literature, we identified six types of
+generation mechanisms and discuss the mechanisms used in classical and
+state-of-the-art techniques.
+
+% Which methods are more frequent according to the ML task? Relate them to the
+% constraints of the problem
+
+% Recommendations for data evaluation
+
+\section{Future Work}~\label{sec:future-work}
 
 Research across the different applications appears to be sandboxed even though
 all techniques integrate synthetic data in its core.
@@ -2080,6 +2134,10 @@ datasets and real-world industry applications.
 
 Computational cost and inconsistent quality of synthetic data generated with
 GANs (\textit{e.g.}, mode collapse).
+
+Interpretability of representations when generating data in the feature space.
+The ability to interpret feature space representations could 
+guide the design of data generation techniques. 
 
 Research on differentially private variational autoencoders is sparse to
 non-existent. The only related study found in the literature was developed
