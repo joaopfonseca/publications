@@ -94,16 +94,23 @@
 
     The generation of synthetic data can be used for anonymization,
     regularization, oversampling, semi-supervised learning, self-supervised
-    learning and various other tasks. The wide range of applications of these
-    mechanisms motivated the development of new algorithms specialized in
-    generating data for specific types of data and Machine Learning (ML)
-    tasks. As a result, the analysis of the different types of generative
-    models 
-
-    % We provide a broad taxonomy to define data generation mechanisms
-
-    % We provide an analysis on recommendations for the evaluation of the
-    % quality of the synthetic data generated
+    learning and various other tasks. Such broad potential motivated the
+    development of new algorithms, specialized in data generation for specific
+    data formats and Machine Learning (ML) tasks. However, one of the most
+    common data formats used in industry applications, tabular data, is
+    generally overlooked; Literature analyses are nearly non-existent,
+    state-of-the-art methods are spread across domains and ML tasks and there
+    is little to no distinction among the main types of mechanism underlying
+    synthetic data generation algorithms. In this paper, we analyse tabular
+    and feature space synthetic data generation algorithms. Specifically, we
+    propose a unified taxonomy as an extension and generalization of previous
+    taxonomies, review 70 generation algorithms across six ML problems,
+    distinguish the main generation mechanisms identified into six categories,
+    describe each type of generation mechanism, discuss metrics to evaluate
+    the quality of synthetic data and provide recommendations for future
+    research. We expect this study to assist researchers and practitioners
+    identify important gaps in the literature and design better and more
+    informed practices regarding synthetic data.
 
 \end{abstract}
 
@@ -261,7 +268,7 @@ Table~\ref{tab:literature-reviews}.
         Finance & Analysis of applications, motivation and properties of
         synthetic data for anonymization. \\
 
-        \citet{hernandez2022synthetic} & Tabular & Differential privacy &
+        \citet{hernandez2022synthetic} & Tabular & \hl{Differential privacy} &
         Healthcare & Focus on GANs. \\
 
         \citet{raghunathan2021synthetic} & Tabular & Differential privacy &
@@ -615,12 +622,8 @@ Table~\ref{tbl:generators}.
     
     \bottomrule
     \endlastfoot
-    % SynSys~\cite{dahmen2019synsys} & Regression & HMM & Probabilistic & External & Input & Global \\
-    % SenseGen~\cite{alzantot2017sensegen} & Anon. + Reg. & GMM & Net. + Prob. & External & Input & Global \\
     SDV~\cite{patki2016synthetic} & Anon. & PDF & Probabilistic & External & Input & Global \\
     MST~\cite{mckenna2021winning} & DP & \hl{Marginal} & Probabilistic & External & Input & Global \\
-    % QUAIL~\cite{rosenblatt2020differentially} & DP & --- & --- & External & --- & Global \\
-    % SuperQUAIL~\cite{rosenblatt2022spending} & DP & --- & --- & External & --- & Global \\
     MWEM~\cite{hardt2012simple} & DP & \hl{Marginal} & Probabilistic & External & Input & Global \\
     MWEM-PGM~\cite{mckenna2019graphical} & DP & \hl{PGM} & Probabilistic & External & Input & Global \\
     PrivBayes~\cite{zhang2017privbayes} & DP & \hl{PGM} & Probabilistic & External & Input & Global \\
@@ -1998,11 +2001,11 @@ data, which could be quantified with classification performance metrics. A low
 classification performance implies synthetic data that is difficult to
 distinguish from real data.
 
-\section{Discussion}~\label{sec:discussion}
+\section{Discussion}\label{sec:discussion}
 
 The generation of tabular and feature space synthetic data has applications in
 multiple ML tasks and domains. Specifically, we found six areas that were
-proven to benefit from synthetic data: data privacy, regularization,
+shown to benefit from synthetic data: data privacy, regularization,
 oversampling, active learning, semi-supervised learning and self-supervised
 learning. Synthetic data may be used either as an accessory task to improve a
 ML model's performance over a primary task (\textit{e.g.}, regularization and
@@ -2012,17 +2015,8 @@ data generation algorithms for each relevant learning problem led to the
 proposal of a general purpose taxonomy primarily focused on the underlying
 mechanisms used for data generation. We characterized every algorithm
 discussed in this work into four categories: (1) architecture, (2) application
-level, (3) data space and (4) scope.
-
-This work focused primarily on the mechanisms used to generate synthetic
-observations; preprocessing, learning phase design, feature space learning and
-ML task-specific contributions were secondary objectives for analysis.
-Consequently, understanding of how the constraints within each task condition
-the choice and design of the synthetic data generator is a subject of future
-work.
-
-The successful implementation of synthetic data generation generally requires
-a few considerations:
+level, (3) data space and (4) scope. The successful implementation of
+synthetic data generation generally requires a few considerations:
 
 \begin{enumerate}
 
@@ -2061,59 +2055,94 @@ a few considerations:
 
 \end{enumerate}
 
-Throughout the analysis of the literature, we identified six types of
-generation mechanisms and discuss the mechanisms used in classical and
-state-of-the-art techniques.
+This work focused primarily on the mechanisms used to generate synthetic
+observations; preprocessing, learning phase design, feature space learning and
+ML task-specific contributions were secondary objectives for analysis.
+Consequently, understanding of how the constraints within each task condition
+the choice and design of the synthetic data generator is a subject of future
+work.
 
-% Which methods are more frequent according to the ML task? Relate them to the
-% constraints of the problem
+Throughout the analysis of the literature, we identified six types of
+generation mechanisms and discuss more specific methods used in classical and
+state-of-the-art techniques. Techniques for data privacy via synthetic data
+rely primarily on perturbation mechanisms, PDFs, PGMs and Neural networks.
+Regularization approaches frequently employ Linear mechanisms. Other less
+commonly used mechanisms are PGMs, Neural network approaches, geometric and
+perturbation mechanisms. Various Oversampling algorithms have been proposed
+using each of the mechanisms found. However, the most prevalent mechanisms
+used were linear-based. AL methods rarely employ synthetic data. The few
+studies found employ primarily linear and geometric mechanisms, and a minority
+used AE models for feature space augmentation. Most Semi-SL methods used
+perturbation and linear mechanisms, while geometric mechanisms are rarely
+used. All tabular Self-SL methods used perturbation mechanisms. 
 
 % Recommendations for data evaluation
+Designing an approach to measure the quality of synthetic data depends on the
+target ML problem. A wholistic evaluation approach for synthetic data should
+consider the analysis of (1) ML utility, (2) Statistical similarity, (3)
+interpretability. The analysis of statistical similarity can be further
+divided into (1) fidelity, (2) diversity and (3) generalization.  However,
+balancing the analysis between these three perspectives is not a
+straightforward task. For example, duplicating a dataset to form a synthetic
+dataset will result into the best possible fidelity and diversity, but bad
+generalization. Overall, there is a paucity of research into the development
+of comprehensive analyses of synthetic data, as well as understanding the
+balance between the different types of analyses.
 
-\section{Future Work}~\label{sec:future-work}
+\section{Future Work}\label{sec:future-work}
+% TODO: maybe rename to "Research gaps and future directions"?
 
-Research across the different applications appears to be sandboxed even though
-all techniques integrate synthetic data in its core.
+As discussed throughout our anlysis, it appears the synthetic data generation
+research is generally sandboxed across ML problems and domains, even though
+all of these areas integrate synthetic data in its core. Given the breadth
+and complexity of input-level and feature-level data generation mechanisms, it
+is increasingly important to find an \textit{a priori} approach to efficiently
+determine appropriate data generation policies and techniques. However, the
+complexity of this task is determined by various factors: different data
+types, ML problems, model architectures, computational resources, performance
+metrics and contextual constraints. Auto-augmentation and meta learning aim to
+address this challenge and are still subject to active research.
 
 It is generally understood that, if learned properly, the feature space is
 expected to be convex and isotropic. In that case, using linear generation
 techniques in the feature space would produce synthetic data without
 introducing noise~\cite{cheung2020modals}. However, it is unclear which types
 of model/architectures and training procedures contribute to the learning of a
-good feature space according to the context.
+good feature space according to the context. Furthermore, we found a limited
+amount of research on tabular data augmentation using auto-encoder
+architectures. Although there are studies performing data augmentation on
+tabular data in various domains~\cite{delgado2021deep}, defining the
+architecture and learning phase of an AE is not an intuitive task. Generally,
+autoencoders are used to learn a manifold for more complex data types. As long
+as the method used to generate the feature space is appropriate, the methods
+discussed in this study could be used in the feature space regardless of the
+type of data.
 
-Given the breadth and complexity of input-level and feature-level data
-generation mechanisms, it is increasingly important to find a method to
-efficiently determine the most appropriate data generation policies. However,
-the complexity of this task is determined by various factors: different data
-types, ML problems, model architectures, computational resources, performance
-metrics and contextual constraints. Auto-augmentation and meta learning aim to
-address this challenge and are still subject to active research.
+The quality of synthetic data generation in high-dimensional scenarios appears
+as a prevailing limitation in various applications, especially within linear
+and geometric mechanisms. This limitation can be addressed with dimensionality
+reduction techniques, as well as feature space learning.  However, research on
+generation in the feature space is greatly focused on GAN architectures, which
+require significant computational power. Other methods to learn manifold
+embeddings could be explored to address this limitation.
 
-The quality of synthetic data generation in high-dimensional domains appears
-as a prevailing limitation in most applications. This method might be
-addressed with dimensionality reduction techniques along with data generation
-in the feature space. However, research on generation in the feature space is
-greatly focused on GAN architectures, which require significant computational
-power. Other methods for learning manifold space embeddings could be explored
-to address this limitation.
-
-To the best of our knowledge, research on data augmentation using auto-encoder
-architectures is sparse. There is, however, a few studies performing data
-augmentation in different domains using tabular data~\cite{delgado2021deep}.
-More commonly, autoencoders are used to learn a manifold features space for
-more complex data types. As long as the method used to generate the feature
-space is appropriate, the methods discussed in this study can be used in the
-feature space regardless of the type of data.
-
-It remains an open question which feature space transformations, or types of
-transformations, create better synthetic data~\cite{cheung2020modals}.
-
-% Synthetic data generation with a real valued y?
-
-% Data generation in the feature vs input vs output
-There is not much research concerning the quality and general performance
-between data generation on the input, feature and output space.
+It remains an open question which generation mechanisms, or types of
+mechanisms, create better synthetic data~\cite{cheung2020modals}. Although
+there is no \hl{one-size-fits-all solution, a general set of rules of thumb
+could be devised}, such as understanding how certain characteristics of a
+problem will affect the choice of the generation policy, which types of
+mechanisms are more appropriate for different types of dataset, ML model
+architecture, domains and target ML
+problem, or the trade-offs between the different types of generation
+mechanism. A better understanding of the relationship between recently
+proposed methods for evaluating synthetic data (as discussed in
+Section~\ref{sec:evaluating-synthetic-data}) and the performance on the target
+ML problem might contribute to answer this question. Furthermore, determining
+the use cases, quality and general performance of data generation on the
+input, feature and output space should be further developed. Finally, it still
+unclear \text{why} synthetic data generation works for each of the ML tasks
+discussed. Research on this topic lacks depth and fails to address the
+theoretical underpinnings~\cite{feng2021survey, dao2019kernel}.
 
 % data privacy
 The evaluation of anonymization techniques lack standardized, objective and
@@ -2132,72 +2161,57 @@ realistic. \citet{rosenblatt2020differentially} attempts to address this
 problem by proposing a standardized evaluation methodology using standard
 datasets and real-world industry applications.
 
-Computational cost and inconsistent quality of synthetic data generated with
-GANs (\textit{e.g.}, mode collapse).
+% Regularization in supervised learning
+Unlike data privacy solutions, studies on data augmentation techniques
+generally do not consider the similarity/dissimilarity of synthetic data. The
+study of quality metrics for supervised learning may reduce computational
+overhead and experimentation time. Only one study related to the relationship
+of quality metrics and performance in the primary ML task was found
+in~\cite{dankar2021fake}, which was done only for the pMSE metric.
 
-Interpretability of representations when generating data in the feature space.
-The ability to interpret feature space representations could 
+Neural network mechanisms typically involve a higher computational cost
+compared to the remaining types of mechanisms. This problem is further
+aggravated with their inconsistent performance, since different
+initializations may result in very different performances. This problem may be
+observed in~\cite{douzas2018effective}. More generally, feature space
+representations of training data raises the challenge of interpreting
+representations; the ability to interpret feature space representations could
 guide the design of data generation techniques. 
 
-Research on differentially private variational autoencoders is sparse to
-non-existent. The only related study found in the literature was developed
-in~\cite{takahashi2020differentially}. However, it is not peer reviewed or
-particularly popular, which led us to discard this paper from our analysis.
+In non-tabular data domains, a common approach for data augmentation is the
+combination of several data augmentation methods to increase the
+diversification of synthetic data. This is true for both text
+classification~\cite{bayer2021survey} and image
+classification~\cite{grill2020bootstrap}. However, for tabular data, no
+studies were found that discuss the potential of ensembles of generation
+mechanisms on tabular data, \textit{i.e.}, understanding how selecting with
+different probabilities different generation mechanisms to generate synthetic
+data would affect the performance of the primary ML task. The formalization
+and analysis carried out in this work, regarding the different types of
+synthetic data generation mechanisms and quality metrics for feature and
+tabular synthetic data at an observation level, may facilitate this work.
 
-% Regularization in supervised learning
-Unlike with data privacy solutions, data augmentation techniques generally do
-not consider the similarity/dissimilarity of synthetic data. The study of
-quality metrics for supervised learning may reduce computational overhead and
-experimentation time. No studies related to the relationship of quality
-metrics and performance in the primary ML task were found
-\textbf{[CONFIRM!!!]}.
-
-There is not a clear understanding of what types of data augmentation methods
-are more appropriate according to different model architectures, ML tasks or
-domains and the reason why they work better or worse depending on the task. 
-In addition, it is still unclear \textit{why} data augmentation works.
-Research on this topic lacks depth and fails to address the theoretical
-underpinnings~\cite{feng2021survey}.
-
-In some domains, a common approach for data augmentation is the combination of
-several data augmentation methods to increase the diversification of synthetic
-data. This is true for both text classification~\cite{bayer2021survey} and
-image classification \textbf{[CITATION]}.  However, for tabular data, no
-similar approach was found.
-
-
-``Dao et al. (2019) note that ``data augmentation is typically performed in an
-ad-hoc manner with little understanding of the underlying theoretical
-principles'', and claim the typical explanation of DA as regularization to be
-insufficient.''~\cite{feng2021survey}
 
 % oversampling
-There is a lack of research on oversampling solutions to generate synthetic
-data with mixed data types and datasets with exclusively non metric features.
-
-There is a lack of methods adapted to use categorical features for tabular
-data.
-
-There is a lack of methods directed to regression problems.
-
-There is a paucity of research on the usage of probabilistic-based generation
-mechanisms in oversampling.
-
-% Active Learning
+Various oversampling methods have been proposed to address imbalanced learning
+limitations. However, there is still a major limitation in the literature
+regarding the oversampling of datasets with mixed data types or with
+exclusively non metric features at the input space. In addition, 
+the research on oversampling using PDFs or PGMs is scarce.
 
 To the best of our knowledge, research on few-shot learning for tabular data
-is residual to non-existent. Few-shot learning research using synthetic data
-generation techniques has been extensively developed using
+is scarce. Few-shot learning research using synthetic data generation
+techniques has been extensively developed using
 image~\cite{cubuk2019autoaugment, zhao2019data} and text
-data~\cite{zhou2021flipda}, but they are rarely adapted or tested in tabular
-data.
+data~\cite{zhou2021flipda}, but they are rarely adapted or tested for tabular
+data. One of the few studies found achieved a good performance in both
+few-shot and zero-shot learning through the adaptation of a Large Language
+model for tabular data~\cite{hegselmann2022tabllm}. 
 
-% Semi-supervised Learning
-
-% Self-supervised Learning
-There is no clear understanding of the most appropriate data augmentation
-techniques used to train self-supervised models and how their behavior and
-performance varies according to the data generation method used.
+% % Self-supervised Learning
+% There is no clear understanding of the most appropriate data augmentation
+% techniques used to train self-supervised models and how their behavior and
+% performance varies according to the data generation method used.
 
 % Societal challenges raised by data generation (?)
 % Systematic bias
@@ -2206,51 +2220,55 @@ Oversampling does not seem to be a relevant source of bias in behavioral
 research and does not appear to have an appreciably different effect on
 results for directly versus indirectly oversampled
 variables~\cite{hauner2014latent}. However, most oversampling methods do not
-account for the distribution in $\mathcal{D}$, which is especially important
+account for the training dataset's distribution, which is especially important
 for features with sensitive information (\textit{e.g.}, gender or ethnicity).
 Therefore, the application of oversampling methods on user data may further
-increase the bias in classification/discrimination between gender or ethnicity
-groups.
+increase the bias in classification between gender or ethnicity groups.
 
+Finally, various synthetic data generation algorithms are research-based, and
+might not be usable or feasible to be implemented by
+practitioners~\cite{bayer2021survey}. One way to address this problem is to
+publish the code developed, and ideally make them available as open source
+libraries for out-of-the-box usage.
 
-The combination of data generation strategies is an approach commonly found in
-different problems, such as self-supervised
-learning~\cite{grill2020bootstrap}. It can be more frequently found in text
-data applications~\cite{bayer2021survey} and image data \textbf{[CITATION]}.
-Although common in synthetic data generation applications for image data,
-there is a lack of studies on the potential of ensembles of generation
-mechanisms on tabular data, \textit{i.e.}, understanding how selecting with
-different probabilities different generation mechanisms to generate synthetic
-data would affect the performance of the primary ML task.
-
-% Maybe discuss adversarial attacks and re-identification attacks?
-
-% Accessibility of research to practitioners
-
-% Taken from \citet{bayer2021survey}
-% 
-% Most data augmentation methods are still research-based in their incremental
-% development progress and therefore not suitable for every practitioner. A
-% simple way to improve the usability is to publish code and, in the
-% best-case, develop libraries that can be used out of the box for augmenting
-% a text dataset. 
-
-\subsection{Research directions}
+% \subsection{Research directions}
 
 % similarities between mixup and SMOTE, and an intermediate solution that can
 % be further explored to use the mixup approach on tabular data
 % (Geometric-SMOTE selection mechanism)
 
-Quantifying the quality of the generated data:
+% Quantifying the quality of the generated data:
+% 
+% \begin{enumerate}
+%     \item Realistic
+%     \item Similarity
+%     \item Usefulness (determine purpose and relevant performance metric)
+%     \item Understand the relationship between the 3 factors
+% \end{enumerate}
 
-\begin{enumerate}
-    \item Realistic
-    \item Similarity
-    \item Usefulness (determine purpose and relevant performance metric)
-    \item Understand the relationship between the 3 factors
-\end{enumerate}
+\section{Conclusions}\label{sec:conclusions}
 
-\section{Conclusions}~\label{sec:conclusions}
+This literature review analyses various synthetic data generation-based
+algorithms for tabular data, with a focus on external level applications.
+Since synthetic data generation is a crucial step for various ML applications
+and domains, it is essential to understand and compare which techniques and
+types of algorithms are used for each of these problems. The usage of
+synthetic data may be an effective approach to prepare better datasets for a
+wide range of applications and/or preserve user privacy. Our work proposes a
+taxonomy based on four key characteristics of generation algorithms, which was
+used to characterize 70 data generation algorithms across six ML problems.
+This analysis resulted in the categorization and description of the generation
+mechanisms underlying each of the selected algorithms into six main
+categories.
+
+Despite the extensive research developed on various different methods for
+synthetic data generation, there are still open questions regarding the
+theoretical underpinnings of synthetic data adoption for each of the
+techniques, as well as limitations in the different types of generation
+mechanisms and evaluation procedures. However, the empirical work presented in
+the literature show significant performance improvements and promising
+research directions for future work.
+
 
 \printbibliography
 
