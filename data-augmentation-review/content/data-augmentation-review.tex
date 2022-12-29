@@ -691,8 +691,8 @@ Table~\ref{tbl:generators}.
     VAEACGAN~\cite{tran2019bayesian} & AL & AE & Network & Internal & Feature & Global\\
     AL-G-SMOTE~\cite{fonseca2021increasing} & AL & Geometric & Randomized & Internal & Input & Local\\
     DAE~\cite{rasmus2015semi} & Semi-SL & AE & Network & Internal & Input & Global \\ 
-    $\Pi$-model~\cite{samuli2017temporal} & Semi-SL & PDF & Randomized & Internal & In.+Feat. & Local \\
-    Mean Teacher~\cite{tarvainen2017mean} & Semi-SL & PDF & Randomized & Internal & In.+Feat. & Local \\
+    $\Pi$-model~\cite{samuli2017temporal} & Semi-SL & Perturb. & Randomized & Internal & In.+Feat. & Local \\
+    Mean Teacher~\cite{tarvainen2017mean} & Semi-SL & Perturb. & Randomized & Internal & In.+Feat. & Local \\
     ICT~\cite{verma2022interpolation} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
     Mixmatch~\cite{berthelot2019mixmatch} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
     SDAT~\cite{fang2022semi} & Semi-SL & AE+PDF & Net.+Prob. & Internal & Feature & Global \\
@@ -821,7 +821,6 @@ learning problem.
 
 \subsection{Privacy}\label{sec:data-privacy}
 
-% Introduce synthetic data generation
 Synthetic data generation is a technique used to produce synthetic, anonymized
 versions of datasets~\cite{dankar2021fake}. It is considered a good approach
 to share sensitive data without compromising significantly a given data mining
@@ -958,13 +957,13 @@ discriminator, which is used to train the generator network.
 
 \subsection{Regularization}\label{sec:regularization}
 
-When there are no underlying problems in the training data, it is sampled from
-a fixed data source, is labeled, and balanced, the resulting ML classifier is
-expected to achieve good generalization performance~\cite{benning2018modern}.
-However, if one or more of these assumptions does not hold, the ML model
-becomes prone to overfitting~\cite{Bartlett2021}. Regularization techniques
-are often used to address problems like overfitting, small training dataset,
-high dimensionality, outliers, label noise and catastrophic
+When the training data is clean, labeled, balanced, and sampled from a fixed
+data source, the resulting ML classifier is expected to achieve good
+generalization performance~\cite{benning2018modern}. However, if one or more
+of these assumptions do not hold, the ML model becomes prone to
+overfitting~\cite{Bartlett2021}. Regularization techniques are used to
+address problems like overfitting, small training dataset, high
+dimensionality, outliers, label noise and catastrophic
 forgetting~\cite{Halevy2009, Domingos2012, Salman2019, Xie2021}. They can be
 divided into three groups~\cite{santos2022avoiding}:
 
@@ -979,25 +978,24 @@ divided into three groups~\cite{santos2022avoiding}:
 \end{enumerate}
 
 The last approach, input level modifications, is known as data augmentation.
-It is used to increase the size and data variability of data in a training
-dataset, by producing synthetic observations~\cite{Van2001, Wong2016}. Since
-it is applied at the data level, it can be used for various types of problems
-and classifiers~\cite{Behpour2019}. Earlier definitions of data augmentation
-refer to methods based on iterative optimization or sampling algorithms that
+It is used to increase the size and variability of a training dataset, by
+producing synthetic observations~\cite{Van2001, Wong2016}. Since it is applied
+at the data level, it can be used for various types of problems and
+classifiers~\cite{Behpour2019}. Earlier definitions of data augmentation refer
+to methods based on iterative optimization or sampling algorithms that
 introduce unobserved data or latent variables~\cite{van2001art}. In the
 current ML literature, data augmentation techniques mostly refer to the
 former, while the latter is better known as feature extraction. Although data
 augmentation is commonly used and extensively studied in computer
 vision~\cite{shorten2019survey} and natural language
-processing~\cite{feng2021survey}, research on tabular data augmentation is
-sparse.
+processing~\cite{feng2021survey}, its research on tabular data is less common.
 
 Mixup~\cite{zhang2018mixup} consists of a linear interpolation between two
 randomly selected observations and their target feature values, $(x_i, y_i),
 (x_j, y_j) \in \mathcal{D}_L$, such that given $\lambda \sim
 \text{Beta}(\alpha,\alpha)$, $x^s = \lambda x_i + (1-\lambda) x_j$ and $y^s =
 \lambda y_i + (1-\lambda) y_j$, where $\alpha$ is a predetermined
-hyperparameter. This method was the source to Manifold Mixup
+hyperparameter. This method was the source of Manifold Mixup
 (M-Mixup)~\cite{verma2019manifold}. It generates synthetic data in the feature
 spaces of a neural network classifier's hidden layers. Another Mixup-based
 data augmentation approach, Nonlinear Mixup
@@ -1011,9 +1009,9 @@ product.
 \citet{feng2020autuencoder} proposed an autoencoder-based data augmentation
 (AE-DA) approach where the training of the autoencoder is done for each target
 class, non-iteratively, which reduces the amount of time required compared to
-the batch processing approach. The decoding weights of an autoencoder is
+the batch processing approach. The decoding weights of an autoencoder are
 scaled and linearly combined with an observation from another class using a
-coefficient that follows the beta distribution. The latter step varies from
+coefficient that follows a beta distribution. The latter step varies from
 typical interpolation-based approaches, since this coefficient is usually
 drawn from a uniform distribution.
 
@@ -1026,12 +1024,13 @@ contains a feature extraction step, trained using a combination of adversarial
 loss, classification loss and triplet loss, where latent space generation
 mechanisms are applied. The classifier is trained using the original and the
 synthetic observations generated in the feature space. In this study the
-authors discuss Difference transform augmentation method. It generates
-within-class synthetic data by selecting a $x^c$ and two random observations
-within the same class, $x_i, x_j$, to compute $x^s = x^c + \lambda (x_i-x_j)$.
-In addition they also experiment with Gaussian noise and Hard example
-extrapolation, determined by $x^s = x^c + \lambda (x^c-\mu)$, where $\mu$ is
-the mean of the observations within a given class.
+authors discuss difference transform augmentation method (among others already
+described in this study). It generates within-class synthetic data by
+selecting a $x^c$ and two random observations within the same class, $x_i,
+x_j$, to compute $x^s = x^c + \lambda (x_i-x_j)$. In addition they also
+experiment with Gaussian noise and Hard example extrapolation, determined by
+$x^s = x^c + \lambda (x^c-\mu)$, where $\mu$ is the mean of the observations
+within a given class.
 
 In the model distillation approach proposed in~\cite{fakoor2020fast} the
 student model is trained with synthetic data generated with Gibbs sampling.
@@ -1053,11 +1052,10 @@ conditional GAN approach to tabular data. Another GAN-based architecture,
 MedGAN~\cite{armanious2020medgan}, can also be adapted for tabular data and is
 used as a benchmark in related studies (\textit{e.g.},~\cite{xu2019modeling,
 zhang2021ganblr}). When compared to the remaining GAN-based approaches,
-MedGAN's architecture is more complex and is generally outperformed in the
-experiments reported in the literature. The GANBLR~\cite{zhang2021ganblr}
+MedGAN's architecture is more complex and is generally underperforms in the
+experiments found in the literature. The GANBLR~\cite{zhang2021ganblr}
 modifies vanilla GAN architectures with a Bayesian network as both generator
-and discriminator to create synthetic data that is expected to be
-indistinguishable from real data. This approach benefits from its
+and discriminator to create synthetic data. This approach benefits from its
 interpretability and reduced complexity, while maintaining state-of-the-art
 performance across various evaluation criteria.
 
@@ -1070,7 +1068,7 @@ it is difficult to achieve DP with AE-based models since they access the
 original data during the training procedure, unlike GANs.
 \citet{delgado2021deep} studies the impact of data augmentation on supervised
 learning with small datasets. The authors compare four different AE
-architectures: Undercomplete, Sparse, Deep and Variational AE\@. Although any
+architectures: Undercomplete, Sparse, Deep and Variational AE\@. Although all
 of the tested AE architectures improved classification performance, the deep
 and variational autoencoders were the best overall performing models.
 
@@ -1078,24 +1076,24 @@ and variational autoencoders were the best overall performing models.
 
 \subsection{Oversampling}\label{sec:oversampling}
 
-One problem frequently found in industry settings is the training of ML models
-on imbalanced datasets. Since most supervised machine learning classifiers are
-designed to expect classes with similar frequencies, with highly skewed
-distributions in $\mathcal{D}_L$, the classifier’s predictions tend to be
-biased towards overrepresented classes~\cite{fonseca2021improving}. For
-example, one can predict correctly with over 99\% accuracy whether credit card
-accounts were defrauded using a constant classifier. This issue can be
-addressed in 3 different ways: resampling, algorithmic modifications and
-cost-sensitive solutions~\cite{douzas2019imbalanced}. Resampling techniques
-are more general approaches when opposed to algorithmic and cost-sensitive
-methods. They modify $\mathcal{D}_L$ to ensure balanced class frequencies by
-removing majority class observations (\textit{i.e.}, undersampling), producing
-synthetic minority class observations (\textit{i.e.}, oversampling), or a
-combination of both. However, since undersampling removes observations from
-$\mathcal{D}_L$, it has the disadvantage of information
-loss~\cite{feng2019imbalanced} and lacks effectiveness when compared to
-oversampling methods~\cite{mohammed2020machine, hernandez2013empirical}.
-Oversampling can be considered a specific setting of data augmentation.
+Since most supervised ML classifiers are designed to expect classes with
+similar frequencies, training them over imbalanced datasets can result in
+limited classification performance.  With highly skewed distributions in
+$\mathcal{D}_L$, the classifier’s predictions tend to be biased towards
+overrepresented classes~\cite{fonseca2021improving}. For example, one can
+predict correctly with over 99\% accuracy whether credit card accounts were
+defrauded using a constant classifier. This issue can be addressed in 3
+different ways: resampling, algorithmic modifications and cost-sensitive
+solutions~\cite{douzas2019imbalanced}. Resampling techniques are more general
+approaches when opposed to algorithmic and cost-sensitive methods. They modify
+$\mathcal{D}_L$ to ensure balanced class frequencies by removing majority
+class observations (\textit{i.e.}, undersampling), producing synthetic
+minority class observations (\textit{i.e.}, oversampling), or a combination of
+both. However, since undersampling removes observations from $\mathcal{D}_L$,
+it has the disadvantage of information loss~\cite{feng2019imbalanced} and
+lacks effectiveness when compared to oversampling
+methods~\cite{mohammed2020machine, hernandez2013empirical}. Oversampling can
+be considered a specific setting of data augmentation.
 
 Oversampling is an appropriate technique when, given a set of $n$ target
 classes, there is a collection $C_{maj}$ containing the majority class
@@ -1136,10 +1134,10 @@ data generation mechanism:
 Although the SMOTE algorithm addresses the limitations in ROS, it brings other
 problems, which motivated the development of several SMOTE-based
 variants~\cite{douzas2019geometric}: (1) it introduces noise when a noisy
-minority class observations is assigned to $x^c$ or $x^{nn}$, (2) it
+minority class observation is assigned to $x^c$ or $x^{nn}$, (2) it
 introduces noise when $x^c$ and $x^{nn}$ belong to different minority-class
 clusters, (3) it introduces near duplicate observations when $x^c$ and
-$x^{nn}$ are too close together and (4) it does not account for within-class
+$x^{nn}$ are too close and (4) it does not account for within-class
 imbalance (\textit{i.e.}, different input space regions should assume a
 different importance according to the concentration of minority class
 observations).
@@ -1169,7 +1167,7 @@ C_{min}$ as $x^c$ is determined according to this ratio; the more non-minority
 class neighbors an observation contains, the more synthetic observations are
 generated using it as $x^c$. The generation phase is done using the linear
 mechanism in SMOTE\@. However, this approach tends to aggravate the limitation
-(1) previously discussed. A second version of this method,
+(1) discussed previously. A second version of this method,
 KernelADASYN~\cite{tang2015kerneladasyn}, replaces the generation mechanism
 with a weighted kernel density estimation. The weighing is done according to
 ADASYN's ratio and the synthetic data is sampled using the calculated Gaussian
@@ -1208,8 +1206,8 @@ lower dimensional representation of the input data to ensure the reconstructed
 data is different from the original observations. Overall, the usage of SOMs
 for oversampling is uncommon. Another two examples of this approach,
 SOMO~\cite{douzas2017self} and G-SOMO~\cite{douzas2021g} use a similar
-approach as K-means SMOTE\@. In the case of G-SOMO, instead of using SMOTE's
-generation mechanism, it uses G-SMOTE's instead.
+approach as K-means SMOTE\@. In the case of G-SOMO, the SMOTE
+generation mechanism is replaced by G-SMOTE's instead.
 
 Oversampling using GMM was found in a few recently proposed algorithms.
 GMM-SENN~\cite{xing2022predict} fits a GMM and uses its inverse weights to
@@ -1244,16 +1242,15 @@ the initialization and are prone to the ``mode collapse'' problem.
 
 Statistical-based oversampling approaches are less common. Some methods, such
 as RACOG and wRACOG~\cite{das2014racog} are based on Gibbs sampling,
-PDFOS~\cite{gao2014pdfos} is based on probability density function
-estimations and RWO~\cite{zhang2014rwo} uses a random walk algorithm.
-
-Although oversampling for classification problems using continuous features
-appears as a relatively well explored problem, there is a general lack of
-research on oversampling using nominal features or mixed data types
-(\textit{i.e.}, using both nominal and continuous features) and regression
-problems. SMOTENC~\cite{chawla2002smote} introduces a SMOTE adaptation for
-mixed data types. It calculates the nearest neighbors of $x^c$ by including in
-the euclidean distance metric the median of the standard deviations of the
+PDFOS~\cite{gao2014pdfos} is based on probability density function estimations
+and RWO~\cite{zhang2014rwo} uses a random walk algorithm. Although
+oversampling for classification problems using continuous features appears as
+a relatively well explored problem, there is a general lack of research on
+oversampling using nominal features or mixed data types (\textit{i.e.}, using
+both nominal and continuous features) and regression problems.
+SMOTENC~\cite{chawla2002smote} introduces a SMOTE adaptation for mixed data
+types. It calculates the nearest neighbors of $x^c$ by including in the
+euclidean distance metric the median of the standard deviations of the
 continuous features for every nominal feature values that are different
 between $x^c$ and $x^{nn}$. The generation is done using the normal SMOTE
 procedure for the continuous features and the nominal features are determined
@@ -1296,21 +1293,20 @@ label data according to a given budget, AL methods will search for the most
 informative unlabeled observations. Once labeled and included into the
 training set, these observations are expected to improve the performance of
 the classifier to a greater extent when compared to randomly selecting
-observations. AL is an iterative process where, at each iteration, an
-acquisition function $f_{acq}(x, f_\theta): \mathcal{D}_U \to \mathbb{R}$
-computes a classification uncertainty score for each unlabeled observation.
+observations. AL is an iterative process where an acquisition function
+$f_{acq}(x, f_\theta): \mathcal{D}_U \to \mathbb{R}$ computes a classification
+uncertainty score for each unlabeled observation, at each iteration.
 $f_{acq}$ provides the selection criteria based on the uncertainty scores,
 $f_\theta$ and the labeling budget~\cite{kim2021lada}.
 
 One way to improve an AL process is via the generation of synthetic data. In
 this case, synthetic data is expected to improve classification with a better
 definition of the classifier's decision boundaries. This allows the allocation
-of the data collection budget over a larger area of the input space. However,
-research focused on this topic is both recent and limited \textbf{[CITATION]}.
-These methods can be divided into AL with pipelined data augmentation
-approaches and AL with within-acquisition data augmentation. Pipelined data
-augmentation is the more intuitive approach, where at each training phase data
-augmentation is done to improve the quality of the classifier and is
+of the data collection budget over a larger area of the input space. These
+methods can be divided into AL with pipelined data augmentation approaches and
+AL with within-acquisition data augmentation~\cite{kim2021lada}. Pipelined
+data augmentation is the more intuitive approach, where at each training phase
+the synthetic data is produced to improve the quality of the classifier and is
 independent from $f_{acq}$. In \citet{fonseca2021increasing}, the pipelined
 approach in tabular data achieves a superior performance compared to the
 traditional AL framework using the G-SMOTE algorithm and the oversampling
@@ -1358,39 +1354,35 @@ for image data augmentation.
 Semi-supervised learning (Semi-SL) techniques modify the learning phase of ML
 algorithms to leverage both labeled and unlabeled data. This approach is used
 when $|\mathcal{D}_U| \gg |\mathcal{D}_L|$ (similarly to AL settings), but
-additional labeled data is impossible or difficult to acquire. In recent years
-the research developed in this area directs much of its focus to neural
+additional labeled data is too difficult to acquire. In recent years,
+the research developed in this area directed much of its focus to neural
 network-based models and generative learning~\cite{van2020survey}. Overall,
 Semi-SL can be distinguished between transductive and inductive methods. In
 this section, we will focus on synthetic data generation mechanisms in
-inductive, perturbation-based Semi-SL algorithms applicable to tabular or
+inductive, perturbation-based Semi-SL algorithms, applicable to tabular or
 feature space data.
 
-Ladder networks~\cite{rasmus2015semi} is semi-supervised learning architecture
-that learns a manifold feature space using a Denoising Autoencoder (DAE). The
-synthetic data is generated during the learning phase; random noise introduced
-into the input data and the DAE learns to predict the original observation.
-Although this method was developed for image data, DAE networks can be adapted
-for tabular data~\cite{sattarov2022explaining}.
+The ladder network~\cite{rasmus2015semi} is a semi-supervised learning
+architecture that learns a manifold feature space using a Denoising
+Autoencoder (DAE). The synthetic data is generated during the learning phase;
+random noise is introduced into the input data and the DAE learns to predict
+the original observation. Although this method was tested with image data,
+DAE networks can be adapted for tabular data~\cite{sattarov2022explaining}.
 
-The $\Pi$-model uses labeled and unlabeled data jointly in the training
-phase~\cite{samuli2017temporal}. Besides minimizing cross-entropy, they add to
-the loss function the squared difference between two input level
+The $\Pi$-model simultaneously uses both labeled and unlabeled data in the
+training phase~\cite{samuli2017temporal}. Besides minimizing cross-entropy,
+they add to the loss function the squared difference between two input level
 transformations (Gaussian noise and other image-specific methods) in the
-network's output layer (with dropout). In this case, the perturbations are
-applied both in the input space (via Gaussian noise) and feature space (via
-dropout). This model served as the source for the Mean Teacher
-algorithm~\cite{tarvainen2017mean}, which used the same types of augmentation.
-The Interpolation Consistency Training (ICT)~\cite{verma2022interpolation}
-method combined the mean teacher and the Mixup approach, where synthetic
-observations are generated using only the unlabeled observations and their
-predicted label using the teacher model. In
-Mixmatch~\cite{berthelot2019mixmatch}, the Mixup method is used by randomly
-selecting any pair of observations and their true labels (if it's a labeled
-observation) or predicted label (if it's unlabeled).
+network's output layer. Mean Teacher algorithm~\cite{tarvainen2017mean} built
+upon the $\Pi$-model, which used the same types of augmentation. The
+Interpolation Consistency Training (ICT)~\cite{verma2022interpolation} method
+combined the mean teacher and the Mixup approach, where synthetic observations
+are generated using only the unlabeled observations and their predicted label
+using the teacher model. In Mixmatch~\cite{berthelot2019mixmatch}, the Mixup
+method is used by randomly selecting any pair of observations and their true
+labels (if it's a labeled observation) or predicted label (if it's unlabeled).
 
-The development of Semi-SL algorithms specifically adapted for tabular data is
-limited. The Semi-SL data augmentation for tabular data (SDAT)
+The Semi-SL Data Augmentation for Tabular data (SDAT)
 algorithm~\cite{fang2022semi} uses an autoencoder to generate synthetic data
 in the feature space with Gaussian perturbations. The Contrastive Mixup
 (C-Mixup)~\cite{darabi2021contrastive} algorithm generates synthetic data
@@ -1406,13 +1398,13 @@ method as part of the feature space learning phase.
 \subsection{Self-supervised Learning}\label{sec:self-supervised-learning}
 
 Self-supervised learning (Self-SL), although closely related to Semi-SL,
-assumes $\mathcal{D}_L$ to be either empty or very small. These models focus
-on representation learning using $\mathcal{D}_U$ using secondary learning
-tasks, which can be adapted to almost all types of downstream
+assumes $\mathcal{D}_L = \emptyset$. These models focus
+on representation learning using $\mathcal{D}_U$ via secondary learning
+tasks, which can be adapted to multiple downstream
 tasks~\cite{liu2021self}. This family of techniques allow the usage of raw,
 unlabeled data, which is generally cheaper to acquire when compared to
 processed, curated and labeled data. Although not all Self-SL methods rely on
-data augmentation (\textit{i.e.}, STab~\cite{hajiramezanali2022stab}), the
+data augmentation (\textit{e.g.}, STab~\cite{hajiramezanali2022stab}), the
 majority of state-of-the-art tabular Self-SL methods use data augmentation as
 a central concept for the training phase.
 
@@ -1420,7 +1412,7 @@ The value imputation and mask estimation method (VIME)~\cite{yoon2020vime} is
 a Semi-SL and Self-SL approach that introduces Masking, a tabular data
 augmentation method. It is motivated by the need to generate corrupted,
 difficult to distinguish synthetic data in a computationally efficient way for
-Self-SL training. They replace with probability $p_m$ feature values in $x_i$
+Self-SL training. They replace with probability $p_m$ the feature values in $x_i$
 with another randomly selected value of each corresponding feature. To do
 this, the authors use a binomial mask vector $m=[m_1, \ldots, m_d]^\bot \in
 \{0,1\}^d$, $m_j \sim \text{Bern}(p_m)$, observation $x_i$ and the noise vector
@@ -1428,7 +1420,7 @@ $\epsilon$ (\textit{i.e.}, the vector of possible replacement values). A
 synthetic observation is produced as $x^s=(1-m) \odot x_i + m \odot \epsilon$.
 A subsequent study proposed the SubTab~\cite{ucar2021subtab} framework present
 a multi-view approach; analogous to cropping in image data or feature bagging
-in ensemble learning. In addition the authors propose an extension of the
+in ensemble learning. In addition, the authors propose an extension of the
 masking approach proposed in VIME by introducing noise using different
 approaches: Gaussian noise, swap-noise (\textit{i.e.}, the approach proposed
 in VIME) and zero-out noise (\textit{i.e.}, randomly replace a feature value
@@ -1437,12 +1429,11 @@ by zero).
 The Self-supervised contrastive learning using random feature corruption
 method (Scarf)~\cite{bahri2022scarf} uses a similar synthetic data generation
 approach as VIME. Scarf differs from VIME by using contrastive loss instead of
-the denoising auto-encoder loss used in VIME, but this topic is out of the
-scope of this paper.  A-SFS~\cite{qiu2022sfs} is a Self-SL algorithm designed
-for feature extraction. It achieved higher performance compared to equivalent
-state-of-the-art augmentation-free approaches such as
-Tabnet~\cite{arik2021tabnet} and uses the masking generation mechanism
-described in VIME.
+the denoising auto-encoder loss used in VIME. A-SFS~\cite{qiu2022sfs} is a
+Self-SL algorithm designed for feature extraction. It achieved higher
+performance compared to equivalent state-of-the-art augmentation-free
+approaches such as Tabnet~\cite{arik2021tabnet} and uses the masking
+generation mechanism described in VIME.
 
 
 % STab~\cite{hajiramezanali2022stab} --- Augmentation free
@@ -1458,6 +1449,15 @@ Section~\ref{sec:algorithmic-applications}.
 Table~\ref{tbl:generation-mechanisms} summarizes the assumptions and
 usage of the generation mechanisms across the selected works and learning
 problems.
+
+We focus on 2 key conditions for the data generation process, smoothness and
+manifold space (adapted from the background in~\cite{van2020survey}). The
+smoothness condition requires that if two observations $x_i, x_j$ are close,
+then it's expected that $y_i, y_j$ have the same value.  The manifold
+condition requires synthetic data generation to occur within locally euclidean
+topological spaces. Therefore, a generation mechanism with the smoothness
+requirement also requires a manifold, while the opposite is not necessarily
+true.
 
 \begingroup\small
 \begin{longtable}{clcccccccc}
@@ -1529,15 +1529,15 @@ problems.
         & Extrapolation       & \checkmark & \checkmark 
                               & $\times$ & \checkmark & \checkmark & $\times$ & $\times$ & $\times$ \\
 
+        & Hard Extra.         & \checkmark & \checkmark 
+                              & $\times$ & \checkmark & \checkmark & $\times$ & $\times$ & $\times$ \\
+
         & Inter.+Extra.       & \checkmark & \checkmark 
                               & $\times$ & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ \\
 
         & Difference Transf.  & \checkmark & \checkmark 
                               & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ \\
 
-
-        & Hard Extra.         & \checkmark & \checkmark 
-                              & $\times$ & \checkmark & $\times$ & $\times$ & $\times$ & $\times$ \\
 
     \midrule
     \multirow{3}{*}{Geometric} 
@@ -1566,14 +1566,6 @@ problems.
 \end{longtable}
 \endgroup
 
-We focus on 2 key conditions for the data generation process, smoothness and
-manifold space. The smoothness condition requires that if two observations
-$x_i, x_j$ are close, then it's expected that $y_i, y_j$ have the same value.
-The manifold condition requires synthetic data generation to occur within
-locally euclidean topological spaces. Therefore, a generation mechanism with
-the smoothness requirement also requires a manifold, while the opposite is not
-necessarily true.
-
 In the remaining subsections we will describe the main synthetic data
 generation mechanisms found in the literature, based on the studies discussed
 in Section~\ref{sec:algorithmic-applications}.
@@ -1582,7 +1574,7 @@ in Section~\ref{sec:algorithmic-applications}.
 
 The general perturbation-based synthetic data generation mechanism is defined
 as $x^s = x_i + \epsilon$, where $\epsilon$ is the noise vector sampled from a
-certain distribution. The random perturbation mechanism can be though of as
+certain distribution. The random perturbation mechanism can be thought of as
 the non-informed equivalent of PGMs and PDFs. It samples $|\epsilon|$ values
 from a uniform distribution, \textit{i.e.}, $e_i \sim \mathcal{U}(\cdot,
 \cdot), \forall e_i \in \epsilon$, while the minimum and maximum values depend
@@ -1598,7 +1590,7 @@ tables~\cite{gaboardi2014dual}) to ensure the generated data contains
 variability in the categorical features and the distribution of categorical
 feature values follows some given constraint.  Although various other
 distributions could be used to apply perturbations, the literature found
-primarily focuses on introducing noise via random, Laplace and Gaussian
+primarily focuses on introducing noise via uniform, Laplace and Gaussian
 distributions.
 
 \begin{figure}
@@ -1627,16 +1619,17 @@ of the masking technique.
 
 The Gaussian generative model, despite unfrequently used when compared to the
 remaining Probaility Density Function mechanisms discussed in this subsection,
-is an essential building block for these mechanisms. In particular, we
-describe the multivariate gaussian approach, which follows near-Gaussian
-distribution assumptions. However, in high-dimensional data, it is possible to
-motivate this approach via the \textit{Diaconis-Freedman-Meckes}
-effect~\cite{meckes2012projections}, which states that high-dimensional data
-projections generally follow a nearly Gaussian distribution.  The Gaussian
-generative model produces synthetic data from a Gaussian distribution $x^s
-\sim \mathcal{N}(\mu, \Sigma)$, where $\mu \in \mathbb{R}^d$ is a vector with
-the features' means and $\Sigma \in \mathbb{R}^{d \times d}$ is the covariance
-matrix. It follows the following density function~\cite{chanyaswad2019ron}:
+is an essential building block for these mechanisms. In particular, we focus
+on the multivariate gaussian approach, which follows near-Gaussian
+distribution assumptions, which is rarely reasonable on the input space.
+However, for high-dimensional data, it is possible to motivate this approach
+via the \textit{Diaconis-Freedman-Meckes} effect~\cite{meckes2012projections},
+which states that high-dimensional data projections generally follow a nearly
+Gaussian distribution. The Gaussian generative model produces synthetic data
+from a Gaussian distribution $x^s \sim \mathcal{N}(\mu, \Sigma)$, where $\mu
+\in \mathbb{R}^d$ is a vector with the features' means and $\Sigma \in
+\mathbb{R}^{d \times d}$ is the covariance matrix. It follows the following
+density function~\cite{chanyaswad2019ron}:
 
 \begin{equation}\label{eq:gaussian}
     f(x) =
@@ -1646,12 +1639,12 @@ matrix. It follows the following density function~\cite{chanyaswad2019ron}:
 Consequently, to define a Gaussian generative model it is only necessary to
 estimate the dataset's mean and covariance matrix.
 
-A Gaussian mixture model (GMM) comprises several Gaussians that aim to represent
-normally distributed subpopulations within a dataset. Its training procedure
+A Gaussian mixture model (GMM) comprises several Gaussian distributions that
+aim to represent subpopulations within a dataset. Its training procedure
 allows the model to iteratively learn the subpopulations using the Expectation
 Maximization algorithm. A GMM becomes more appropriate than the Gaussian
-generative model when the data is expected to have more than one higher-density
-regions, leading to a poor fit of unimodal Gaussian models.
+generative model when the data is expected to have more than one
+higher-density regions, leading to a poor fit of unimodal Gaussian models.
 
 Kernel Density Estimation (KDE) methods use a kernel function to estimate the
 density of the dataset's distribution at each region of the input/feature
@@ -1687,9 +1680,6 @@ visualization of the PDF mechanisms discussed, applied to a mock dataset.
     }~\label{fig:pdf-example}
 \end{figure}
 
-% TODO: Probability density function estimation + Distribution approximation
-% (discuss marginal inference)
-
 \subsection{Probabilistic Graphical Models}
 
 A Bayesian network can be thought of as a collection of as a collection of
@@ -1706,8 +1696,8 @@ parent variables:
     p(x) = \prod_{v \in V} p(x_v | x_{pa(v)})
 \end{equation}
 
-Although this method requires the construction of a directed acyclic graph,
-there is research on ML approaches for the learning of these
+Since the construction of a directed acyclic graph can be labor intensive,
+different ML approaches were developed for the learning of these
 structures~\cite{yu2019dag}. Bayesian networks can be used for synthetic data
 generation when the relationship between variables is known (or can be
 learned) and when the data is high dimensional, making the sampling process
@@ -1758,7 +1748,7 @@ class membership.
     \caption{%
         Examples of linear transformation mechanisms. Legend: (a)
         Between-class interpolation, (b) Within-class interpolation, (c)
-        Observation-based extrapolation, (d) Mean-based extrapolation, (e)
+        Observation-based extrapolation, (d) Hard extrapolation, (e)
         Combination of interpolation and extrapolation and (f) Difference
         transform.
     }~\label{fig:linear-transformations}
@@ -1766,13 +1756,12 @@ class membership.
 
 The observation-based linear extrapolation mechanism modifies
 Equation~\ref{eq:interpolation} such that $x^s = x_i + \lambda(x_i - x_j)$,
-while the mean-based extrapolation mechanism uses the mean of a class'
-observations, $\mu^c$ and a randomly selected observation to generate $x^s =
-x_i^c + \lambda(x_i^c - \mu^c)$. The combination of both interpolation and
-extrapolation mechanisms was found in the literature. This mechanism can be
-achieved using Equation~\ref{eq:interpolation} and modifying $\lambda$'s range
-to either decreasing its minimum value below zero or increasing its maximum
-value above one.
+while the hard extrapolation mechanism uses the mean of a class' observations,
+$\mu^c$ and a randomly selected observation to generate $x^s = x_i^c +
+\lambda(x_i^c - \mu^c)$. Some methods also combine both interpolation and
+extrapolation. This can be achieved using Equation~\ref{eq:interpolation} and
+modifying $\lambda$'s range to either decreasing its minimum value below zero
+or increasing its maximum value above one.
 
 The difference transform mechanism uses two observations to compute a
 translation vector (multiplied by the scaling factor $\lambda$) and apply it on
@@ -1782,25 +1771,13 @@ a third observation:
 \end{equation}
 
 Although there are various linear transformation mechanisms in the literature,
-the majority of the relevant studies found applied linear interpolation
-mechanisms. Within-class interpolation was frequently found in oversampling
-methods, while between-class interpolation was found most often in
-regularization methods. A depiction of the linear transformation mechanisms
-found in the literature are presented in
-Figure~\ref{fig:linear-transformations}.
+the majority of the studies applied linear interpolation mechanisms.
+Within-class interpolation was frequently found in oversampling methods, while
+between-class interpolation was found most often in regularization methods. A
+depiction of the linear transformation mechanisms found in the literature are
+presented in Figure~\ref{fig:linear-transformations}.
 
 \subsection{Geometric Transformations}
-
-
-\begin{figure}
-	\centering
-	\includegraphics[width=.7\linewidth]{../analysis/geometric-transformations}
-    \caption{%
-        Examples of geometric transformation mechanisms. Legend: (a)
-        hypersphere mechanism, (b) triangular mechanism and (c)
-        hyperrectangle mechanism.
-    }~\label{fig:geometric-transformations}
-\end{figure}
 
 Overall, geometric transformation mechanisms were not frequently found in the
 literature. They are primarily used to develop Mixup or SMOTE-based variants.
@@ -1833,20 +1810,32 @@ define the Beta distribution. A synthetic observation is generated with $x^s =
 product. This operation originates a generation area like the ones presented
 in Figure~\ref{fig:geometric-transformations}c.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=.7\linewidth]{../analysis/geometric-transformations}
+    \caption{%
+        Examples of geometric transformation mechanisms. Legend: (a)
+        hypersphere mechanism, (b) triangular mechanism and (c)
+        hyperrectangle mechanism.
+    }~\label{fig:geometric-transformations}
+\end{figure}
+
 \subsection{Neural Networks}
 
 Generative Adversarial Network (GAN) architectures are structured as a minimax
 two-player game composed of two models, a generator and a discriminator. Both
-models are trained simultaneously throughout the learning phase to learn to
+models are trained simultaneously throughout the learning phase, to learn to
 generate data with similar statistical properties when compared to the
 original data. The generative model captures the data distribution, while the
 discriminator estimates the probability of an observation coming from the
 training data. The goal of the generator model is to produce synthetic
 observations that are capable of fooling the discriminator, making it
-impossible for the discriminator to distinguish real from synthetic
-observations.  Although they were originally developed in an unsupervised
+difficult for the discriminator to distinguish real from synthetic
+observations. Although they were originally developed in an unsupervised
 learning setting~\cite{goodfellow2020generative}, subsequent contributions
-proposed GANs for semi-SL, supervised learning and reinforcement learning.
+proposed GANs with several different architectures, for semi-SL, supervised
+learning (for both regularization and oversampling) and reinforcement
+learning.
 
 An autoencoder (AE) is a type of neural network architecture that learns
 manifold representations of an input space. These models are typically trained
@@ -1856,26 +1845,26 @@ an encoder and a decoder. The encoder transforms the input data into
 lower-dimensional representations (\textit{i.e.}, the feature space), while
 the decoder projects these representations into the original input space.
 Since it was first proposed~\cite{ackley1985learning}, many variants were
-developed for multiple purposes. However, based on the literature found for
-synthetic data generation, the variational AE architecture appears to be the
-most popular approach.
+developed for multiple applications. However, based on the literature found,
+the variational AE architecture appears to be the most popular approach.
 
 \section{Evaluating the Quality of Synthetic Data
 }\label{sec:evaluating-synthetic-data}
 
 The vast majority of synthetic data generation models are evaluated on a ML
-utility basis. There is a general lack of research on the development of
-metrics to evaluate the quality of synthetic data beyond common metrics such
-as Overall Accuracy (OA) or F1-score. One motivation to do this is the ability
-to anticipate the quality of the data after training a ML classifier, which
-may be an expensive and time-consuming task. This is a challenging problem,
-since the usefulness of synthetic data generators depend on the assumptions
-imposed according to the dataset, domain and ML
+utility basis. Compared to research on the development of actual synthetic
+data generation algorithms, there is a general lack of research on the
+development of metrics to evaluate their quality beyond performance metrics
+such as Overall Accuracy (OA) or F1-score. One motivation to do this is the
+ability to anticipate the quality of the data for the target task before
+training a ML classifier, which may be expensive and time-consuming.  This is
+a challenging problem, since the usefulness of synthetic data generators
+depend on the assumptions imposed according to the dataset, domain and ML
 problem~\cite{chundawat2022tabsyndex}. This section focuses on the main
-evaluation approaches found in the literature, as well as recently proposed
-methods. For a more comprehensive analysis of performance metrics for
-synthetic data evaluation, the reader is referred to~\cite{dankar2022multi}
-and~\cite{theis2016note}.
+evaluation approaches found in the literature beyond classification
+performance, as well as recently proposed methods. For a more comprehensive
+analysis of performance metrics for synthetic data evaluation, the reader is
+referred to~\cite{dankar2022multi} and~\cite{theis2016note}.
 
 The GANBLR model~\cite{zhang2021ganblr} was evaluated on three aspects: (1) ML
 utility, (2) Statistical similarity, and (3) Interpretability. In
@@ -1887,18 +1876,30 @@ According to \citet{alaa2022faithful}, the evaluation of generative models
 should quantify three key aspects of synthetic data:
 
 \begin{enumerate}
-    \item Fidelity \hl{TODO: DEFINE}
-    \item Diversity 
-    \item Generalization
+
+    \item Fidelity. The synthetic observations must resemble real
+        observations; 
+
+    \item Diversity. The synthetic observations should cover $\mathcal{D}$'s
+        variability;
+
+    \item Generalization. The synthetic observations should not be copies of
+        real observations;
+
 \end{enumerate}
+
+Ensuring these properties are met will secure the objectives defined in
+Section~\ref{sec:problem-formulation}: $\mathbb{P}^s \approx
+\mathbb{P}$ and $x_i \neq x_j \forall x_i \in \mathcal{D} \wedge x_j \in
+\mathcal{D}^s$.
 
 The effective evaluation of synthetic data generation methods is a complex
 task. A good performance with respect to one evaluation method does not
 necessarily imply a good performance on the primary ML task, results from
-different evaluation methods seem to be independent and evaluating the models
+different evaluation methods seem to be independent, and evaluating the models
 directly onto the target application is generally
-recommended~\cite{theis2016note}. Each evaluation procedure must be carefully
-implemented and adapted according to the use case.
+recommended~\cite{theis2016note}. Therefore, each evaluation procedure must be
+carefully implemented and adapted according to the use case.
 
 \subsection{Quantitative approaches}
 
@@ -1906,54 +1907,53 @@ The Kullback-Leibler (KL) divergence (and equivalently the log-likelihood) is a
 common approach to evaluate generative models~\cite{theis2016note}. Other
 commonly used metrics, like Parzen window estimates, appear to be a generally
 poor quality estimation method and are not recommended for most
-applications~\citet{theis2016note}. KL divergence is defined as follows:
+applications~\cite{theis2016note}. KL divergence is defined as follows:
 
 \begin{equation}
     D_{KL}(P||Q) = \sum_{x\in\mathcal{X}}P(x)\log{\frac{P(x)}{Q(x)}}
 \end{equation}
 
-Where $\mathcal{X}$ is a probability space, $P$ and $Q$ are probability
-distributions based on $\mathcal{D}$ and $\mathcal{D}^s$, respectively. KL
-divergence is a non symmetric measurement that represents how a reference/true
-probability distribution ($P$) differs from another ($Q$). A $D_{KL}$ close to
-zero means $Q$ is similar to $P$.  However, metrics like the KL divergence or
-the log-likelihood are generally difficult to interpret, does not scale well
-for high dimensional data and fails to highlight model
-failures~\cite{alaa2022faithful}. Another related metric, used
+Where $\mathcal{X}$ is a probability space, $P$ and $Q$ are estimated
+probability distributions based on $\mathbb{P}$ and $\mathbb{P}^s$,
+respectively. The KL divergence is a non symmetric measurement that represents
+how a reference probability distribution ($P$) differs from another
+($Q$). A $D_{KL}$ close to zero means $Q$ is similar to $P$. However, metrics
+like the KL divergence or the log-likelihood are generally difficult to
+interpret, do not scale well for high dimensional data and fail to
+highlight model failures~\cite{alaa2022faithful}. Another related metric, used
 in~\cite{zhao2021ctab}, is the Jensen-Shannon (JS) divergence. It consists of
-a symmetrized and smoothed variation adaptation of the KL divergence. Having
+a symmetrized and smoothed variation of the KL divergence. Having
 $M=\frac{P+Q}{2}$, it is calculated as:
 
 \begin{equation}
     D_{JS}(P||Q) = \frac{D_{KL}(P||M) + D_{KL}(Q||M)}{2}
 \end{equation}
 
-The Wasserstein Distance is another commonly used metric to estimate the
+The Wasserstein Distance is another relevant metric to estimate the
 distance between two distribution functions. It was also used to develop GAN
 variants since it improves the stability in the training of
 GANs~\cite{gulrajani2017improved, goncalves2020generation}.
 
-The propensity score was considered an appropriate performance metric to
-measure the utility of masked data~\cite{woo2009global}. This metric is
-estimated via the training of a classifier (typically a logistic regression)
-on a dataset merged with both the original and synthetic data and labeled
-information regarding the source of each observation (synthetic or original),
-to predict the likelihood of an observation to be synthetic. Therefore, this
-approach guarantees observation-level insights regarding the faithfulness of
-each observation. \citet{woo2009global} suggest a summarization of this
-metric by computing:
+In past literature, the propensity score was considered an appropriate
+performance metric to measure the utility of masked data~\cite{woo2009global}.
+This metric is estimated using a classifier (typically a logistic regression)
+trained on a dataset with both the original and synthetic data, using as
+target the source of each observation (synthetic or original). The goal of
+this classifier is to predict the likelihood of an observation to be
+synthetic. Therefore, this approach guarantees observation-level insights
+regarding the faithfulness of each observation. \citet{woo2009global} suggest
+a summarization of this metric, also defined as the propensity Mean Squared Error
+(pMSE)~\cite{chundawat2022tabsyndex}:
 
 \begin{equation}~\label{ep:propensity}
-    U_p = \frac{1}{N} \sum^N_{i=1}{(\hat{p}_i - c)}^2
+    U_p = pMSE = \frac{1}{N} \sum^N_{i=1}{(\hat{p}_i - c)}^2
 \end{equation}
 
 Where $N = |\mathcal{D} \cup \mathcal{D}^s|$, $c = \frac{|\mathcal{D}^s|}{N}$
-and $\hat{p}_i$ is the estimated propensity score for unit $i$. This metric is
-also defined as the propensity Mean Squared Error
-(pMSE)~\cite{chundawat2022tabsyndex}. When a synthetic dataset is relatively
-similar to the original dataset, $U_p$ will be closer to zero. Furthermore, if
-the synthetic data is indistinguishable from the real data, the expected pMSE
-value is given by~\cite{snoke2018general}:
+and $\hat{p}_i$ is the estimated propensity score for observation $i$. When a
+synthetic dataset is indistinguishable from real data, $pMSE$ will be close to
+zero. Specifically, when the data source is indistinguishable, the expected
+pMSE is given by~\cite{snoke2018general}:
 
 \begin{equation}
     E(pMSE) = \frac{(k-1)(1-c)^2c}{N}
@@ -2003,11 +2003,11 @@ problems~\cite{khan2022utility, karr2006framework}.
 
 \subsection{Qualitative approaches}
 
-One of the approaches found in the literature is the comparison of the
-features' distributions with synthetic data and the original data using
+One of the qualitative approaches found in the literature is the comparison of
+the features' distributions with synthetic data and the original data using
 histogram plots~\cite{hittmeir2019utility}. This comparison can be
 complemented with the quantification of these distribution
-differences~\cite{el2020seven}. Another evaluation method is the comparison of
+differences~\cite{el2020seven}. A complementary approach is the comparison of
 correlation matrices via heat map plots~\cite{hittmeir2019utility}.
 
 Another way to assess the quality of synthetic data is the subjective
@@ -2144,21 +2144,21 @@ embeddings could be explored to address this limitation.
 
 It remains an open question which generation mechanisms, or types of
 mechanisms, create better synthetic data~\cite{cheung2020modals}. Although
-there is no \hl{one-size-fits-all solution, a general set of rules of thumb
-could be devised}, such as understanding how certain characteristics of a
-problem will affect the choice of the generation policy, which types of
+there is not necessarily a one-size-fits-all solution, a general set of rules
+of thumb could be explored, such as understanding how certain characteristics
+of a problem will affect the choice of the generation policy, which types of
 mechanisms are more appropriate for different types of dataset, ML model
-architecture, domains and target ML
-problem, or the trade-offs between the different types of generation
-mechanism. A better understanding of the relationship between recently
-proposed methods for evaluating synthetic data (as discussed in
-Section~\ref{sec:evaluating-synthetic-data}) and the performance on the target
-ML problem might contribute to answer this question. Furthermore, determining
-the use cases, quality and general performance of data generation on the
-input, feature and output space should be further developed. Finally, it still
-unclear \text{why} synthetic data generation works for each of the ML tasks
-discussed. Research on this topic lacks depth and fails to address the
-theoretical underpinnings~\cite{feng2021survey, dao2019kernel}.
+architecture, domains and target ML problem, or the trade-offs between the
+different types of generation mechanism. A better understanding of the
+relationship between recently proposed methods for evaluating synthetic data
+(as discussed in Section~\ref{sec:evaluating-synthetic-data}) and the
+performance on the target ML problem might contribute to answer this question.
+Furthermore, determining the use cases, quality and general performance of
+data generation on the input, feature and output space should be further
+developed. Finally, it still unclear \text{why} synthetic data generation
+works for each of the ML tasks discussed. Research on this topic lacks depth
+and fails to address the theoretical underpinnings~\cite{feng2021survey,
+dao2019kernel}.
 
 % data privacy
 The evaluation of anonymization techniques lack standardized, objective and
@@ -2269,13 +2269,16 @@ algorithms for tabular data, with a focus on external level applications.
 Since synthetic data generation is a crucial step for various ML applications
 and domains, it is essential to understand and compare which techniques and
 types of algorithms are used for each of these problems. The usage of
-synthetic data may be an effective approach to prepare better datasets for a
-wide range of applications and/or preserve user privacy. Our work proposes a
-taxonomy based on four key characteristics of generation algorithms, which was
-used to characterize 70 data generation algorithms across six ML problems.
-This analysis resulted in the categorization and description of the generation
-mechanisms underlying each of the selected algorithms into six main
-categories.
+synthetic data is an effective approach to prepare better datasets and ML
+pipelines for a wide range of applications and/or address privacy concerns.
+Our work proposed a taxonomy based on four key characteristics of generation
+algorithms, which was used to characterize 70 data generation algorithms
+across six ML problems. This analysis resulted in the categorization and
+description of the generation mechanisms underlying each of the selected
+algorithms into six main categories. Finally, we discussed several techniques
+to evaluate synthetic data, as well as general recommendations and research
+gaps based on the insights collected throughout the analysis of the
+literature.
 
 Despite the extensive research developed on various different methods for
 synthetic data generation, there are still open questions regarding the
@@ -2284,7 +2287,6 @@ techniques, as well as limitations in the different types of generation
 mechanisms and evaluation procedures. However, the empirical work presented in
 the literature show significant performance improvements and promising
 research directions for future work.
-
 
 \printbibliography
 
