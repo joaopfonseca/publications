@@ -1,53 +1,87 @@
-\documentclass[10pt,journal,compsoc]{IEEEtran}
+\documentclass[parskip=full]{scrartcl}
 
-\usepackage{breakcites}
+\pdfoutput=1
+
+\title{%
+    Improving Active Learning Performance Through the Use of Data Augmentation
+}
+
+
+\author{%
+	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
+	\\
+	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
+	\\
+	\small{*Corresponding Author}
+	\\
+	\\
+	\small{Postal Address: NOVA Information Management School, Campus de
+    Campolide, 1070--312 Lisboa, Portugal}
+	\\
+	\small{Telephone: +351 21 382 8610}
+}
+
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{geometry}
+\geometry{%
+	a4paper,
+	left=18mm,
+	right=18mm,
+	top=18mm,
+}
 \usepackage{amsmath}
 \usepackage{enumitem}
+\usepackage[ruled,vlined]{algorithm2e}
 \usepackage{booktabs}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.14}
 \usepackage{longtable}
 \usepackage{tabu}
 \usepackage{hyperref}
-\usepackage{lineno}
-\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
-% \usepackage{soul} % Used to highlight text
+\date{}
 
-% correct bad hyphenation here
-% \hyphenation{op-tical net-works semi-conduc-tor}
+% use \citet for inline text references, \cite for normal citations
+\usepackage[
+    style=numeric,
+    citestyle=numeric,
+    sorting=none,
+    natbib=true,
+    backend=biber, 
+    maxcitenames=1, 
+    maxbibnames=99
+]{biblatex}
+\bibliography{references}
+\usepackage{breakcites}
 
+% Fix underfull hbox warnings in bilbliography
+% Reference: https://tex.stackexchange.com/questions/10924/underfull-hbox-in-bibliography
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{%
+    \hbadness%
+    10000\relax
+}{}{}
+
+% Fix overfull hbox warnings in bibliography
+% Reference: https://tex.stackexchange.com/questions/171999/overfull-hbox-in-biblatex
+\usepackage[T1]{fontenc}
+\usepackage[final]{microtype}
+
+% Highlight text: \hl
+\usepackage{soul}
+
+\definecolor{hypecol}{HTML}{0875b7}
+\hypersetup{%
+    colorlinks,
+    linkcolor={hypecol},
+    citecolor={hypecol},
+    urlcolor={hypecol}
+}
 
 \begin{document}
 
-\title{%
-    Improving Active Learning Performance Through the Use of Data Augmentation
-}
+\maketitle
 
-\author{Joao~Fonseca,
-        and~Fernando~Bacao
-\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem J. Fonseca and F. Bacao are
-    with NOVA Information Management School (NOVA IMS), Universidade Nova de
-    Lisboa, Campus de Campolide, 1070-312 Lisboa, Portugal.\protect\\
-E-mail: \{jpfonseca, bacao\}@novaims.unl.pt}% <-this % stops an unwanted space
-\thanks{Manuscript received May 26, 2022.}}
-
-% The paper headers
-\markboth{Journal of IEEE Transactions on Knowledge and Data
-Engineering,~Vol.~XX, No.~X, MMMM~YYYY}%
-{Fonseca \MakeLowercase{\textit{et al.}}: Improving Active Learning
-    Performance Through the Use of Data Augmentation
-}
-% The only time the second header will appear is for the odd numbered pages
-% after the title page when using the twoside option.
-% 
-% *** Note that you probably will NOT want to include the author's ***
-% *** name in the headers of peer review papers.                   ***
-% You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
-% you desire.
-
-\IEEEtitleabstractindextext{%
 \begin{abstract}
 
     Active Learning (AL) is a well-known technique to optimize data usage in
@@ -58,62 +92,50 @@ Engineering,~Vol.~XX, No.~X, MMMM~YYYY}%
     data related costs. The literature describes several methods to improve
     the effectiveness of this process. Nonetheless, there is a paucity of
     research developed around the application of artificial data sources in
-    AL\@. This paper proposes a new AL framework, which relies on the
-    effective use of artificial data. Our method uses a hyperparameter
-    optimization component to improve the generation of artificial instances
-    during the AL process, as well as an uncertainty-based data selection
-    method for the data generation mechanism. We compare the proposed method
-    to the standard framework along with another active learning method that
-    uses data augmentation. The models' performance was tested using four
-    different classifiers, two AL-specific performance metrics and three
-    classification performance metrics over 15 different datasets. We
-    demonstrate that the proposed framework, using data augmentation,
-    significantly improves the performance of AL, both in terms of
-    classification performance and data selection efficiency. 
+    AL\hl{, especially outside image classification or NLP}. This paper
+    proposes a new AL framework, which relies on the effective use of
+    artificial data\hl{. It may be used with any classifier, generation mechanism
+    and data type, and can be integrated with multiple other state-of-the-art
+    AL contributions}. \hl{This combination is expected to increase the ML
+    classifier's performance and reduce both the supervisor's involvement and
+    the amount of required labeled data, at the expense of a marginal increase
+    in computational time.} \hl{The proposed} method \hl{introduces} a
+    hyperparameter optimization component to improve the generation of
+    artificial instances during the AL process, as well as an
+    uncertainty-based\hl{ }data generation mechanism. We compare the proposed
+    method to the standard framework \hl{and an oversampling-based} active
+    learning method for more informed data generation in an AL context\hl{.}
+    The models' performance was tested using four different classifiers, two
+    AL-specific performance metrics and three classification performance
+    metrics over 15 different datasets. We demonstrate that the proposed
+    framework, using data augmentation, significantly improves the performance
+    of AL, both in terms of classification performance and data selection
+    efficiency.\footnote{ \hl{All the code and preprocessed data developed for
+        this study is available at}
+        \href{https://github.com/joaopfonseca/publications/}{https://github.com/joaopfonseca/publications/}.
+    } 
 
 \end{abstract}
 
-% Note that keywords are not normally used for peerreview papers.
-\begin{IEEEkeywords}
-Active Learning, Data Augmentation, Oversampling
-\end{IEEEkeywords}}
+\textbf{Keywords:} Active Learning, Data Augmentation, Oversampling
 
+\section{Introduction}~\label{sec:introduction}
 
-% make the title area
-\maketitle
-
-\IEEEdisplaynontitleabstractindextext
-
-% For peer review papers, you can put extra information on the cover
-% page as needed:
-% \ifCLASSOPTIONpeerreview
-% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
-% \fi
-%
-% For peerreview papers, this IEEEtran command inserts a page break and
-% creates the second title. It will be ignored for other modes.
-\IEEEpeerreviewmaketitle
-
-
-
-\IEEEraisesectionheading{\section{Introduction}\label{sec:introduction}}
-
-\IEEEPARstart{T}{he} importance of training robust ML models with minimal data
+The importance of training robust ML models with minimal data
 requirements is substantially increasing~\cite{Nath2021, Sverchkov2017,
 Li2012}. Although the growing amount of valuable data sources and formats
 being developed and explored is affecting various domains~\cite{Li2021}, this
 data is often unlabeled. Only a tiny amount of the data being produced and
-stored can be helpful in supervised learning tasks. Additionally, it is
-essential to note that labeling data for specific Machine Learning (ML)
-projects is often difficult and expensive, especially when data-intensive ML
-techniques are involved (\textit{e.g.,} Deep Learning
-classifiers)~\cite{Nath2021}. In this scenario, labeling the full dataset
-becomes impractical, time-consuming and expensive. Two different ML techniques
-attempt to address this problem: Semi-Supervised Learning (SSL) and Active
-Learning (AL). Even though they address the same problem, the two follow
-different approaches. SSL focuses on observations with the most certain
-predictions, whereas AL focuses on observations with the least certain
-predictions~\cite{Simeoni2020}.
+stored can be helpful in supervised learning tasks. In addition, it is often
+difficult and expensive to label data for specific Machine Learning (ML)
+projects, especially when data-intensive ML techniques are involved
+(\textit{e.g.,} Deep Learning classifiers)~\cite{Nath2021}. In this scenario,
+labeling the full dataset becomes impractical, time-consuming and expensive.
+Two different ML techniques attempt to address this problem: Semi-Supervised
+Learning (SSL) and Active Learning (AL). Even though they address the same
+problem, the two follow different approaches. SSL focuses on observations with
+the most certain predictions, whereas AL focuses on observations with the
+least certain predictions~\cite{Simeoni2020}.
 
 SSL attempts to use a small, predefined set of labeled and unlabeled data to
 produce a classifier with superior performance. This method uses the unlabeled
@@ -137,9 +159,9 @@ classifier-level modifications, such as the Weighted Extreme Learning
 Machine~\cite{Yu2019, Zong2013, Qin2021}. However, classifier or query
 function-level modifications (See Section~\ref{sec:active_learning_methods})
 have limited applicability since a universally good AL strategy has not yet
-been found~\cite{Sener2018}. Other methods address imbalance learning by
+been found~\cite{Sener2018}. Other methods address imbalance\hl{d} learning by
 weighing the observations as the function of the observation's class imbalance
-ratio~\cite{Liu2021}.  Alternatively, other techniques reduce the imbalanced
+ratio~\cite{Liu2021}. Alternatively, other techniques reduce the imbalanced
 learning bias by combining Informative and Representative-based query
 approaches (see Section~\ref{sec:active_learning_methods})~\cite{Tharwat2020}.
 Another approach to deal with imbalanced data and data scarcity, in general,
@@ -149,18 +171,84 @@ learning bias, and also works as a regularization method in data-scarce
 environments, such as AL implementations~\cite{Kim2021}. However, most recent
 studies improve the AL performance by modifying the design/choice of the
 classifier and query functions used.
+
+\hl{Recently, synthetic data generation techniques gathered attention among ML
+researchers for its effectiveness over a wide range of applications:
+regularization, oversampling, semi-supervised learning, self-supervised
+learning, etc. Data augmentation generates synthetic observations to
+complement naturally occurring observations. It aims to reinforce the
+definition of a ML classifier's decision boundary during the learning phase
+and improve the generalization of the algorithm. These techniques have the
+advantage of being a data level technique (despite the existence of
+augmentation methods applied internally in the ML classifier). Therefore, they
+can be implemented in a way that will not affect the choice of classifier and
+does not exclude the usage of other regularization approaches. In an AL
+context, the generation of synthetic data becomes particularly appealing,
+especially with randomized and statistical-based approaches; it ensures better
+model performance with reduced involvement of a human agent, at the expense of
+a marginal increase in computational power. In addition, synthetic data is
+expected to reduce the amount labeled data required for a good AL
+implementation.}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\linewidth]{../analysis/al-example}
+    \caption{%
+        \hl{Illustration of the different acquisition processes in AL using a
+        K-Nearest Neighbors classifier and Shannon's entropy as the
+        uncertainty estimation function, with five observations being
+        collected and labeled per iteration. The top row shows the behavior of
+        a standard AL implementation, while the bottom row shows the behavior
+        of the proposed method. Column (a), (b) and (c) show the decision
+        boundaries at iterations 1 (after the collection of five random initial training
+        observations), 2 (with 10 labeled observations) and 3 (with 15 labeled
+        observations), respectively. The initial labeled dataset for both approaches is
+        the same. The two classes are distinguished with $\triangle$ and
+        $\times$, and are colored as red and blue (respectively) if they are
+        labeled. The transparent green observations are synthetic observations
+        (bottow row only).}
+    }~\label{fig:al-example}
+\end{figure}
+
+\hl{Figure}~\ref{fig:al-example}\hl{ illustrates the difference across AL
+iterations between the standard AL approach and the proposed method. Synthetic
+data allowed for a quicker expansion of the labeled input area at an early
+stage of the process, with better defined decision boundaries and
+near-covergence of the ML classifier's performance at the third iteration.
+Data augmentation influences the choice of unlabeled observations for labeling
+into regions where synthetic data is not being able to represent the unlabeled
+data pool.}
  
-The usage of data augmentation in AL is not new. The literature found on the
+\subsection{Motivation and contributions}
+
+\hl{The} usage of data augmentation in AL is not new. The literature found on the
 topic (see Section~\ref{sec:data_augmentation_in_al}) focuses on either image
 classification or Natural Language Processing and uses Deep Learning-based
 data augmentation to improve the performance of neural network architectures
 in AL\@. These methods, although showing promising results, represent a
 limited perspective of the potential of data augmentation in a real-world
-setting. First, using Deep Learning in an iterative setting requires access to
-significant computational power. Second, these models tend to use
-sophisticated data augmentation methods, whose implementation may not be
-accessible to non-sophisticated users. Third, the studies found on the topic
-are specific to the domain, classifier, and data augmentation method.
+setting\hl{:} 
+
+\begin{enumerate}
+
+    \item \hl{U}sing Deep Learning in an iterative setting requires access to
+        significant computational power.
+
+    \item \hl{T}hese models tend to use sophisticated data augmentation methods,
+        whose implementation may not be accessible to non-sophisticated users.
+
+    \item \hl{They require a significant amount of processing time per
+        iteration and are inappropriate for settings with limited time
+        budgets.}
+
+    \item \hl{T}he studies found on the topic are specific to the domain,
+        classifier, and data augmentation method.
+        \hl{In addition, all of the related methods found (except one) focus
+        on either image or natural language processing classification
+        problems.}
+
+\end{enumerate}
+
 Consequently, the direct effect of data augmentation is unclear: these studies
 implement different neural network-based techniques for different
 classification problems, whose performance may be attributed to various
@@ -177,7 +265,29 @@ elements, as well as the modifications involved to implement data augmentation
 in the AL iterative process. We argue that simple, non-domain specific data
 augmentation heuristics are sufficient to improve the performance of AL
 implementations, without the need to resort to deep learning-based data
-augmentation algorithms.
+augmentation algorithms. \hl{These contributions can be summarized as
+follows:}
+
+\begin{enumerate}
+
+    \item \hl{We propose a flexible AL framework with pipelined data
+        augmentation for tabular data that may be adapted for any domain or
+        data type. This implementation is directed towards use cases with
+        limited computational power and/or processing time.}
+
+    \item \hl{We use a geometric-based data augmentation method for
+        non-network based classifiers and adapt it to leverage information
+        from the AL process. To the best of our knowledge, most
+        existing methods use domain/classifier-specific augmentations or the
+        Mixup approach, which is incompatible with most classifiers that are
+        not neural network-based.}
+
+    \item \hl{We provide empirical evidence that the integration of varying data
+        augmentation policies between iterations in the AL framework not only further
+        reduces the amount of labeled data required, but is also a viable training
+        strategy for fully supervised learning settings.}
+
+\end{enumerate}
 
 When compared to the standard AL framework, the proposed framework contains
 two additional components: the Generator and the Hyperparameter Optimizer. We
@@ -203,6 +313,53 @@ this study.
  
 \section{Background}~\label{sec:background}
 
+In this section we describe the AL problem, data augmentation techniques, and review the
+literature that combines AL with data augmentation. \hl{Table}~\ref{tbl:generators}
+\hl{describes the notations used throughout the rest of this study.}
+
+\begingroup\small
+\begin{longtable}{clccccccc}
+    \caption{%
+        \hl{Description of all notations and symbols used throughout the
+        manuscript.}
+    }\label{tbl:generators}\\
+    \toprule
+               Symbol & Meaning \\
+    \midrule
+    \endfirsthead%
+    \caption[]{%
+        Description of all notations and symbols used throughout the
+        manuscript.
+    } \\
+    \toprule
+               Symbol & Meaning \\
+    \midrule
+    \endhead%
+    \midrule
+    \multicolumn{9}{r}{{Continued on next page}} \\
+    \midrule
+    \endfoot%
+    
+    \bottomrule
+    \endlastfoot%
+               $f_{c}$ & ML classifier. \\
+               $x_i$ & Observation at index $i$. \\
+               $f_{acq}(x_i;f_c)$ & Acquisition function. \\
+               $f_{aug}(x_i;\tau)$ & Augmentation function. \\
+               $\tau$ & Augmentation policy. \\
+               $\mathcal{D}$ & Data pool. Contains both labeled and unlabeled
+                               data. \\
+               $\mathcal{D}_{lab}^t$ & Labeled data set at iteration $t$. \\
+               $\mathcal{D}_{pool}^t$ & Unlabeled data pool at iteration $t$. \\
+               $\mathcal{D}_{new}^t$ & Set of observations from
+                                       $\mathcal{D}_{pool}^t$to be labeled
+                                       and added to $\mathcal{D}_{lab}^{t+1}$. \\
+               $T$ & Iteration budget.\\
+               $n$ & Annotation budget per iteration.\\
+\end{longtable}
+\endgroup
+
+
 \subsection{Active Learning}~\label{sec:active_learning_methods}
 
 This paper focuses on pool-based AL methods as defined
@@ -212,11 +369,11 @@ $x_i$, as possible. They use a data pool, $\mathcal{D}$, where $\mathcal{D} =
 \mathcal{D}_{lab} \cup \mathcal{D}_{pool}$ and $|\mathcal{D}_{pool}| \gg
 |\mathcal{D}_{lab}|$. $\mathcal{D}_{pool}$ and $\mathcal{D}_{lab}$ refer to
 the sets of unlabeled and labeled data, respectively. Having a budget of $T$
-iterations (where $t = 1, 2, \ldots, T$) and $n$ annotations per iteration, at
+iterations (\hl{where }$t \in \{1, 2, \ldots, T\}$) and $n$ annotations per iteration, at
 iteration $t$, $f_c$ is trained using $\mathcal{D}_{lab}^t$ to produce, for
 each $x_i \in \mathcal{D}_{pool}^t$, an uncertainty score using an acquisition
 function $f_{acq}(x_i;f_c)$. These uncertainty scores are used to annotate the
-$n$ observations with highest ucertainty from $\mathcal{D}_{pool}^t$ to form
+$n$ observations with highest u\hl{n}certainty from $\mathcal{D}_{pool}^t$ to form
 $\mathcal{D}_{new}^t$. The iteration ends with the update of
 $\mathcal{D}_{lab}^{t+1} = \mathcal{D}_{lab}^t \cup \mathcal{D}_{new}^t$ and
 $\mathcal{D}_{pool}^{t+1} = \mathcal{D}_{pool}^t \setminus
@@ -229,7 +386,7 @@ Yoo2019, Aghdam2019}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{../analysis/al_iteration}
+	\includegraphics[width=.6\linewidth]{../analysis/al_iteration}
     \caption{%
         Diagram depicting a typical AL iteration. In the first iteration, the
         training set collected during the initialization process becomes the
@@ -238,9 +395,10 @@ Yoo2019, Aghdam2019}.
 \end{figure}
 
 Research focused on AL has typically been focused on the specification of
-$f_{acq}$~\cite{hospedales2011finding} and domain-specific applications.
-Acquisition functions can be divided into two different
-categories~\cite{Gu2021, Kumar2020}: 
+$f_{acq}$~\cite{hospedales2011finding} and domain-specific applications, such
+as malware detection~\cite{li2022boosting} or Land Use/Land Cover
+classification~\cite{li2020label}. Acquisition functions can be divided into
+two different categories~\cite{su2021cost, Kumar2020}: 
 
 \begin{enumerate}
 
@@ -261,11 +419,47 @@ prediction module in the AL framework to replace the uncertainty criterion.
 This model implements a second classifier to predict the expected loss of the
 unlabeled observations (using the actual losses collected during the training
 of the original classifier) and return the unlabeled observations with the
-highest expected loss. However, this contribution is specific to neural
-networks (and more specifically, to deep neural networks) and was only tested
-for image classification.
+highest expected loss. However, this contribution is specific to deep neural
+networks and was only tested for image classification.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hl{AL techniques may also be used to complement other well-known learning
+challenges. For example, security bug report prediction tasks are typically
+developed in imbalanced learning environment, where it is necessary to
+manually label large amounts of data, which may result in mislabeled
+data}~\cite{wu2021data}\hl{. Another related example is machinery fault
+diagnostics, where the quality and quantity of the data collected is often
+recognized as a bottleneck}~\cite{zhang2023blockchain}\hl{. In this case,
+ML-based techniques frequently leverage unlabeled data to improve the
+classification performance}~\cite{zhang2021open}\hl{ and rely on manual data
+acquisition}~\cite{he2017deep}\hl{. In these examples, the application of an
+AL technique could reduce the amount of labeled data required, reduce the
+strain in the supervisor's labeling process and reduce the amount of label
+noise. 
+
+An under explored challenge in the AL literature is the effective handling of
+different data structures. One method to address this problem are autoencoder
+architectures}~\cite{li2017grass}\hl{ or, in the case of text data, semantic
+representation networks}~\cite{zheng2021sentence}\hl{. However, understanding
+how to integrate these two types of methods is a subject of future research.
+Within other research streams, such as deep reinforcement learning, some
+research also focus on optimizing observation efficiency during the learning
+process}~\cite{zhang2022training}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Data Augmentation}~\label{sec:data_augmentation}
+
+\hl{The standard AL model can be complemented with a data augmentation function,
+$f_{aug}(x_i;\tau)$, where $\tau$ defines the augmentation policy. In this
+context, $\tau$ refers to the transformation applied and its hyperparameters
+and $f_{aug}$ produces a modified observation, $\tilde{x} \in
+\mathcal{D}_{aug}$ where $\mathcal{D}_{aug}$ is the set of modified
+observations. This involves the usage of a new set of data,
+$\mathcal{D}_{train}^t = \mathcal{D}_{lab}^t \cup \mathcal{D}_{aug}^t$, to
+train the classifier.}
 
 Data Augmentation methods expand the training dataset by introducing new and
 informative observations \cite{Behpour2019}. The production of artificial data
@@ -297,41 +491,24 @@ methods, such as autoencoders, may be considered domain agnostic.
 \subsection{Data Augmentation in Active Learning
 }~\label{sec:data_augmentation_in_al}
 
-The standard AL model can be complemented with a data augmentation function,
-$f_{aug}(x_i;\tau)$, where $\tau$ defines the augmentation policy. In this
-context, $\tau$ refers to the transformation applied and its hyperparameters
-and $f_{aug}(x;\tau): \mathcal{D} \rightarrow \mathcal{D}_{aug}(\mathcal{D})$
-produces a modified observation, $\tilde{x} \in
-\mathcal{D}_{aug}(\mathcal{D})$ where $\mathcal{D}_{aug}(\mathcal{D})$ is the
-set of modified observations. This involves the usage of a new set of data,
-$\mathcal{D}_{train}^t = \mathcal{D}_{lab}^t \cup \mathcal{D}_{aug}^t$, to
-train the classifier.
-
-
-As found in Section~\ref{sec:active_learning_methods}, improvements proposed
-in the AL framework are primarily focused on modifications of the classifier
-or query strategy. Furthermore, the few recent AL contributions implementing
-data augmentation were all (except one) applied to the computer vision or
-natural language processing (NLP) realm. 
-
 % Pipelined approach
-The only AL model found that uses data augmentation outside of the computer
+\hl{T}he only AL model found that uses data augmentation outside of the computer
 vision or NLP domains implements a pipelined approach, described
 in~\cite{Fonseca2021}. In this study, the AL model proposed is applied for
 tabular data using an oversampling data augmentation policy (\textit{i.e.},
 the artificial data was only generated to balance the target class
 frequencies). However, this AL model was applied in a Land Use/Land Cover
-context with specific characteristics that are not necessarily found in other
-supervised learning problems. Specifically, these types of datasets are high
-dimensional and have limited data variability within each class
-(\textit{i.e.,} cohesive spectral signatures within classes) due to their
-geographical proximity. Furthermore, this method does not allow augmentation
-policy optimization (i.e., every hyperparameter has to be hardcoded \textit{a
-priori}).
+classification context with specific characteristics that are not necessarily
+found in other supervised learning problems. Specifically, these types of
+datasets are high dimensional and have limited data variability within each
+class (\textit{i.e.,} cohesive spectral signatures within classes) due to
+their geographical proximity. Furthermore, this method does not allow
+augmentation policy optimization (i.e., every hyperparameter has to be
+hard\hl{-}coded \textit{a priori}).
 
 The Bayesian Generative Active Deep Learning (BGDAL)~\cite{tran2019bayesian}
 is another example of a pipelined combination of $f_{acq}$ and $f_{aug}$,
-applied image classification. BGDAL uses a Variational AutoEncoder (VAE)
+applied to image classification. BGDAL uses a Variational AutoEncoder (VAE)
 architecture to generate artificial observations. However, the proposed model
 is computationally expensive, requires a large data pool to train the VAE, and
 is not only dependent on the quality of the augmentations performed, but also
@@ -351,8 +528,8 @@ model~\cite{sinha2019variational} is a deep AL approach to image
 classification that uses as inputs the embeddings produced by a VAE into a
 secondary classifier, working as $f_{acq}$, to predict if $x_i \in
 \mathcal{D}$ belongs to $\mathcal{D}_{pool}$. The $n$ true positives with the
-highest certainty are labeled by the supervisor and $\mathcal{D}_{pool}$ and
-$\mathcal{D}_{lab}$ are updated as described in
+highest \hl{un}certainty are labeled by the supervisor and
+$\mathcal{D}_{pool}$ and $\mathcal{D}_{lab}$ are updated as described in
 Section~\ref{sec:active_learning_methods}. The Task-aware VAAL
 model~\cite{kim2021task} extends the VAAL model by introducing a ranker, which
 consists of the Learning Loss module introduced in~\cite{Yoo2019}. These
@@ -416,12 +593,13 @@ following step. This procedure is described in
 Algorithm~\ref{alg:al-framework}.
 
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{../analysis/al_proposed}
+	\includegraphics[width=.6\linewidth]{../analysis/al_proposed}
     \caption{%
         Diagram depicting the proposed AL iteration. The proposed
-        modifications are marked with a boldface ``C.''
+        modifications are \hl{comprised within the red polygon and }marked
+        with a boldface ``C.''
     }~\label{fig:al_proposed}
 \end{figure}
 
@@ -504,7 +682,7 @@ augmentation vs normal oversampling) and hyperparameter tuning steps.
 However, in this case, the hyperparameter tuning is solely going to be used
 for augmentation policy optimization. 
 
-\begin{algorithm}
+\begin{algorithm}[t]
     \SetKwInput{KwGiven}{Given}
     \SetKwProg{Fn}{Function}{:}{end}
     \caption{G-SMOTE Modified for Data Augmentation in AL}\label{alg:g-smote}
@@ -576,9 +754,7 @@ The classifiers used in the experiment are defined in
 Subsection~\ref{sec:machine_learning_algorithms}. The metrics chosen to
 measure AL performance and overall classification performance are defined in
 Subsection~\ref{sec:evaluation_metrics}. The experimental procedure is
-described in Subsection~\ref{sec:experimental_procedure}. The implementation
-of the experiment and resources used to do so are described in
-Subsection~\ref{sec:software_implementation}.
+described in Subsection~\ref{sec:experimental_procedure}.
 
 The methodology developed serves a two-fold purpose: (1) Compare
 classification performance once all the AL procedures are completed
@@ -635,9 +811,9 @@ originally found in each dataset (where $IR =
 dataset are scaled to the range of $[-1, 1]$ to ensure a common range across
 features.
 
-\begin{figure}[H]
+\begin{figure}[t]
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/data_preprocessing}
+	\includegraphics[width=.8\linewidth]{../analysis/data_preprocessing}
     \caption{%
         Data preprocessing pipeline.
     }~\label{fig:data_preprocessing}
@@ -645,7 +821,7 @@ features.
 
 The preprocessed datasets were stored into an SQLite database file and is
 available along with the experiment's source code in the project's GitHub
-repository (see Subsection~\ref{sec:software_implementation}).
+repository (see \hl{final remarks regarding data and software availability}).
  
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
@@ -688,12 +864,12 @@ metric, similar to OA, is also biased towards high-frequency classes since its
 definition is closely related to the OA metric, making its behavior consistent
 with OA~\cite{Fatourechi2008}. However, these metrics remain popular choices
 for the evaluation of classification performance. Other performance metrics
-like $Precision = \frac{TP}{TP+TN}$, $Recall = \frac{TP}{TP+FN}$ or
-$Specificity = \frac{TN}{TN + FP}$ are calculated as a function of True/False
-Positives (TP and FP) and True/False Negatives (TN and FN) and can be used on
-a per-class basis instead. In a multiple dataset scenario with varying amounts
-of target classes and meanings, comparing the performance of different models
-using these metrics becomes impractical.
+like $Precision = \frac{TP}{TP+FP}$, $Recall = \frac{TP}{TP+FN}$ \hl{(also
+known as Sensitivity)} or $Specificity = \frac{TN}{TN + FP}$ are calculated as
+a function of True/False Positives (TP and FP) and True/False Negatives (TN
+and FN) and can be used on a per-class basis instead. In a multiple dataset
+scenario with varying amounts of target classes and meanings, comparing the
+performance of different models using these metrics becomes impractical.
  
 Based on the recommendations found in~\cite{Jeni2013, Kubat1997}, we used two
 metrics found to be less sensitive to the class imbalance bias, along with OA
@@ -707,7 +883,7 @@ as a reference for easier interpretability:
         per class values: 
         
         \begin{equation*}
-            \textit{G-mean} = \sqrt{\overline{Sensitivity} \times
+            \textit{G-mean} = \sqrt{\overline{Recall} \times
             \overline{Specificity}}
         \end{equation*}
 
@@ -794,9 +970,9 @@ collected. The final scores of each AL configuration and classifier correspond
 to the average of the three runs and 5-fold Cross-Validation estimations
 (\textit{i.e.,} the mean score of 15 fits, across 15 datasets).
 
-\begin{figure}[H]
+\begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{../analysis/experimental_procedure}
+	\includegraphics[width=.5\linewidth]{../analysis/experimental_procedure}
     \caption{%
         Experimental procedure flowchart. The preprocessed datasets are split
         into five folds. One of the folds is used to test the best-found
@@ -816,9 +992,16 @@ G-SMOTE algorithm working as a normal oversampling method from G-SMOTE-AUGM,
 which generates additional artificial data on top of the usual oversampling
 mechanism. Since the G-SMOTE-AUGM method is intended to be used with varying
 parameter values (via within-iteration parameter tuning), the parameters were
-defined as a list of various possible values.
+defined as a list of various possible values.\hl{ The remaining parameters
+were selected based on knowledge gathered in previous literature and
+typical default values for each of the algorithms. This choice was motivated
+by the impossibility of parameter tuning in a real-world setting when applying
+the benchmark AL methods. Although the proposed method addresses this
+limitation, we show that exclusively tuning the parameters on the augmentation
+policy is already sufficient to achieve superior, statistically significant
+performance.}
 
-\begin{table*}
+\begin{table}
 	\centering
     \caption{\label{tab:grid}
         Hyperparameter definition for the active learners, classifiers,
@@ -866,21 +1049,21 @@ defined as a list of various possible values.
                         & augmentation factor              & $[1.1, 2.0]$ at 0.1 step       \\
 		\bottomrule
 	\end{tabular}
-\end{table*}
+\end{table}
  
-\subsection{Software Implementation}~\label{sec:software_implementation}
-
-The experiment was implemented using the Python programming language, along
-with the Python libraries
-\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
-\href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
-\href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE}~\cite{Douzas2019},
-\href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
-and
-\href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
-libraries. All functions, algorithms, experiments, and results are provided on
-the \href{https://github.com/joaopfonseca/publications/}{project's GitHub
-repository}.
+% \subsection{Software Implementation}~\label{sec:software_implementation}
+% 
+% The experiment was implemented using the Python programming language, along
+% with the Python libraries
+% \href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
+% \href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
+% \href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE}~\cite{Douzas2019},
+% \href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
+% and
+% \href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
+% libraries. All functions, algorithms, experiments, and results are provided in
+% the \href{https://github.com/joaopfonseca/publications/}{project's GitHub
+% repository}.
 
 \section{Results \& Discussion}~\label{sec:results_discussion}
 
@@ -901,7 +1084,7 @@ The average rankings of the AL methods' AULC estimations are shown in
 Table~\ref{tab:aulc_ranks}. The proposed method almost always improves AL
 performance and ensures higher data selection efficiency.
  
-\begin{table}
+\begin{table}[t]
 	\centering
     \caption{%
         Mean rankings of the AULC metric over the different datasets (15),
@@ -927,7 +1110,7 @@ proposed method is almost always superior when considering the F-score and
 G-mean. On some occasions, the average AULC score is significantly improved
 when compared with the oversampling AL method.
 
-\begin{table}
+\begin{table}[H]
 	\centering
     \setlength{\tabcolsep}{2.5pt}
     \caption{\label{tab:aulc_scores}
@@ -956,7 +1139,7 @@ scores starting from a G-mean score of 0.6 and was filtered to show the
 thresholds ending with 0 or 6 only. In most cases, the proposed method reduces
 the amount of data annotation required to reach each G-mean score threshold.
 
-\begin{table}
+\begin{table}[H]
     \centering
     \setlength{\tabcolsep}{2.5pt}
     \caption{\label{tab:optimal_data_utilization}
@@ -982,9 +1165,9 @@ classifier requires 80.7\% of the amount of data required by the Standard AL
 method using the same classifier to reach an F-Score of 0.62 (\textit{i.e.,}
 requires 19.3\% less data).
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/data_utilization_rate}
+	\includegraphics[width=.8\linewidth]{../analysis/data_utilization_rate}
     \caption{%
         Mean data utilization rates. The y-axis shows the percentage of data
         (relative to the baseline AL framework) required to reach the
@@ -999,7 +1182,7 @@ accuracy, the proposed AL method produces classifiers that almost consistently
 outperform classifiers using the whole training set (\textit{i.e.,} the ones
 labeled as MP).
 
-\begin{table*}[t]
+\begin{table}[H]
     \centering
     \caption{\label{tab:optimal_mean_std_scores}
         Optimal classification scores. The Maximum Performance (MP)
@@ -1015,7 +1198,7 @@ labeled as MP).
         },
         every last row/.style={after row=\bottomrule},
     ]{../analysis/optimal_mean_std_scores.csv}
-\end{table*}
+\end{table}
 
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
 
@@ -1038,7 +1221,7 @@ Friedman test. The difference in performance across AL frameworks is
 statistically significant at a level of $\alpha = 0.05$ regardless of the
 classifier or evaluation metric being considered.
 
-\begin{table}
+\begin{table}[t]
 	\centering
     \caption{%
         Friedman test results. Statistical significance is tested at a level
@@ -1062,7 +1245,7 @@ standard AL framework, as well as the AL framework using a typical
 oversampling policy with statistical significance in 14 and 12 out of 15
 datasets, respectively.
 
-\begin{table}
+\begin{table}[H]
 	\centering
     \caption{%
         Adjusted p-values using the Wilcoxon signed-rank method. Bold values
@@ -1109,7 +1292,20 @@ statistically significant in 9 out of 12 cases.
 In this paper, we study the application of data augmentation methods through
 the modification of the standard AL framework. This is done to further reduce
 the amount of labeled data required to produce a reliable classifier, at the
-expense of artificial data generation.
+expense of artificial data generation. \hl{Overall, the proposed method
+achieves better and more consistent performance when compared to the remaining
+benchmark approaches. It was implemented to focus on the optimization of the
+data augmentation policy, as well as the introduction of a more informed
+AL-based data augmentation approach. The proposed method could be further
+extended and achieve an even higher performance by optimizing parameters of
+the ML classification using the hyperparameter optimizer. In addition, this
+framework could be further generalized by searching, within AL iterations, for
+the optimal ML classifier as well; at different stages of the data collection
+procedure some ML classifiers might be more useful than others. Although the
+proposed framework significantly improves the flexibility of AL
+implementations, we found that even a superficial parameter search is
+sufficient to ensure a superior performance when compared to related
+approaches.}
  
 % a different data generation strategy
 % - Superiority of AL proposed vs standard (AULC + statistical analysis)
@@ -1187,7 +1383,7 @@ more robust generators did not decrease the standard error of AL performance.
 Instead, AL's performance variability is likely dependent on the quality of
 its initialization.
 
-\section{Conclusion}~\label{sec:conclusion}
+\section{Conclusion and Future Directions}~\label{sec:conclusion}
 
 The ability to train ML classifiers is usually limited to the availability of
 labeled data. However, manually labeling data is often expensive, which makes
@@ -1221,202 +1417,45 @@ to further improve the proposed method, future work should (1) focus on the
 development of methods with varying data augmentation policies depending on
 the different input space regions, (2) develop augmentation-sensitive query
 functions capable of avoiding the unnecessary selection of similar
-observations from the unlabeled dataset and (3) understand the gap between
-heuristic/input space data augmentation techniques and neural network/feature
-space data augmentation techniques in an AL context better.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% if have a single appendix:
-%\appendix[Proof of the Zonklar Equations]
-% or
-%\appendix  % for no appendix heading
-% do not use \section anymore after \appendix, only \section*
-% is possibly needed
-
-% use appendices with more than one appendix
-% then use \section to start each appendix
-% you must declare a \section before using any
-% \subsection or using \label (\appendices by itself
-% starts a section numbered zero.)
-%
-%\appendices
-%\section{Proof of the First Zonklar Equation}
-%Appendix one text goes here.
-%
-%% you can choose not to have a title for an appendix
-%% if you want by leaving the argument blank
-%\section{}
-%Appendix two text goes here.
-
-
-% use section* for acknowledgment
-\ifCLASSOPTIONcompsoc
-  % The Computer Society usually uses the plural form
-  \section*{Acknowledgments}
-\else
-  % regular IEEE prefers the singular form
-  \section*{Acknowledgment}
-\fi
-
+observations from the unlabeled dataset\hl{,} (3) understand the gap between
+\hl{randomized} data augmentation techniques and neural network/feature
+space data augmentation techniques in an AL context better\hl{, (4) explore
+more efficient ways to leverage the information collected in AL queries for
+better augmentation strategies and (5) expand the current framework to
+integrate alternative learning strategies using unlabeled data, such as self
+and semi supervised learning techniques}.
+
+\hl{Finally, the proposed method may be applied to any classification problem
+where labeled data is not readily available and an easily accessible unlabeled
+data pool. For more complex data structures, the application of this framework
+will require the learning of a manifold space as an additional preprocessing
+step. After that, this AL framework may be used as is.}
+
+\section*{Data and Software Availability}
+
+
+\hl{The experiment was implemented using the Python programming language, along
+with the Python libraries}
+\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
+\href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
+\href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE}~\cite{Douzas2019},
+\href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
+\hl{and}
+\href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
+\hl{libraries. All functions, algorithms, experiments, and results are provided in
+the} \href{https://github.com/joaopfonseca/publications/}{project's GitHub
+repository}. The original datasets used in this study are publicly available
+in open data repositories. They were retrieved from OpenML and the UCI Machine
+Learning Repository. 
+
+\section*{Acknowledgments}
 
 This research was supported by three research grants of the Portuguese Foundation
 for Science and Technology (``Fundação para a Ciência e a Tecnologia''),
 references SFRH/BD/151473/2021, DSAIPA/DS/0116/2019 and PCIF/SSI/0102/2017.
 
+\printbibliography%
 
-% trigger a \newpage just before the given reference
-% number - used to balance the columns on the last page
-% adjust value as needed - may need to be readjusted if
-% the document is modified later
-%\IEEEtriggeratref{8}
-% The "triggered" command can be changed if desired:
-%\IEEEtriggercmd{\enlargethispage{-5in}}
-
-% references section
-
-% can use a bibliography generated by BibTeX as a .bbl file
-% BibTeX documentation can be easily obtained at:
-% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
-% The IEEEtran BibTeX style support page is at:
-% http://www.michaelshell.org/tex/ieeetran/bibtex/
-\bibliographystyle{IEEEtran}
-% argument is your BibTeX string definitions and bibliography database(s)
-\bibliography{references}
-
-% biography section
-% 
-% If you have an EPS/PDF photo (graphicx package needed) extra braces are
-% needed around the contents of the optional argument to biography to prevent
-% the LaTeX parser from getting confused when it sees the complicated
-% \includegraphics command within an optional argument. (You could create
-% your own custom macro containing the \includegraphics command to make things
-% simpler here.)
-%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
-% or if you just want to reserve a space for a photo:
-
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,trim=20 4 60 0,clip,keepaspectratio]{fonseca}}]{João Fonseca}
-
-is a PhD student at NOVA Information Management School (NOVA IMS) working on
-data augmentation, active learning and data preprocessing methods.
-Specifically, I am focused on improving the quality of Land Use/Land Cover
-classification tasks through the application of these data preprocessing
-methods. His work is being funded with a MIT Portugal PhD Grant (2020
-FCT-MPP2030). In the past, João Fonseca conducted research on Land Use/Land
-Cover classification methods to automatically update LULC maps of the
-Portuguese mainland. His research included the development of pipelines to
-systematize the preprocessing of Sentinel-2 satellite imagery. He also
-developed and deployed different types of algorithms for various tasks, such
-as data filtering, dimensionality reduction, feature extraction and
-classification.
-
-\end{IEEEbiography}
-
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,trim=80 0 80
-    0,clip,keepaspectratio]{bacao}}]{Fernando Bação}
-
-is currently a Full Professor at the NOVA Information Management School (NOVA
-IMS), Universidade Nova de Lisboa, where he has served as Associate Dean,
-Director of the MagIC Research Center and Director of the Doctoral Program in
-Information Management. He holds a PhD in Information Management, from
-Universidade Nova de Lisboa, and his research interests include data science,
-machine learning, remote sensing, and information management. His research
-work has appeared in scientific journals such as Information Sciences, Expert
-Systems with Applications, Information Sciences, Computers in Human Behavior,
-The Internet and Higher Education, Information \& Management, International
-Journal of Geographical Information Science, among others and received awards
-for its impact. 
-
-\end{IEEEbiography}
-
-% You can push biographies down or up by placing
-% a \vfill before or after them. The appropriate
-% use of \vfill depends on what kind of text is
-% on the last page and whether or not the columns
-% are being equalized.
-
-%\vfill
-
-% Can be used to pull up biographies so that the bottom of the last one
-% is flush with the other column.
-%\enlargethispage{-5in}
-
-
-
-% that's all folks
 \end{document}
 
 

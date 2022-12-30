@@ -431,7 +431,7 @@ if __name__ == "__main__":
             "friedman_test",
             friedman_,
             (
-                "Results for Friedman test. Statistical significance is tested at a "
+                "Results for the Friedman test. Statistical significance is tested at a "
                 r"level of $\alpha = 0.05$. The null hypothesis is that there is no "
                 "difference in the classification outcome across resamplers."
             ),
@@ -446,7 +446,7 @@ if __name__ == "__main__":
                 "Adjusted p-values using the Holm-Bonferroni test. Statistical "
                 r"significance is tested at a level of $\alpha = 0.05$. The null "
                 "hypothesis is that the benchmark methods perform similarly "
-                "compared to the control method (G-SMOTENC)."
+                "to the control method (G-SMOTENC)."
             ),
         ),
     )

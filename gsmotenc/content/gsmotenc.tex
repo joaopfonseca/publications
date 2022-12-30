@@ -12,9 +12,11 @@
 \usepackage{graphicx}
 \usepackage{changepage}
 
+\usepackage{soul} % highlight text
+
 \AtBeginEnvironment{longtable}{\footnotesize} 
 
-\journal{Information Sciences}
+\journal{Expert Systems with Applications}
 
 \begin{document}
 
@@ -26,7 +28,9 @@
 \title{Geometric SMOTE for Imbalanced Datasets with Nominal and Continuous Features}
 
 \author[inst1]{Joao Fonseca}
+\ead{jpfonseca@novaims.unl.pt}
 \author[inst1]{Fernando Bacao}
+\ead{bacao@novaims.unl.pt}
 
 \affiliation[inst1]{
     organization={NOVA Information Management School, Universidade Nova de Lisboa},
@@ -39,23 +43,24 @@
 
 \begin{abstract}
 
-    There are different approaches to address imbalanced learning. Artificial
-    data generation, however, is a more general approach when opposed to
-    algorithmic modifications or cost-sensitive solutions. Since the proposal
-    of the Synthetic Minority Oversampling TEchnique (SMOTE), various SMOTE
-    variants and neural network-based oversampling methods were developed.
+    Imbalanced learning can be addressed in 3 different ways: resampling,
+    algorithmic modifications and cost-sensitive solutions. Resampling, and
+    specifically oversampling, are more general approaches when opposed to
+    algorithmic and cost-sensitive methods. Since the proposal of the
+    Synthetic Minority Oversampling TEchnique (SMOTE), various SMOTE variants
+    and neural network-based oversampling methods have been developed.
     However, the options to oversample datasets with nominal and continuous
-    features are limited. In this paper, we propose Geometric SMOTE for
-    Nominal and Continuous features (G-SMOTENC), based on a combination of
-    G-SMOTE and SMOTENC. Our method uses SMOTENC's encoding and generation
-    mechanism for nominal features while using G-SMOTE's data selection
-    mechanism to determine the center observation and k-nearest neighbors and
-    generation mechanism for continuous features. G-SMOTENC's performance is
-    compared against SMOTENC's along with 2 other baseline methods, a
+    features are limited. We propose Geometric SMOTE for Nominal and
+    Continuous features (G-SMOTENC), based on a combination of G-SMOTE and
+    SMOTENC. Our method modifies SMOTENC's encoding and generation mechanism
+    for nominal features while using G-SMOTE's data selection mechanism to
+    determine the center observation and k-nearest neighbors and generation
+    mechanism for continuous features. G-SMOTENC's performance is compared
+    against SMOTENC's along with two other baseline methods, a
     State-of-the-art oversampling method and no oversampling. The experiment
     was performed over 20 datasets with varying imbalance ratios, number of
     metric and non-metric features and target classes. We found a significant
-    improvement in the quality of the generated data when using G-SMOTENC as
+    improvement in classification performance when using G-SMOTENC as
     the oversampling method. An open-source implementation of G-SMOTENC is
     made available in the Python programming language.
 
@@ -92,21 +97,21 @@ as fraud transactions detection, fault detection and medical
 diagnosis~\cite{tyagi2020sampling}. In these situations, predicting false
 positives is often a more acceptable error, since the class of interest is
 usually the minority class~\cite{vuttipittayamongkol2021class}. However, using
-standard ML classifiers on imbalanced datasets induce a bias in favor of the
-classes with highest frequency, while limiting the predictive power on lower
-frequency classes~\cite{lopez2013insight, das2018handling}. This effect is
-known, in the ML community, as Imbalanced Learning. 
+standard ML classifiers on imbalanced datasets induces a bias in favor of the
+classes with the highest frequency, while limiting the predictive power on
+lower frequency classes~\cite{lopez2013insight, das2018handling}. This effect
+is known in the ML community as the Imbalanced Learning problem.
 
 % existing approaches to address imbalanced learning
 Imbalanced learning involves a dataset with two or more target classes with
-varying class frequencies. The minority class is defined as the class
-with the least amount of observations and the majority class is the one with the
-highest amount of observations~\cite{kaur2019systematic}. There are 3 main
+varying class frequencies. The minority class is defined as the class with the
+least amount of observations and the majority class is the one with the
+highest amount of observations~\cite{kaur2019systematic}. There are three main
 approaches to address imbalanced learning~\cite{fernandez2013analysing}: 
 
 \begin{enumerate}
     \item Cost-sensitive solutions attribute a higher misclassification cost
-        to minority class observations to minimize higher cost errors;
+        to the minority class observations to minimize higher cost errors;
     \item Algorithmic level solutions modify ML classifiers to improve the
         learning of the minority class;
     \item Resampling solutions generate synthetic minority class observations
@@ -116,12 +121,12 @@ approaches to address imbalanced learning~\cite{fernandez2013analysing}:
 
 Since it is an external approach to imbalanced learning, the latter method
 becomes particularly useful. It dismisses the required domain knowledge to
-build a cost matrix and the technical complexity/knowledge of applying an
+build a cost matrix and the technical complexity or knowledge to apply an
 imbalanced learning-specific classifier. Resampling can be done via
 undersampling, oversampling, or hybrid approaches~\cite{tarekegn2021review}. In
 this paper, we will focus on oversampling approaches.
 
-% prevalence of categorical features in practical classification settings
+% prevalence of nominal features in practical classification settings
 The presence of nominal features in imbalanced learning tasks limits the
 options available to deal with class imbalance. Even though it is possible to
 use encoding methods such as one-hot or ordinal encoding to convert nominal
@@ -132,9 +137,10 @@ is to use models that can handle different scales (\textit{e.g.}, Decision
 Tree). However, this assumption may be limiting since there are few ML
 algorithms where this condition is verified. Another possible approach is
 transforming the variables to meet scale
-assumptions~\cite{lumijarvi2004comparison}. This was explored in the algorithm
-Synthetic Minority Oversampling Technique for Nominal and Continuous features
-(SMOTENC)~\cite{Chawla2002} (explained in Section~\ref{sec:related_work}).
+assumptions~\cite{lumijarvi2004comparison}. This method was explored in the
+algorithm Synthetic Minority Oversampling Technique for Nominal and Continuous
+features (SMOTENC)~\cite{Chawla2002} (explained in
+Section~\ref{sec:related_work}).
 
 % why typical methods cannot be used on datasets with mixed data types
 In the presence of datasets with mixed data types, using most of the
@@ -148,15 +154,26 @@ datasets with both nominal and continuous features.
 % the proposed method
 In this paper, we propose Geometric SMOTE for Nominal and Continuous features
 (G-SMOTENC). It generates the continuous feature values of a synthetic
-observation within a truncated hyper-spheroid with its nominal feature values using
-the most common value of its nearest neighbors. In addition, G-SMOTENC uses
-G-SMOTE's data selection strategy and SMOTENC's approach to find the
+observation within a truncated hyper-spheroid with its nominal feature values
+using the most common value of its nearest neighbors. In addition, G-SMOTENC
+uses G-SMOTE's data selection strategy and SMOTENC's approach to find the
 center observation's nearest neighbors. G-SMOTENC is a generalization of both
 SMOTENC and G-SMOTE~\cite{douzas2019geometric}. With the correct
 hyperparameters, our G-SMOTENC implementation can mimic the behavior of SMOTE,
 SMOTENC, or G-SMOTE\@. It is available in the
 \href{https://github.com/joaopfonseca/ml-research}{open-source Python library
 ``ML-Research''} and is fully compatible with the Scikit-Learn ecosystem.
+These contributions can be summarized as follows:
+
+\begin{enumerate}
+    \item We propose G-SMOTENC, an oversampling algorithm for datasets with
+        nominal and continuous features;
+    \item We test the proposed oversampler using 20 datasets and compare its
+        performance to SMOTENC, Random Oversampling, Random Undersampling and
+        a State-of-the-art oversampler;
+    \item We provide an implementation of G-SMOTENC in the Python programming
+        language;
+\end{enumerate}
 
 % structure of the paper
 The rest of this paper is structured as follows:
@@ -192,7 +209,7 @@ phases~\cite{fernandez2018smote}:
     \item Data generation. Once $x^c$ and $x^{nn}$ have been selected, $x^{gen}$
         is generated based on a transformation between the two selected
         observations. In the case of SMOTE, this transformation is 
-        a linear interpolation between the two obervations: $x^{gen} = \alpha x^c
+        a linear interpolation between the two observations: $x^{gen} = \alpha x^c
         + (1-\alpha) x^{nn}, \alpha \sim \mathcal{U}(0, 1)$.
 \end{enumerate}
 
@@ -206,19 +223,16 @@ SMOTE~\cite{douzas2018improving} and LR-SMOTE~\cite{liang2020lr} modify the
 data selection mechanism and show promising results in imbalanced
 learning~\cite{fonseca2021improving}. However, these algorithms select $x^c$
 using procedures that include calculating each observation's k-nearest
-neighbors or clustering methods, which are not prepared to handle categorical
+neighbors or clustering methods, which are not prepared to handle nominal
 data.
 
 Modifications to SMOTE's generation mechanism are uncommon. A few oversampling
 methods, such as Safe-level SMOTE~\cite{bunkhumpornpat2009safe} and
 Geometric-SMOTE~\cite{douzas2019geometric} proposed this type of modification
 and have shown promising results~\cite{douzas2019imbalanced}. However, these
-methods are also unable to handle datasets with categorical data. This
-limitation is especially true for methods combining modifications in the
-selection and generation mechanisms, as is the case of the Geometric
-Self-Organizing Maps Oversampling algorithm~\cite{douzas2021g}. Other methods
-attempt to replace the SMOTE data generation mechanism altogether using
-different Generative Adversarial Networks (GAN)
+methods are also unable to handle datasets with nominal data. Other
+methods attempt to replace the SMOTE data generation mechanism altogether
+using different Generative Adversarial Networks (GAN)
 architectures~\cite{salazar2021generative, koivu2020synthetic, jo2022obgan}.
 Network-based architectures, however, are computationally expensive to train
 and sensitive to the training initialization. It is also difficult to ensure a
@@ -231,16 +245,16 @@ proposed SMOTE for Nominal and Continuous (SMOTENC), an adaptation of SMOTE to
 handle datasets with nominal and continuous features~\cite{Chawla2002}. To
 determine the k-nearest neighbors of $x^c$, the Euclidean distance is modified
 to include the median of the standard
-deviations of the continuous features for every categorical feature with
+deviations of the continuous features for every nominal feature with
 different values. Once $x^c$ and $x^{nn}$ are defined,  
 the continuous feature values in $x^{gen}$ are generated using the SMOTE generation
-mechanism. The categorical features are given the most common values
+mechanism. The nominal features are given the most common values
 occurring in the k-nearest neighbors.
 
 Recently, a new SMOTE-based oversampling method for
 datasets with mixed data types, SMOTE-ENC~\cite{mukherjee2021smote}, was
-proposed. This method modifies the encoding mechanism for categorical features
-used in the SMOTENC algorithm to account for categorical features' change of
+proposed. This method modifies the encoding mechanism for nominal features
+used in the SMOTENC algorithm to account for nominal features' change of
 association with minority classes. The Multivariate Normal Distribution-based
 Oversampling for Numerical and Categorical features
 (MNDO-NC)~\cite{ambai2019multivariate} uses the original MNDO
@@ -253,7 +267,7 @@ consideration.
 Alternatively to SMOTE-based methods, it is possible to use non-informed over
 and undersampling methods for datasets with nominal and continuous features,
 specifically Random Oversampling (ROS) and Random Undersampling (RUS). These
-methods consist in randomly duplicating minority class observations (in the
+methods consist of randomly duplicating minority class observations (in the
 case of ROS), which can lead to overfitting~\cite{park2021combined,
 batista2004study}, or randomly removing majority class observations (in the
 case of RUS), which may lead to underfitting~\cite{bansal2021analysis}.
@@ -261,12 +275,13 @@ case of RUS), which may lead to underfitting~\cite{bansal2021analysis}.
 
 \section{Proposed Method}~\label{sec:proposed_method}
 
-We propose G-SMOTENC to handle both nominal and continuous features. This
-extension of the original G-SMOTE oversampler its selection and generation
-mechanisms. Due to the novelty of the work, these modifications are based on
-the SMOTENC mechanism. However, this method can be extended with further
-modifications to the categorical data encoding and selection mechanisms in
-future work. 
+We propose G-SMOTENC to oversample imbalanced datasets with both nominal and
+continuous features. Our method builds on top of G-SMOTE's selection and
+generation mechanisms coupled with a modified version of SMOTENC. It
+attributes less importance to the nominal features (relative to the continuous
+features) when computing distances among observations compared to SMOTENC.
+However, this method can be extended with further modifications to the
+nominal data encoding and selection mechanisms in future work. 
 
 Similar to G-SMOTE being an extension of SMOTE, G-SMOTENC is also an extension
 of SMOTENC since any method or ML pipeline using the SMOTENC generation
@@ -299,11 +314,89 @@ Algorithms~\ref{alg:selection} and~\ref{alg:generation}, respectively.
     }
 \end{algorithm}
 
+G-SMOTENC's implementation involves additional considerations regarding the
+management of the nominal features. During the selection mechanism (identified
+as the function $SelectionMechanism$), the nominal features are encoded
+using the one-hot encoding technique, while the non-zero constant assumes the
+value of the median of the standard deviations of the continuous features in
+$C_{min}$, divided by two. This encoding mechanism varies from the one in
+SMOTENC in order to attribute less weight to the nominal features relative
+to the continuous features.
+
+The selection strategy, $\alpha_{sel}$, as well as $C_{min}$ and $C_{maj}$ are
+used to determine a central observation, $x^c$, its nearest neighbors,
+$X^{nn}$, and one of its nearest neighbors, $x^{nn} \in X^{nn}$. $X^{nn}$ is
+calculated using the euclidean distance and both the continuous and encoded
+nominal features. The outcome of this step is dependent on the choice of
+$\alpha_{sel}$:
+
+\begin{enumerate}
+    \item If $\alpha_{sel} = \mathit{minority}$, $X^{nn}$ will consist of
+        $x^c$'s \textit{k}-nearest neighbors within $C_{min}$;
+    \item If $\alpha_{sel} = \mathit{majority}$, $X^{nn}$ will consist of
+        $x^c$'s nearest neighbor within $C_{maj}$; 
+    \item If $\alpha_{sel} = \mathit{combined}$, $X^{nn}$ will consist of the
+        union between $x^c$'s \textit{k}-nearest neighbors within $C_{min}$
+        and $x^c$'s nearest neighbor within $C_{maj}$, \textit{i.e.},
+        $C_{min,k} \cup C_{maj,1}$. In this case, $x^{nn}$ is selected using
+        the majority class observation within $X^{nn}$ as well as another
+        randomly selected nearest neighbor, such that $x^{nn} =
+        argmin(||x^{nn}_{min}-x^c||, ||x^{nn}_{maj}-x^c||)$;
+\end{enumerate}
+
+Unlike in the original G-SMOTE generation mechanism, $X^{nn}$ is used in the
+to determine the nominal feature values of $x^{gen}$ based on the mode of
+these features within $X^{nn}$. G-SMOTENC's generation mechanism (identified
+as $GenerationMechanism$) uses two hyperparameters to generate the continuous
+features in $x^{gen}$: the truncation factor, $\alpha_{trunc}$, and the
+deformation factor, $\alpha_{def}$. They are generated by forming a
+hyper-sphere with center $x^c$ and is modified according to the parameters:
+
+\begin{enumerate}
+
+    \item $\alpha_{trunc}$ truncates the hyper-sphere to induce the generation
+        of the artificial instance within a subset of the hypersphere. It
+        varies between 1 and -1, where 1 would split the generation area in
+        half and use the area between $x^c$ and $x^{nn}$, -1 achieves the same
+        effect and uses the other semi-hyper-sphere, and 0 applies no
+        truncation.
+
+    \item $\alpha_{def}$ deforms the hyper-sphere as shown in
+        Figure~\ref{fig:gsmote}. It varies between 0 and 1, where 0 applies no
+        deformation and 1 fully deforms the hyper-sphere into a line segment,
+        corresponding to $e^{//}$.
+
+\end{enumerate}
+
+Figure~\ref{fig:gsmote} depicts the effect of those hyperparameters in the
+data selection and generation phases. For an in-depth explanation of these
+hyperparameters, the reader is referred to~\cite{douzas2019geometric}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{../analysis/g-smote}
+    \caption{A visual depiction of G-SMOTENC. In this example,
+        $\alpha_{trunc}$ is approximately 0.5 and $\alpha_{def}$ is
+        approximately 0.4.
+    }~\label{fig:gsmote}
+\end{figure}
+
 \subsection{Selection Mechanism}
 
 The data selection mechanism is preceded by the numerical encoding of the
-categorical features. It mixes the selection mechanisms of SMOTENC and
-G-SMOTENC, as shown in Algorithm~\ref{alg:selection}.
+nominal features. It combines the selection mechanisms of SMOTENC and
+G-SMOTE, as shown in Algorithm~\ref{alg:selection}. The selection mechanism
+inherits the minority, majority, and combined mechanisms proposed in G-SMOTE.
+The nominal features in the minority and majority class observations,
+$C_{maj}$ and $C_{min}$ are first encoded using a one-hot encoding approach
+and replacing the constant 1 with the median of the standard deviations of the
+continuous features in $C_{min}$ divided by 2. The nearest-neighbors
+($X^{nn}$) of $x^c$ are determined based on $\alpha_{sel}$, which are passed
+on to the generation mechanism to determine the nominal features' values of
+$x^{gen}$ in the generation mechanism. Simultaneously, $x^{nn}$ is randomly
+selected from $X^{nn}$ and will be used to generate $x^{gen}$'s continuous
+features' values.
+
 
 \begin{algorithm}
     \SetKwProg{Fn}{Function}{:}{end}
@@ -320,7 +413,7 @@ G-SMOTENC, as shown in Algorithm~\ref{alg:selection}.
         $\sigma_{med} \leftarrow median(S)$\\
         \ForAll{$i \in \{maj, min\}$}{
             \ForAll{$f \in C_i^T$}{
-                \If{f is categorical}{
+                \If{f is nominal}{
                     $f' \leftarrow OneHotEncode(f) \times \sigma_{med} / 2$ \\
                     $C_i' \leftarrow (C_i^T \setminus f)^T$\\
                     $C_i' \leftarrow (C_i'^T \cup f')^T$
@@ -339,7 +432,7 @@ G-SMOTENC, as shown in Algorithm~\ref{alg:selection}.
         }
         \If{$\alpha_{sel} = majority$}{
             $x^{nn} \in C_{maj, 1}$ 
-            \tcp*[f]{Nearest neighbor of $x^c$ from $C_{min}$}\\
+            \tcp*[f]{Nearest neighbor of $x^c$ from $C_{maj}$}\\
             $X^{nn} \leftarrow C_{maj, 1}$
         }
         \If{$\alpha_{sel}$ = combined}{
@@ -360,28 +453,17 @@ G-SMOTENC, as shown in Algorithm~\ref{alg:selection}.
     }
 \end{algorithm}
 
-The selection mechanism uses the minority, majority, and combined mechanisms
-(introduced by G-SMOTE). However, the nominal features in the minority and
-majority class observations, $C_{maj}$ and $C_{min}$ are first encoded using a
-one-hot encoding approach and replacing the constant 1 with the median of the
-standard deviations of the continuous features in $C_{min}$ divided by 2. The
-nearest-neighbors ($X^{nn}$) of $x^c$ are determined based on $\alpha_{sel}$,
-which are passed on to the generation mechanism to determine the nominal
-features' values of $x^{gen}$ in the generation mechanism. Simultaneously,
-$x^{nn}$ is randomly selected from $X^{nn}$ and will be used to generate
-$x^{gen}$'s continuous features' values.
-
 \subsection{Generation Mechanism}
 
 G-SMOTENC's generation mechanism is shown in Algorithm~\ref{alg:generation}.
 It divides the generation of $x^{gen}$ into two parts: (1) generation of
-continuous feature values and (2) generation of nominal feature values. Next,
-the nominal features from $x^c$ and $x^{nn}$ are discarded. Afterward, the
-continuous features are generated using G-SMOTE's generation mechanism; within
-a hyper-spheroid formed using the truncation and deformation hyperparameters
-($\alpha_{trunc}$ and $\alpha_{def}$, respectively). Finally, the nominal
-feature values are generated by the mode of each feature within the
-observations in $X^{nn}$.
+continuous feature values and (2) generation of nominal feature values.
+First, the nominal features from $x^c$ and $x^{nn}$ are discarded. Afterward,
+the continuous features are generated using G-SMOTE's generation mechanism;
+within a hyper-spheroid defined with $\alpha_{trunc}$ and $\alpha_{def}$,
+which allows the non-linear generation of synthetic observations between $x^c$
+and $x^{nn}$. Finally, the nominal feature values are generated by the mode of
+each feature within the observations in $X^{nn}$.
 
 \begin{algorithm}
     \SetKwInput{KwGiven}{Given}
@@ -426,7 +508,7 @@ observations in $X^{nn}$.
     \Fn{GenNominal($X^{nn}$)}{
         $x^{gen}_{nom} = \emptyset $\\
         \ForAll{$f \in (X^{nn})^T$}{
-            \If{f is categorical}{
+            \If{f is nominal}{
                 $x^{gen}_{nom} \cup \{mode(f)\}$\tcp*[f]{Ties are decided with
                 random selection}\\
             }
@@ -447,22 +529,6 @@ observations in $X^{nn}$.
     }
 
 \end{algorithm}
-
-G-SMOTENC contains 3 hyperparameters: the selection strategy ($\alpha_{sel}$),
-the truncation factor ($\alpha_{trunc}$) and the deformation factor
-($\alpha_{def}$). Figure~\ref{fig:gsmote} depicts the effect of those
-hyperparameters in the data selection and generation phases. For an in-depth
-definition of the hyperparameters mentioned, the reader is referred
-to~\cite{douzas2019geometric}.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\linewidth]{../analysis/g-smote}
-    \caption{A visual depiction of G-SMOTENC. In this example,
-        $\alpha_{trunc}$ is approximately 0.5 and $\alpha_{def}$ is
-        approximately 0.4.
-    }~\label{fig:gsmote}
-\end{figure}
 
 
 \section{Methodology}~\label{sec:methodology}
@@ -485,22 +551,15 @@ and contained non-metric features (\textit{i.e.}, ordinal, nominal or binary).
 These datasets are used to show how the performance of different
 classifiers varies across over/undersamplers.
 
-Initially, all datasets were preprocessed manually with minimal manipulations
-to avoid the application of preprocessing methods beyond the scope of this
-paper. This step intends to remove features and/or observations with missing
-values and to identify the non-metric features. The second stage of our
-preprocessing was done systematically. The description of the resulting
-datasets is shown in Table~\ref{tbl:datasets_description}.
-
-\input{../analysis/datasets_description.tex}
-
-The second part of the data preprocessing pipeline starts with the generation
-of artificially imbalanced datasets with different Imbalance Ratios
-($IR=\frac{|C_{maj}|}{|C_{min}|}$). For each original dataset, we create its
-more imbalanced versions at intervals of 10, while ensuring that $|C_{min}|
-\ge 15$. The sampling strategy was determined for class $n \in
-\{1,\ldots,n,\ldots,m\}$ as a linear interpolation using $|C_{maj}|$ and
-$|C_{min}'|=\frac{|C_{maj}|}{IR_{new}}$, as shown in
+All datasets were initially preprocessed manually with minimal manipulations.
+We removed features and/or observations with missing values and identified the
+non-metric features. The second stage of preprocessing was done
+systematically. It starts with the generation of artificially imbalanced
+datasets with different Imbalance Ratios ($IR=\frac{|C_{maj}|}{|C_{min}|}$).
+For each original dataset, we create its more imbalanced versions at intervals
+of 10, while ensuring that $|C_{min}| \ge 15$. The sampling strategy was
+determined for class $n \in \{1,\ldots,n,\ldots,m\}$ as a linear interpolation
+using $|C_{maj}|$ and $|C_{min}'|=\frac{|C_{maj}|}{IR_{new}}$, as shown in
 equation~\ref{eq:sampling}.
 
 \begin{equation}~\label{eq:sampling}
@@ -516,10 +575,13 @@ imbalance ratio as a suffix in Table~\ref{tbl:datasets_description}.
 The datasets (both original and artificially imbalanced versions) are then
 filtered to ensure all datasets have a minimum of 500 observations.  The
 remaining datasets with a number of observations larger than 5000 are randomly
-sampled to match this number of observations. Afterward, for each remaining
-dataset, we remove target classes with a frequency lower than 15 observations.
-Finally, the continuous and discrete features are scaled to the range $[0,1]$
-to ensure a common range between all features. 
+sampled to match this number of observations. Afterward, we remove target
+classes with a frequency lower than 15 observations for each remaining
+dataset. Finally, the continuous and discrete features are scaled to the range
+$[0,1]$ to ensure a common range between all features. The description of the
+resulting datasets is shown in Table~\ref{tbl:datasets_description}.
+
+\input{../analysis/datasets_description.tex}
 
 \subsection{Machine Learning Algorithms}~\label{sec:ml_algorithms}
 
@@ -578,18 +640,18 @@ Section~\ref{sec:experimental_procedure}.
 
 \subsection{Performance Metrics}~\label{sec:performance_metrics}
 
-The choice of the performance metric plays a critical role in the assessment
-of the effect on classification tasks. The typical performance metrics,
+The choice of the performance metric plays a critical role in assessing
+the effect on classification tasks. The typical performance metrics,
 \textit{e.g.}, Overall Accuracy (OA), are intuitive to interpret but are often
 inappropriate to measure a classifier's performance in an imbalanced learning
 context~\cite{sun2009classification}. For example, to estimate an event that
 occurs in 1\% of the dataset, a constant classifier would obtain an OA of 0.99
 and still be unusable. However, this metric is still reported in some of our
-results to maintain a metric that is easier to interpret.
+results to maintain interpretability.
 
-Recent surveys found the Geometric-mean (G-mean), F1-score
+Recent surveys consider Geometric-mean (G-mean), F1-score
 (F-score), $Sensitivity = \frac{TP}{FN+TP}$ and $Specificity = \frac{TN}{TN +
-FP}$ to be appropriate and common performance metrics in imbalanced learning
+FP}$ appropriate and common performance metrics in imbalanced learning
 contexts~\cite{rout2018handling, jeni2013facing,
 japkowicz2013assessment}. G-mean and F-score are defined
 equations~\ref{eq:gmean} and~\ref{eq:fscore}, respectively.
@@ -605,10 +667,10 @@ equations~\ref{eq:gmean} and~\ref{eq:fscore}, respectively.
 \end{equation}
 
 They are calculated as a function of the number of False/True Positives (FP
-and TP) and False/True Negatives (FN and TN), having $Precision =
-\frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$.  This led us to adopt,
-along with OA, both F-score and G-mean as the main performance metrics for
-this study. 
+and TP) and False/True Negatives (FN and TN), with $Precision =
+\frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$. This led us to use, along
+with OA, both F-score and G-mean as the main performance metrics for this
+study. 
 
 \subsection{Experimental Procedure}~\label{sec:experimental_procedure}
 
@@ -661,37 +723,36 @@ repository}.
 \section{Results and Discussion}~\label{sec:results_and_discussion}
 
 In this section, we present the experimental results. We focus on the
-classification performance comparison using oversamplers whose generation
-mechanism is compatible with datasets containing both continuous and
-categorical features. The experimental results were analyzed in two stages:
-(1) analysis of mean ranking and absolute performance and (2) statistical
-analysis. In Section~\ref{sec:discussion} we discuss the main insights
-extracted by analysing the results reported in Sections~\ref{sec:results}
-and~\ref{sec:statistical_analysis}.
+comparison of classification performance using oversamplers whose generation
+mechanism is compatible with datasets containing both nominal and continuous
+features. The experimental results were analyzed in two stages: (1) in
+Section~\ref{sec:results} we analyze mean rankings and absolute performances
+and in Section~\ref{sec:statistical_analysis} we show the results of our
+statistical analysis. Section~\ref{sec:discussion} discusses the main
+insights extracted by analyzing the experimental results.
 
 \subsection{Results}~\label{sec:results}
 
-Table~\ref{tbl:mean_sem_ranks} presents the mean rankings of CV 
-scores across the different combinations of oversamplers, metrics and
-classifiers. These results were calculated by assigning a ranking score for
-each oversampler from 1 (best) to 4 (worst) for each dataset, metric and
-classifier.
+Table~\ref{tbl:mean_sem_ranks} presents the mean rankings of CV scores between
+the different combinations of oversamplers, metrics and classifiers. These
+results were calculated by assigning a ranking score for each oversampler from
+1 (best) to 4 (worst) for each dataset, metric and classifier.
 
 \input{../analysis/mean_sem_ranks.tex}
 
-Table~\ref{tbl:mean_sem_scores} presents the mean CV scores.
-Except for the OA metric, G-SMOTENC either outperformed or matched the
-remaining oversamplers.
+Table~\ref{tbl:mean_sem_scores} presents the mean CV scores. Except for the
+OA metric, G-SMOTENC either outperformed or matched the remaining
+oversamplers.
 
 \input{../analysis/mean_sem_scores.tex}
 
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
 
-To conduct an appropriate statistical analysis in an experiment with multiple
-datasets, it is necessary to use methods that account for the multiple
-comparison problem. Based on the recommendations found in~\cite{Demsar2006},
-we applied a Friedman test followed by a Holm-Bonferroni test for
-post-hoc analysis.
+It is necessary to use methods that account for the multiple comparison
+problem to conduct an appropriate statistical analysis in an experiment with
+multiple datasets. Based on the recommendations found in~\cite{Demsar2006}, we
+applied a Friedman test followed by a Holm-Bonferroni test for post-hoc
+analysis.
 
 In Section~\ref{sec:performance_metrics} we explained that OA, although easily
 interpretable, is not an appropriate performance metric for imbalanced
@@ -708,36 +769,34 @@ We performed a Holm-Bonferroni test to understand whether the difference in
 the performance of G-SMOTENC is statistically significant to the remaining
 resampling methods. The results of this test are shown in
 Table~\ref{tbl:holms_test}. The null hypothesis is rejected in 33 out of 40
-tests.
+trials.
 
 \input{../analysis/holms_test.tex}
 
 \subsection{Discussion}~\label{sec:discussion}
 
 The results reported in Section~\ref{sec:results} show that G-SMOTENC
-consistently outperforms the remaining well-known oversampling approaches.
-Considering the results for the two imbalanced learning appropriate metrics in
-Table~\ref{tbl:mean_sem_ranks}, G-Mean and F-Score, G-SMOTENC was only (on
-average) outperformed once by a neglectable margin. Unlike the results
-reported in~\cite{mukherjee2021smote}, SMOTE-ENC's performance was rarely
-superior to SMOTENC's.
+consistently outperforms the remaining oversampling approaches. Based on the
+two metrics appropriate for imbalanced learning problems, G-Mean and F-Score,
+in the average rankings shown in Table~\ref{tbl:mean_sem_ranks} G-SMOTENC was
+only outperformed once by a small margin. Unlike the results reported
+in~\cite{mukherjee2021smote}, SMOTE-ENC's performance was rarely superior to
+SMOTENC's.
 
 The relative difference in the classifiers' performance is better visible in
-Table~\ref{tbl:mean_sem_scores}. Using a RF classifier, for example, the
-impact of using G-SMOTENC compared to no oversampling improves, on
-average, 13 percentual points on G-mean and nine percentual points
-using F-Score. 
+Table~\ref{tbl:mean_sem_scores}. Using an RF classifier, for example, the
+impact of using G-SMOTENC compared to no oversampling improves, on average, 13
+percentual points on G-mean and nine percentual points using F-Score. 
 
-The difference in performance among the different oversamplers was found to be
-statistically significant across the different classifiers and relevant
-performance metrics by performing a Friedman test. The p-values of this test
-are reported in Table~\ref{tbl:friedman_test}. The superiority of G-SMOTENC
-was confirmed by the p-values obtained with the Holm-Bonferroni test shown
-in Table~\ref{tbl:holms_test}. This test showed that G-SMOTENC outperformed
-with statistical significance the remaining resamplers in 82.5\% of the
-comparisons done.
+The difference in performance between oversamplers was found to be
+statistically significant across classifiers and performance metrics in the
+Friedman test. The p-values of this test are reported in
+Table~\ref{tbl:friedman_test}. The superiority of G-SMOTENC was confirmed with
+the results from the Holm-Bonferroni test shown in Table~\ref{tbl:holms_test}.
+This test showed that G-SMOTENC outperformed with statistical significance the
+remaining resamplers in 82.5\% of the comparisons done.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/consistency_analysis_plot}
     \caption{Average ranking of oversamplers over different characteristics of
@@ -765,19 +824,19 @@ overlap with the remaining benchmark methods.
 
 \section{Conclusion}~\label{sec:conclusion}
 
-In this paper, we presented G-SMOTENC, a new oversampling algorithm that
-combines G-SMOTE and SMOTENC. This oversampling algorithm was developed to
-leverage G-SMOTE's data selection and generation mechanisms into datasets with
-mixed data types. This was achieved by encoding and generating nominal feature
-values using SMOTENC's approach. The quality of the data generated with
-G-SMOTENC was tested over 20 datasets with different imbalance
-ratios, metric to non-metric feature ratios and number of classes. These
-results were compared to no oversampling, SMOTENC, Random Oversampling, Random
-Undersampling and SMOTE-ENC using a Decision Tree, K-Nearest Neighbors,
-Logistic Regression and Random Forest as classifiers.
+This paper presented G-SMOTENC, a new oversampling algorithm that combines
+G-SMOTE and SMOTENC. This oversampling algorithm leverages G-SMOTE's data
+selection and generation mechanisms into datasets with mixed data types. This
+was achieved by encoding and generating nominal feature values using SMOTENC's
+approach. The quality of the data generated with G-SMOTENC was tested over 20
+datasets with different imbalance ratios, metric/non-metric feature ratios
+and number of classes. These results were compared to no oversampling,
+SMOTENC, Random Oversampling, Random Undersampling and SMOTE-ENC using a
+Decision Tree, K-Nearest Neighbors, Logistic Regression and Random Forest as
+classifiers.
 
 G-SMOTENC can be seen as a drop-in replacement of SMOTENC, since when
-$\alpha_{trunc}=1$, $\alpha_{def}=1$ and $\alpha_{sel}=minority$ SMOTENC is
+$\alpha_{trunc}=1$, $\alpha_{def}=1$ and $\alpha_{sel}=minority$, SMOTENC is
 reproduced. G-SMOTENC has three additional hyperparameters that allow for
 greater customization of the selection and generation mechanisms.  However,
 determining the optimal parameters a priori (\textit{i.e.}, with reduced
@@ -793,8 +852,18 @@ of the generated observations compared to SMOTENC. The G-SMOTENC
 implementation used in this study is available in the
 \href{https://github.com/joaopfonseca/ml-research}{open-source Python library
 ``ML-Research''} and is fully compatible with the Scikit-Learn ecosystem.
+\\
+\\
+\textbf{Funding:} This research was supported by a research grant of the
+Portuguese Foundation for Science and Technology ("Fundação para a Ciência e a
+Tecnologia"), reference SFRH/BD/151473/2021.
+\\
+\\
+\textbf{Declaration of interests:} The authors declare that they have no known
+competing financial interests or personal relationships that could have
+appeared to influence the work reported in this paper.
 
-\bibliographystyle{elsarticle-num} 
+\bibliographystyle{elsarticle-harv} 
 \bibliography{references}
 
 \end{document}

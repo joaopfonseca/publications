@@ -1,37 +1,60 @@
-\documentclass[pdflatex,sn-mathphys]{sn-jnl}% Math and Physical Sciences Reference Style
+\documentclass[parskip=full]{scrartcl}
 
-\usepackage{bookmark}
+\pdfoutput=1
 
-\jyear{2021}%
+\title{Research Trends and Applications of Data Augmentation Algorithms}
 
-\theoremstyle{thmstyleone}
-\newtheorem{theorem}{Theorem}
-\newtheorem{proposition}[theorem]{Proposition}
+\author{%
+	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
+	\\
+	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
+	\\
+	\small{*Corresponding Author}
+	\\
+	\\
+	\small{Postal Address: NOVA Information Management School, Campus de
+    Campolide, 1070--312 Lisboa, Portugal}
+	\\
+	\small{Telephone: +351 21 382 8610}
+}
 
-\theoremstyle{thmstyletwo}
-\newtheorem{example}{Example}
-\newtheorem{remark}{Remark}
+\usepackage{breakcites}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{%
+	a4paper,
+	left=18mm,
+	right=18mm,
+	top=18mm,
+}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{booktabs}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.14}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{hyperref}
+\date{}
 
-\theoremstyle{thmstylethree}
-\newtheorem{definition}{Definition}
+% highlight text: \hl
+\usepackage{soul}
 
-\raggedbottom%
+\definecolor{hypecol}{HTML}{0875b7}
+\hypersetup{%
+    colorlinks,
+    linkcolor={hypecol},
+    citecolor={hypecol},
+    urlcolor={hypecol}
+}
 
 \begin{document}
 
-\title[
-    Research Trends and Applications of Data Augmentation Algorithms
-    ]{Research Trends and Applications of Data Augmentation Algorithms}
+\maketitle
 
-\author*[1]{\fnm{Joao} \sur{Fonseca}}\email{joaopfonseca@novaims.unl.pt}
-
-\author[1]{\fnm{Fernando} \sur{Bacao}}\email{bacao@novaims.unl.pt}
-
-\affil*[1]{\orgdiv{NOVA Information Management School}, \orgname{Universidade
-Nova de Lisboa}, \orgaddress{\street{Campus de Campolide}, 
-\postcode{1070--312} \state{Lisboa}, \country{Portugal}}}
-
-\abstract{%
+\begin{abstract}
 
     In the Machine Learning research community, there is a consensus regarding
     the relationship between model complexity and the required amount of data
@@ -53,12 +76,10 @@ Nova de Lisboa}, \orgaddress{\street{Campus de Campolide},
     as identify future research directions and open questions within data
     augmentation research.
 
-}
+\end{abstract}
 
-\keywords{Data Augmentation, Generative Adversarial Networks, Regularization
-Methods, Overfitting}
-
-\maketitle
+\textbf{Keywords:} Data Augmentation, Generative Adversarial Networks, Regularization
+Methods, Overfitting
 
 \section{Introduction}~\label{sec:introduction}
 
@@ -756,7 +777,7 @@ findings we found from this analysis are:
         processing and text classification.
 \end{enumerate}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/keyword_network}
     \caption{Keyword network.
@@ -774,7 +795,7 @@ likelihood of each document, excluding the dominant topic. Documents belonging
 to the same group across primary, secondary and/or tertiary topics had a
 likelihood of zero of belonging to any other topic.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/lda_topics_sankey}
     \caption{Distribution of documents over the different topics found. The
@@ -1006,48 +1027,29 @@ data augmentation algorithms to complement or replace techniques such as
 Active Learning may reduce the cost of data collection, although it is yet to
 be explored.
 
-\backmatter%
-
 \section*{Declarations}
 
-\bmhead{Funding}
+\subsection*{Conflict of interest}
 
-This research is supported by two research grants of the Portuguese Foundation
-for Science and Technology (``Fundação para a Ciência e a Tecnologia''),
-references SFRH/BD/151473/2021 and DSAIPA/DS/0116/2019.
-
-\bmhead{Conflict of interest}
-
-The authors that they have no conflict of interest or competing interest in
+The authors declare that they have no conflict of interest or competing interest in
 this work.
 
-\bmhead{Ethics approval}
-
-Not applicable.
-
-\bmhead{Consent to participate}
-
-Not applicable.
-
-\bmhead{Consent for publication}
-
-Not applicable.
-
-\bmhead{Authors' contributions}
+\subsection*{Authors' contributions}
 
 Joao Fonseca collected all the research material and wrote the original text
 of the paper. Fernando Bacao helped with the article preparation phase and
 provided suggestions regarding the text, content and structure of the paper.
 
-\bmhead{Availability of data and materials}
+\subsection*{Availability of data and materials}
 
 The data and the experiment's documentation is available at
-\href{https://github.com/joaopfonseca/ml-research}{https://github.com/joaopfonseca/ml-research}.
+\href{https://github.com/joaopfonseca/publications}{https://github.com/joaopfonseca/publications}.
 
-\bmhead{Code availability}
+\subsection*{Code availability}
 
 The analyses and source code is available at
-\href{https://github.com/joaopfonseca/ml-research}{https://github.com/joaopfonseca/ml-research}.
+\href{https://github.com/joaopfonseca/publications}{https://github.com/joaopfonseca/publications}.
 
 \bibliography{references}
+\bibliographystyle{ieeetr}
 \end{document}

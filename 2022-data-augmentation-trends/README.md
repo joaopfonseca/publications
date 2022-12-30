@@ -1,5 +1,7 @@
 # Research Trends and Applications of Data Augmentation Algorithms
 
+[Link to publication](https://arxiv.org/abs/2207.08817)
+
 ## Abstract
 
 In the Machine Learning research community, there is a consensus regarding the
