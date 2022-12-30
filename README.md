@@ -17,7 +17,7 @@ package ``ml-research``, which can be found
 - Fonseca, J., Bacao, F. (-). [S<sup>4</sup>AD-Learning: Self-supervised Semi-supervised Active Deep Learning](deep-active-learning). Working paper.
 - Fonseca, J., Bacao, F. (-). [Synthetic Data Generation: A Literature Review](data-augmentation-review). Working paper.
 - Fonseca, J., Douzas, G., Bacao, F. (2022). [Geometric SMOTE for Imbalanced Datasets with Nominal and Continuous Features](gsmotenc). Submitted to Expert Systems with Applications.
-- Fonseca, J., Bacao, F. (2022). [Improving Active Learning Performance Through the Use of Data Augmentation](active-learning-augmentation). Submitted to International Journal of Intelligent Systems.
+- Fonseca, J., Bacao, F. (2022). [Improving Active Learning Performance Through the Use of Data Augmentation](active-learning-augmentation). Accepted for publication at International Journal of Intelligent Systems.
 - Fonseca, J., Bacao, F. (2022). [Research Trends and Applications of Data Augmentation Algorithms](2022-data-augmentation-trends). Uploaded to ArXiv. https://arxiv.org/abs/2207.08817
 - Fonseca, J., Douzas, G., Bacao, F. (2021). [Increasing the Effectiveness of Active Learning: Introducing Artificial Data Generation in Active Learning for Land Use/Land Cover Classification](2021-al-generator-lulc). Remote Sensing, 13(13), 2619. https://doi.org/10.3390/rs13132619
 - Fonseca, J., Douzas, G., Bacao, F. (2021). [Improving Imbalanced Land Cover Classification with K-Means SMOTE: Detecting and Oversampling Distinctive Minority Spectral Signatures](2021-kmeans-smote-lulc). Information, 12(7), 266. https://doi.org/10.3390/info12070266
