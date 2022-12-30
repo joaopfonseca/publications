@@ -21,10 +21,7 @@ def gaussian_mesh(X, mesh):
         mesh: array-like, (m, m)
     """
 
-    gaussian = multivariate_normal(
-        mean=np.mean(X, axis=0),
-        cov=np.cov(X.T)
-    )
+    gaussian = multivariate_normal(mean=np.mean(X, axis=0), cov=np.cov(X.T))
     prob = gaussian.pdf(mesh)
 
     return prob
@@ -40,7 +37,7 @@ def gmm_mesh(X, mesh):
     """
 
     gmm = GaussianMixture(n_components=2, random_state=RND_SEED).fit(X)
-    prob = gmm.score_samples(np.reshape(mesh, (100*100, 2)))
+    prob = gmm.score_samples(np.reshape(mesh, (100 * 100, 2)))
     prob = np.reshape(prob, (100, 100))
 
     prob = prob - prob.min()
@@ -59,7 +56,7 @@ def kde_mesh(X, mesh):
         mesh: array-like, (m, m)
     """
     kde = gaussian_kde(X.T)
-    prob = kde.pdf(np.reshape(np.moveaxis(mesh, -1, 0), (2, 100*100)))
+    prob = kde.pdf(np.reshape(np.moveaxis(mesh, -1, 0), (2, 100 * 100)))
     prob = np.reshape(prob, (100, 100))
 
     return prob
@@ -69,15 +66,21 @@ if __name__ == "__main__":
 
     # Generate data and meshgrid
     X, y = make_blobs(
-        n_samples=100, n_features=2, centers=2, cluster_std=[1, 2], random_state=RND_SEED
+        n_samples=100,
+        n_features=2,
+        centers=2,
+        cluster_std=[1, 2],
+        random_state=RND_SEED,
     )
 
-    x, y = [np.array(np.linspace(X.min(0)[i]-1, X.max(0)[i]+1, 100)) for i in range(2)]
+    x, y = [
+        np.array(np.linspace(X.min(0)[i] - 1, X.max(0)[i] + 1, 100)) for i in range(2)
+    ]
     mesh = np.stack(np.meshgrid(x, y), axis=2)
 
     load_plt_sns_configs(18)
 
-    fig, axes = plt.subplots(1, 4, figsize=(17,5))
+    fig, axes = plt.subplots(1, 4, figsize=(17, 5))
 
     # Visualize original data
     sns.scatterplot(x=X[:, 0], y=X[:, 1], ax=axes[0])
@@ -85,7 +88,7 @@ if __name__ == "__main__":
     # Visualize pdf methods
     for ax, generative_model in zip(axes[1:], [gaussian_mesh, gmm_mesh, kde_mesh]):
         prob = generative_model(X, mesh)
-        ax.contourf(x, y, prob, alpha=.5, cmap="Blues")
+        ax.contourf(x, y, prob, alpha=0.5, cmap="Blues")
         sns.scatterplot(x=X[:, 0], y=X[:, 1], ax=ax)
         ax.yaxis.set_ticklabels([])
 
