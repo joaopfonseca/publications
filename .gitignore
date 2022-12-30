@@ -13,6 +13,8 @@ publications/_*
 *.spl
 *.loc
 *.soc
+*.bcf
+*.run.xml
 
 
 # Byte-compiled / optimized / DLL files
