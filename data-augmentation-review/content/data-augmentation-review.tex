@@ -2,7 +2,7 @@
 
 \pdfoutput=1
 
-\title{Tabular and Feature Space Synthetic Data Generation: A Literature Review}
+\title{Tabular and Latent Space Synthetic Data Generation: A Literature Review}
 
 \author{%
 	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
@@ -98,23 +98,40 @@
     development of new algorithms, specialized in data generation for specific
     data formats and Machine Learning (ML) tasks. However, one of the most
     common data formats used in industry applications, tabular data, is
-    generally overlooked; Literature analyses are nearly non-existent,
-    state-of-the-art methods are spread across domains and ML tasks and there
-    is little to no distinction among the main types of mechanism underlying
-    synthetic data generation algorithms. In this paper, we analyse tabular
-    and feature space synthetic data generation algorithms. Specifically, we
-    propose a unified taxonomy as an extension and generalization of previous
-    taxonomies, review 70 generation algorithms across six ML problems,
-    distinguish the main generation mechanisms identified into six categories,
-    describe each type of generation mechanism, discuss metrics to evaluate
-    the quality of synthetic data and provide recommendations for future
-    research. We expect this study to assist researchers and practitioners
-    identify relevant gaps in the literature and design better and more
-    informed practices regarding synthetic data.
+    generally overlooked; Literature analyses are scarce, state-of-the-art
+    methods are spread across domains and ML tasks and there is little to no
+    distinction among the main types of mechanism underlying synthetic data
+    generation algorithms. In this paper, we analyse tabular and latent space
+    synthetic data generation algorithms. Specifically, we propose a unified
+    taxonomy as an extension and generalization of previous taxonomies, review
+    70 generation algorithms across six ML problems, distinguish the main
+    generation mechanisms identified into six categories, describe each type
+    of generation mechanism, discuss metrics to evaluate the quality of
+    synthetic data and provide recommendations for future research. We expect
+    this study to assist researchers and practitioners identify relevant gaps
+    in the literature and design better and more informed practices regarding
+    synthetic data.
 
 \end{abstract}
 
 \section{Introduction}\label{sec:introduction}
+
+
+Tabular data consists of a database structured in tabular form, composed of
+columns (features) and rows (observations)~\cite{yoon2020vime}. It is one of
+the most commonly used data structures within a wide range of domains.
+However, ML techniques developed for tabular data can be applied to any type
+of data; input data, regardless of its original format, can be mapped into a
+manifold, lower-dimensional abstraction of the input data and mapped back into
+its original input space~\cite{kingma2019introduction, devries2017dataset}.
+This abstraction is often referred to as embeddings, encodings, feature
+space or latent space. In this paper, we will refer to this concept as
+latent space.
+
+
+
+
+
 
 Synthetic data is obtained from a generative process based on properties of
 real data~\cite{assefa2020generating}. The generation of synthetic data is
@@ -134,21 +151,6 @@ classifier training~\cite{kim2021lada}. Other techniques employ data
 generation to train neural networks without labeled data (\textit{i.e.},
 self-supervised learning)~\cite{grill2020bootstrap}.
 
-% TODO: Use this as inspiration to further justify the need for this literature
-% review:
-%
-% These methods heavily rely on the unique structure in the domain datasets
-% (such as spatial relationships in images or semantic relationships in
-% language). They are not adaptable to general tabular data which does not
-% have the same explicit structure as image and language data.
-%
-%
-% Own authorship:
-%
-% Data generation techniques in tabular data settings are not as explored as
-% in image or text formats, depite its popularity and
-% ubiquity~\cite{fakoor2020fast}.
-
 The breadth of these techniques span multiple domains, such as facial
 recognition~\cite{lv2017data}, Land Use/Land Cover
 mapping~\cite{douzas2019imbalanced}, medical image
@@ -163,13 +165,11 @@ structure, which are not easily transferable to tabular data.
 Overall, synthetic data generation techniques for tabular data are not as
 explored as image or text data, despite its popularity and
 ubiquity~\cite{fakoor2020fast}. Furthermore, these techniques are invariant to
-the original data format; they can be applied to both feature
-space~\cite{devries2017dataset} or tabular data\footnote{Tabular data is a
-database structured in tabular form, composed of columns (features) and rows
-(observations), as defined in~\cite{yoon2020vime}}. On one hand, data
-generation in the feature space uses a generative model to learn a manifold,
+the original data format; they can be applied to both the latent
+space~\cite{devries2017dataset} or tabular data. On one hand, data generation
+in the latent space uses a generative model to learn a manifold,
 lower-dimensional abstraction over the input
-space~\cite{kingma2019introduction}, defined here as the feature space. At
+space~\cite{kingma2019introduction}. At
 this level, any tabular data generation mechanism can be applied and
 reconstructed into the input space if necessary. On the other hand, synthetic
 data generation on tabular data can be applied to most problems. Although, the
@@ -181,7 +181,7 @@ generating data to address an imbalanced learning problem (\textit{i.e.},
 oversampling), the relationships between the different features are not
 necessarily kept, since the goal is to reinforce the learning of the minority
 class by redefining an ML classifier's decision boundaries. If the goal is to
-anonymize a dataset, perform some type of descriptive task, or ensure a
+anonymize a dataset, perform some type of descriptive task, or ensure
 consistent model interpretability, statistical information must be preserved.
 
 Depending on the context, evaluating the quality of the generated data is a
@@ -215,16 +215,16 @@ Section~\ref{sec:evaluating-synthetic-data}.
 %   mechanism.
 
 This literature review focuses on generation mechanisms applied to tabular
-data and the different ML techniques where tabular synthetic data is used.  We
-also discuss generation mechanisms used in the feature space, since the
-generation mechanisms in tabular data and feature space may be used
+data across the main ML techniques where tabular synthetic data is used.  We
+also discuss generation mechanisms used in the latent space, since the
+generation mechanisms in tabular data and latent space may be used
 interchangeably. In addition, we focus on the ML perspective of synthetic
 data, as opposed to the practical perspective; according to the practical
 perspective, synthetic data is used as a proxy of real data. It is assumed to
 be inaccessible, essential and a secondary asset for tasks like education,
 software development, or systems demonstrations~\cite{mannino2019real}. 
 
-We focus on data generation techniques in the tabular and feature space
+We focus on data generation techniques in the tabular and latent space
 (\textit{i.e.}, embedded inputs) with a focus on classification and associated
 ML problems. Related literature reviews are mostly focused on specific
 algorithmic or domain applications, with little to no emphasis on the core
@@ -238,9 +238,9 @@ data generation techniques for tabular health records anonymization.
 techniques that preserve the statistical properties of a dataset.
 \citet{nalepa2019data} reviews data augmentation techniques for brain-tumor
 segmentation. \citet{bayer2021survey} distinguishes augmentation techniques
-for text classification into feature and data space, while providing an
+for text classification into latent and data space, while providing an
 extensive overview of augmentation methods within this domain. However, the
-taxonomy proposed and feature space augmentation methods are not necessarily
+taxonomy proposed and latent space augmentation methods are not necessarily
 specific to the domain. \citet{shorten2021text}, \citet{chen2021empirical},
 \citet{feng2021survey} and \citet{liu2020survey} also review data augmentation
 techniques for text data.  \citet{yi2019generative} review Generative
@@ -562,7 +562,7 @@ characterizes data generation mechanisms using four properties:
         a data point leveraging relationships in the structure of the data
         (which is known \textit{a priori}). Generative models based on neural
         network architectures are defined as network-based. These
-        architectures attempt to either generate observations in the feature
+        architectures attempt to either generate observations in the latent
         space and/or by producing observations that are difficult to
         distinguish from the original dataset.
 
@@ -581,20 +581,20 @@ characterizes data generation mechanisms using four properties:
         considered to have a local scope. On the one hand, generative models
         with a local scope do not account for $\mathbb{P}^s$ but allow for the
         generation of $x^s$ within more precise regions in the
-        feature/input space. On the other hand, generative models with a
+        latent/input space. On the other hand, generative models with a
         global scope have a higher capacity to model $\mathbb{P}^s$ but
-        produce $x^s$ with less precision within the feature/input
+        produce $x^s$ with less precision within the latent/input
         space.
 
     \item Data space. Refers to the type of data representation used to apply
         the generative model. Generation mechanisms can be applied using the
         raw dataset (\textit{i.e.}, on the input space), an embedded
-        representation of the data (\textit{i.e.}, on the feature space) or
+        representation of the data (\textit{i.e.}, on the latent space) or
         based on the target feature (\textit{i.e.}, on the output space).
         Although some studies discuss the need to generate synthetic data on
         the input space~\cite{dankar2021fake, patki2016synthetic}, there are
         various studies that successfully apply synthetic data generation
-        techniques on a feature space.
+        techniques on a latent space.
 
 \end{enumerate}
 
@@ -637,15 +637,15 @@ Table~\ref{tbl:generators}.
     MWEM~\cite{hardt2012simple} & DP & Other & Probabilistic & External & Input & Global \\
     MWEM-PGM~\cite{mckenna2019graphical} & DP & PGM & Probabilistic & External & Input & Global \\
     PrivBayes~\cite{zhang2017privbayes} & DP & PGM & Probabilistic & External & Input & Global \\
-    DPGAN~\cite{xie2018differentially} & DP & GAN & Network & External & Feature & Global \\
-    DPCTGAN~\cite{rosenblatt2020differentially} & DP & GAN &  Network & External & Feature & Global \\
-    PATE-GAN~\cite{jordon2018pate} & DP & GAN & Network & External & Feat. + Out. & Global \\
-    PATECTGAN~\cite{rosenblatt2020differentially} & DP & GAN & Network & External & Feat. + Out. & Global \\
+    DPGAN~\cite{xie2018differentially} & DP & GAN & Network & External & Latent & Global \\
+    DPCTGAN~\cite{rosenblatt2020differentially} & DP & GAN &  Network & External & Latent & Global \\
+    PATE-GAN~\cite{jordon2018pate} & DP & GAN & Network & External & Lat. + Out. & Global \\
+    PATECTGAN~\cite{rosenblatt2020differentially} & DP & GAN & Network & External & Lat. + Out. & Global \\
     FEM~\cite{vietri2020new} & DP & Perturb. & Probabilistic & External & Input & Global \\
     RAP~\cite{aydore2021differentially} & DP & Perturb. & Probabilistic & External & Input & Global \\
     PDF~\cite{de2019formal, suciu2011probabilistic} & --- & PDF & Probabilistic & External & Input & Global \\
     Kamino~\cite{ge2021kamino} & DP & PDF & Probabilistic & External & Input & Global \\
-    RON-GAUSS~\cite{chanyaswad2019ron} & DP & PDF & Probabilistic & Internal & Feature & Global \\
+    RON-GAUSS~\cite{chanyaswad2019ron} & DP & PDF & Probabilistic & Internal & Latent & Global \\
     HDMM~\cite{mckenna2018optimizing} & DP & Perturb. & Probabilistic & External & Input & Global \\
     DualQuery~\cite{gaboardi2014dual} & DP & Other & Probabilistic & External & Input & Global \\
     ROS(E)~\cite{menardi2014training} & Ovs & Perturb. & Randomized & External & Input & Local \\ 
@@ -656,18 +656,18 @@ Table~\ref{tbl:generators}.
     G-SMOTE~\cite{douzas2019geometric} & Ovs & Geometric & Randomized & External & Input & Local \\
     ADASYN~\cite{he2008adasyn} & Ovs & Linear & Randomized & External & Input & Local \\
     KernelADASYN~\cite{tang2015kerneladasyn} & Ovs & PDF & Probabilistic & External & Input & Local \\
-    MOKAS~\cite{lin2017minority} & Ovs & Other & Network & External & Feature & Global \\
+    MOKAS~\cite{lin2017minority} & Ovs & Other & Network & External & Latent & Global \\
     SOMO~\cite{douzas2017self} & Ovs & Linear & Net.+Rand. & External & Input & Global \\
     G-SOMO~\cite{douzas2021g} & Ovs & Geometric & Net.+Rand. & External & Input & Global \\
     GMM-SENN~\cite{xing2022predict} & Ovs & PDF & Probabilistic & External & Input & Global \\
     GMF-SMOTE~\cite{xu2022synthetic} & Ovs & Linear & Randomized & External & Input & Global \\
-    C-VAE~\cite{dai2019generative} & Ovs & AE & Network & External & Feature & Global \\
+    C-VAE~\cite{dai2019generative} & Ovs & AE & Network & External & Latent & Global \\
     Safe-level SMOTE~\cite{bunkhumpornpat2009safe} & Ovs & Linear & Randomized & External & Input & Local \\
     LR-SMOTE~\cite{liang2020lr} & Ovs & Linear & Randomized & External & Input & Global \\
     K-means SMOTE~\cite{douzas2018improving} & Ovs & Linear & Randomized & External & Input & Global\\
     DBSMOTE~\cite{bunkhumpornpat2012dbsmote} & Ovs & Linear & Randomized & External & Input & Local\\
-    CGAN~\cite{douzas2018effective} & Ovs & GAN & Network & External & Feature & Global \\
-    K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Feature & Global \\
+    CGAN~\cite{douzas2018effective} & Ovs & GAN & Network & External & Latent & Global \\
+    K-means CTGAN~\cite{an2021k} & Ovs & GAN & Network & External & Latent & Global \\
     SMOTER~\cite{torgo2013smote} & Ovs + Reg & Linear & Randomized & External & Input & Local \\
     G-SMOTER~\cite{camacho2022geometric} & Ovs + Reg & Linear & Randomized & External & Input & Local \\
     RACOG~\cite{das2014racog} & Ovs & PGM & Probabilistic & External & Input & Global \\
@@ -675,29 +675,29 @@ Table~\ref{tbl:generators}.
     RWO~\cite{zhang2014rwo} & Ovs & PGM & Probabilistic & External & Input & Global \\
     PDFOS~\cite{gao2014pdfos} & Ovs & PDF & Probabilistic & External & Input & Global \\
     Mixup~\cite{zhang2018mixup} & DA & Linear & Randomized & External & In.+Out. & Local \\
-    M-Mixup~\cite{verma2019manifold} & DA & Linear & Network & Internal & Feat.+Out. & Global \\
+    M-Mixup~\cite{verma2019manifold} & DA & Linear & Network & Internal & Lat.+Out. & Global \\
     NL-Mixup~\cite{guo2020nonlinear} & DA & Geometric & Randomized & External & In.+Out. & Local \\
-    AE-DA~\cite{feng2020autuencoder} & DA & AE & Network & External & In./Feat.+Out. & Local \\
-    MODALS~\cite{cheung2020modals} & DA & --- & Network & Internal & Feat. & Global \\
-    LSI~\cite{liu2018data} & DA & AE & Network & External & Feat.+Out. & Global \\
+    AE-DA~\cite{feng2020autuencoder} & DA & AE & Network & External & In./Lat.+Out. & Local \\
+    MODALS~\cite{cheung2020modals} & DA & --- & Network & Internal & Latent & Global \\
+    LSI~\cite{liu2018data} & DA & AE & Network & External & Lat.+Out. & Global \\
     Gibbs~\cite{fakoor2020fast} & DA & PGM & Probabilistic & External & Input & Global \\
-    MedGAN~\cite{armanious2020medgan} & DA & GAN & Network & External & Feature & Global \\
+    MedGAN~\cite{armanious2020medgan} & DA & GAN & Network & External & Latent & Global \\
     GANBLR~\cite{zhang2021ganblr} & DA & PGM & Probabilistic & External & Input & Global \\
-    Table-GAN~\cite{park2018data} & DA & GAN & Network & External & Feature & Global \\
-    CTGAN~\cite{xu2019modeling} & DA & GAN & Network & External & Feature & Global \\
-    TVAE~\cite{xu2019modeling} & DA & AE & Network & External & Feature & Global \\
-    AE~\cite{delgado2021deep} & DA & AE & Network & External & Feature & Global \\
-    InfoMixup~\cite{kim2021lada} & AL & Linear & Network & Internal & Feat.+Out. & Global \\
-    VAEACGAN~\cite{tran2019bayesian} & AL & AE & Network & Internal & Feature & Global\\
+    Table-GAN~\cite{park2018data} & DA & GAN & Network & External & Latent & Global \\
+    CTGAN~\cite{xu2019modeling} & DA & GAN & Network & External & Latent & Global \\
+    TVAE~\cite{xu2019modeling} & DA & AE & Network & External & Latent & Global \\
+    AE~\cite{delgado2021deep} & DA & AE & Network & External & Latent & Global \\
+    InfoMixup~\cite{kim2021lada} & AL & Linear & Network & Internal & Lat.+Out. & Global \\
+    VAEACGAN~\cite{tran2019bayesian} & AL & AE & Network & Internal & Latent & Global\\
     AL-G-SMOTE~\cite{fonseca2021increasing} & AL & Geometric & Randomized & Internal & Input & Local\\
     DAE~\cite{rasmus2015semi} & Semi-SL & AE & Network & Internal & Input & Global \\ 
-    $\Pi$-model~\cite{samuli2017temporal} & Semi-SL & Perturb. & Randomized & Internal & In.+Feat. & Local \\
-    Mean Teacher~\cite{tarvainen2017mean} & Semi-SL & Perturb. & Randomized & Internal & In.+Feat. & Local \\
+    $\Pi$-model~\cite{samuli2017temporal} & Semi-SL & Perturb. & Randomized & Internal & In.+Lat. & Local \\
+    Mean Teacher~\cite{tarvainen2017mean} & Semi-SL & Perturb. & Randomized & Internal & In.+Lat. & Local \\
     ICT~\cite{verma2022interpolation} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
     Mixmatch~\cite{berthelot2019mixmatch} & Semi-SL & Linear & Randomized & Internal & Input & Local \\
-    SDAT~\cite{fang2022semi} & Semi-SL & AE+PDF & Net.+Prob. & Internal & Feature & Global \\
-    MCoM~\cite{li2022mcom} & Semi-SL & Linear & Randomized & Int.+Ext. & Inp.+Feat. & Global \\
-    C-Mixup~\cite{darabi2021contrastive} & Semi/Self-SL & AE+Lin. & Net+Rand.  & Internal & Feature & Global \\
+    SDAT~\cite{fang2022semi} & Semi-SL & AE+PDF & Net.+Prob. & Internal & Latent & Global \\
+    MCoM~\cite{li2022mcom} & Semi-SL & Linear & Randomized & Int.+Ext. & Inp.+Lat. & Global \\
+    C-Mixup~\cite{darabi2021contrastive} & Semi/Self-SL & AE+Lin. & Net+Rand.  & Internal & Latent & Global \\
     VIME~\cite{yoon2020vime} & Semi/Self-SL & Perturb. & Randomized & Internal & Input & Local \\
     SubTab~\cite{ucar2021subtab} & Self-SL & Perturb. & Rand.+Prob. & Internal & Input & Local \\
     Scarf~\cite{bahri2022scarf} & Self-SL & Perturb. & Randomized & Internal & Input & Local \\
@@ -996,8 +996,8 @@ randomly selected observations and their target feature values, $(x_i, y_i),
 \text{Beta}(\alpha,\alpha)$, $x^s = \lambda x_i + (1-\lambda) x_j$ and $y^s =
 \lambda y_i + (1-\lambda) y_j$, where $\alpha$ is a predetermined
 hyperparameter. This method was the source of Manifold Mixup
-(M-Mixup)~\cite{verma2019manifold}. It generates synthetic data in the feature
-spaces of a neural network classifier's hidden layers. Another Mixup-based
+(M-Mixup)~\cite{verma2019manifold}. It generates synthetic data in the latent
+space of a neural network classifier's hidden layers. Another Mixup-based
 data augmentation approach, Nonlinear Mixup
 (NL-Mixup)~\cite{guo2020nonlinear}, applies a nonlinear interpolation policy.
 In this case, $\Lambda$ is a set of mixing policies sampled from a beta
@@ -1023,7 +1023,7 @@ However, MODALS introduces a framework for data augmentation internally. It
 contains a feature extraction step, trained using a combination of adversarial
 loss, classification loss and triplet loss, where latent space generation
 mechanisms are applied. The classifier is trained using the original and the
-synthetic observations generated in the feature space. In this study the
+synthetic observations generated in the latent space. In this study the
 authors discuss difference transform augmentation method (among others already
 described in this study). It generates within-class synthetic data by
 selecting a $x^c$ and two random observations within the same class, $x_i,
@@ -1200,7 +1200,7 @@ The Minority Oversampling Kernel Adaptive Subspaces algorithm
 (MOKAS)~\cite{lin2017minority} adopts a different approach when compared to
 SMOTE-based mechanisms. It uses the adaptive subspace self-organizing map
 (ASSOM)~\cite{kohonen1996emergence} algorithm to learn sub-spaces
-(\textit{i.e.}, different feature spaces for each unit in the SOM), out of
+(\textit{i.e.}, different latent spaces for each unit in the SOM), out of
 which synthetic data is generated. The synthetic data is generated using a
 lower dimensional representation of the input data to ensure the reconstructed
 data is different from the original observations. Overall, the usage of SOMs
@@ -1360,10 +1360,10 @@ network-based models and generative learning~\cite{van2020survey}. Overall,
 Semi-SL can be distinguished between transductive and inductive methods. In
 this section, we will focus on synthetic data generation mechanisms in
 inductive, perturbation-based Semi-SL algorithms, applicable to tabular or
-feature space data.
+latent space data.
 
 The ladder network~\cite{rasmus2015semi} is a semi-supervised learning
-architecture that learns a manifold feature space using a Denoising
+architecture that learns a manifold latent space using a Denoising
 Autoencoder (DAE). The synthetic data is generated during the learning phase;
 random noise is introduced into the input data and the DAE learns to predict
 the original observation. Although this method was tested with image data,
@@ -1384,7 +1384,7 @@ labels (if it's a labeled observation) or predicted label (if it's unlabeled).
 
 The Semi-SL Data Augmentation for Tabular data (SDAT)
 algorithm~\cite{fang2022semi} uses an autoencoder to generate synthetic data
-in the feature space with Gaussian perturbations. The Contrastive Mixup
+in the latent space with Gaussian perturbations. The Contrastive Mixup
 (C-Mixup)~\cite{darabi2021contrastive} algorithm generates synthetic data
 using the Mixup mechanism with observation pairs within the same target label.
 The Mixup Contrastive Mixup algorithm (MCoM)~\cite{li2022mcom} proposes the
@@ -1392,7 +1392,7 @@ triplet Mixup method using three observations where $x^s = \lambda_ix_i +
 \lambda_jx_j + (1-\lambda_i-\lambda_j)x_k$, where $\lambda_i, \lambda_j \sim
 \mathcal{U}(0, \alpha)$, $\alpha \in (0, 0.5]$ and $x_i$, $x_j$ and $x_k$
 belong to the same target class. The same algorithm also uses the M-Mixup
-method as part of the feature space learning phase.
+method as part of the latent space learning phase.
 
 
 \subsection{Self-supervised Learning}\label{sec:self-supervised-learning}
@@ -1647,7 +1647,7 @@ generative model when the data is expected to have more than one
 higher-density regions, leading to a poor fit of unimodal Gaussian models.
 
 Kernel Density Estimation (KDE) methods use a kernel function to estimate the
-density of the dataset's distribution at each region of the input/feature
+density of the dataset's distribution at each region of the input/latent
 space. Despite the various kernel options, the Gaussian kernel is commonly
 used for synthetic data generation~\cite{tang2015kerneladasyn}. The general
 kernel estimator is defined as follows: 
@@ -1840,9 +1840,9 @@ learning.
 An autoencoder (AE) is a type of neural network architecture that learns
 manifold representations of an input space. These models are typically trained
 by regenerating the input and are designed with a bottleneck in the hidden
-layers that corresponds to the learned feature space. It contains two parts,
+layers that corresponds to the learned latent space. It contains two parts,
 an encoder and a decoder. The encoder transforms the input data into
-lower-dimensional representations (\textit{i.e.}, the feature space), while
+lower-dimensional representations (\textit{i.e.}, the latent space), while
 the decoder projects these representations into the original input space.
 Since it was first proposed~\cite{ackley1985learning}, many variants were
 developed for multiple applications. However, based on the literature found,
@@ -2019,7 +2019,7 @@ distinguish from real data.
 
 \section{Discussion}\label{sec:discussion}
 
-The generation of tabular and feature space synthetic data has applications in
+The generation of tabular and latent space synthetic data has applications in
 multiple ML tasks and domains. Specifically, we found six areas that were
 shown to benefit from synthetic data: data privacy, regularization,
 oversampling, active learning, semi-supervised learning and self-supervised
@@ -2046,7 +2046,7 @@ synthetic data generation generally requires a few considerations:
     \item Various generation mechanisms require a manifold. There are two
         approaches to address non-manifold input data: (1) Adopt methods
         sensitive to the presence of non-metric features, or (2) project the
-        input data into a manifold (\textit{i.e.}, a feature space).
+        input data into a manifold (\textit{i.e.}, a latent space).
 
     \item The smoothness assumption is prevalent in linear and
         perturbation-based data generation mechanisms. If a classification
@@ -2072,7 +2072,7 @@ synthetic data generation generally requires a few considerations:
 \end{enumerate}
 
 This work focused primarily on the mechanisms used to generate synthetic
-observations; preprocessing, learning phase design, feature space learning and
+observations; preprocessing, learning phase design, latent space learning and
 ML task-specific contributions were secondary objectives for analysis.
 Consequently, understanding of how the constraints within each task condition
 the choice and design of the synthetic data generator is a subject of future
@@ -2088,7 +2088,7 @@ perturbation mechanisms. Various Oversampling algorithms have been proposed
 using each of the mechanisms found. However, the most prevalent mechanisms
 used were linear-based. AL methods rarely employ synthetic data. The few
 studies found employ primarily linear and geometric mechanisms, and a minority
-used AE models for feature space augmentation. Most Semi-SL methods used
+used AE models for latent space augmentation. Most Semi-SL methods used
 perturbation and linear mechanisms, while geometric mechanisms are rarely
 used. All tabular Self-SL methods used perturbation mechanisms. 
 
@@ -2108,39 +2108,39 @@ balance between the different types of analyses.
 \section{Future Work}\label{sec:future-work}
 % TODO: maybe rename to "Research gaps and future directions"?
 
-As discussed throughout our anlysis, it appears the synthetic data generation
-research is generally sandboxed across ML problems and domains, even though
-all of these areas integrate synthetic data in its core. Given the breadth
-and complexity of input-level and feature-level data generation mechanisms, it
-is increasingly important to find an \textit{a priori} approach to efficiently
+As discussed throughout our analysis, it appears the synthetic data generation
+research is generally isolated within ML problems and/or domains, even though
+all of these areas integrate synthetic data in its core. Given the breadth and
+complexity of input-level and latent-level data generation mechanisms, it is
+increasingly important to find an \textit{a priori} approach to efficiently
 determine appropriate data generation policies and techniques. However, the
 complexity of this task is determined by various factors: different data
 types, ML problems, model architectures, computational resources, performance
 metrics and contextual constraints. Auto-augmentation and meta learning aim to
 address this challenge and are still subject to active research.
 
-It is generally understood that, if learned properly, the feature space is
-expected to be convex and isotropic. In that case, using linear generation
-techniques in the feature space would produce synthetic data without
-introducing noise~\cite{cheung2020modals}. However, it is unclear which types
-of model/architectures and training procedures contribute to the learning of a
-good feature space according to the context. Furthermore, we found a limited
+It is understood that, if learned properly, the latent space is expected to be
+convex and isotropic. In that case, using linear generation techniques in the
+latent space would produce synthetic data without introducing
+noise~\cite{cheung2020modals}. However, it is unclear which types of
+model/architectures and training procedures contribute to the learning of a
+good latent space according to the context. Furthermore, we found a limited
 amount of research on tabular data augmentation using auto-encoder
 architectures. Although there are studies performing data augmentation on
 tabular data in various domains~\cite{delgado2021deep}, defining the
 architecture and learning phase of an AE is not an intuitive task. Generally,
 autoencoders are used to learn a manifold for more complex data types. As long
-as the method used to generate the feature space is appropriate, the methods
-discussed in this study could be used in the feature space regardless of the
+as the method used to generate the latent space is appropriate, the methods
+discussed in this study could be used in the latent space regardless of the
 type of data.
 
 The quality of synthetic data generation in high-dimensional scenarios appears
 as a prevailing limitation in various applications, especially within linear
 and geometric mechanisms. This limitation can be addressed with dimensionality
-reduction techniques, as well as feature space learning.  However, research on
-generation in the feature space is greatly focused on GAN architectures, which
-require significant computational power. Other methods to learn manifold
-embeddings could be explored to address this limitation.
+reduction techniques, as well as latent space learning.  However, research on
+data generation in the latent space is mostly focused on GAN architectures,
+which require significant computational power. Other methods to learn manifold
+latent spaces could be explored to address this limitation.
 
 It remains an open question which generation mechanisms, or types of
 mechanisms, create better synthetic data~\cite{cheung2020modals}. Although
@@ -2154,7 +2154,7 @@ relationship between recently proposed methods for evaluating synthetic data
 (as discussed in Section~\ref{sec:evaluating-synthetic-data}) and the
 performance on the target ML problem might contribute to answer this question.
 Furthermore, determining the use cases, quality and general performance of
-data generation on the input, feature and output space should be further
+data generation on the input, latent and output space should be further
 developed. Finally, it still unclear \text{why} synthetic data generation
 works for each of the ML tasks discussed. Research on this topic lacks depth
 and fails to address the theoretical underpinnings~\cite{feng2021survey,
@@ -2189,10 +2189,10 @@ Neural network mechanisms typically involve a higher computational cost
 compared to the remaining types of mechanisms. This problem is further
 aggravated with their inconsistent performance, since different
 initializations may result in very different performances. This problem may be
-observed in~\cite{douzas2018effective}. More generally, feature space
-representations of training data raises the challenge of interpreting
-representations; the ability to interpret feature space representations could
-guide the design of data generation techniques. 
+observed in~\cite{douzas2018effective}. More generally, latent space
+representations of training data raises the challenge of interpretability; the
+ability to interpret latent space representations could guide the design of
+data generation techniques. 
 
 In non-tabular data domains, a common approach for data augmentation is the
 combination of several data augmentation methods to increase the
@@ -2204,7 +2204,7 @@ mechanisms on tabular data, \textit{i.e.}, understanding how selecting with
 different probabilities different generation mechanisms to generate synthetic
 data would affect the performance of the primary ML task. The formalization
 and analysis carried out in this work, regarding the different types of
-synthetic data generation mechanisms and quality metrics for feature and
+synthetic data generation mechanisms and quality metrics for latent and
 tabular synthetic data at an observation level, may facilitate this work.
 
 
@@ -2269,7 +2269,7 @@ algorithms for tabular data, with a focus on external level applications.
 Since synthetic data generation is a crucial step for various ML applications
 and domains, it is essential to understand and compare which techniques and
 types of algorithms are used for each of these problems. The usage of
-synthetic data is an effective approach to prepare better datasets and ML
+synthetic data is an effective approach to better prepare datasets and ML
 pipelines for a wide range of applications and/or address privacy concerns.
 Our work proposed a taxonomy based on four key characteristics of generation
 algorithms, which was used to characterize 70 data generation algorithms
