@@ -1,97 +1,170 @@
-\documentclass[parskip=full]{scrartcl}
+%% BioMed_Central_Tex_Template_v1.06
+%%                                      %
+%  bmc_article.tex            ver: 1.06 %
+%                                       %
 
-\pdfoutput=1
+%%IMPORTANT: do not delete the first line of this template
+%%It must be present to enable the BMC Submission system to
+%%recognise this template!!
 
-\title{Tabular and Latent Space Synthetic Data Generation: A Literature Review}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                     %%
+%%  LaTeX template for BioMed Central  %%
+%%     journal article submissions     %%
+%%                                     %%
+%%          <8 June 2012>              %%
+%%                                     %%
+%%                                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\author{%
-	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
-	\\
-	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
-	\\
-	\small{*Corresponding Author}
-	\\
-	\\
-	\small{Postal Address: NOVA Information Management School, Campus de
-    Campolide, 1070--312 Lisboa, Portugal}
-	\\
-	\small{Telephone: +351 21 382 8610}
-}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% For instructions on how to fill out this Tex template           %%
+%% document please refer to Readme.html and the instructions for   %%
+%% authors page on the biomed central website                      %%
+%% https://www.biomedcentral.com/getpublished                      %%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%% BioMed Central currently use the MikTex distribution of         %%
+%% TeX for Windows) of TeX and LaTeX.  This is available from      %%
+%% https://miktex.org/                                             %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{geometry}
-\geometry{%
-	a4paper,
-	left=18mm,
-	right=18mm,
-	top=18mm,
-}
-\usepackage{amsmath}
+%%% additional documentclass options:
+%  [doublespacing]
+%  [linenumbers]   - put the line numbers on margins
+
+%%% loading packages, author definitions
+
+%\documentclass[twocolumn]{bmcart}% uncomment this for twocolumn layout and comment line below
+\documentclass{bmcart}
+
+%%% Load packages
+\RequirePackage{fix-cm}
+\usepackage{amsthm,amsmath}
 \usepackage{amsfonts}
-\usepackage{enumitem}
-\usepackage[ruled,vlined]{algorithm2e}
+% \RequirePackage[numbers]{natbib}
+% \RequirePackage[authoryear]{natbib}% uncomment this for author-year bibliography
+\RequirePackage{hyperref}
+\usepackage[utf8]{inputenc} %unicode support
+%\usepackage[applemac]{inputenc} %applemac support if unicode package fails
+%\usepackage[latin1]{inputenc} %UNIX support if unicode package fails
 \usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{tabu}
+\usepackage{float}
+\usepackage{enumitem}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.14}
-\usepackage{longtable}
-\usepackage{tabu}
-\usepackage{hyperref}
-\usepackage{lineno}
-\date{}
 
-
-% use \citet for inline text references, \cite for normal citations
-\usepackage[
-    style=numeric,
-    citestyle=numeric,
-    sorting=none,
-    natbib=true,
-    backend=biber, 
-    maxcitenames=1, 
-    maxbibnames=99
-]{biblatex}
-\bibliography{references}
-\usepackage{breakcites}
-
-% Fix underfull hbox warnings in bilbliography
-% Reference: https://tex.stackexchange.com/questions/10924/underfull-hbox-in-bibliography
-\usepackage{etoolbox}
-\apptocmd{\sloppy}{%
-    \hbadness%
-    10000\relax
-}{}{}
-
-% Fix overfull hbox warnings in bibliography
-% Reference: https://tex.stackexchange.com/questions/171999/overfull-hbox-in-biblatex
-\usepackage[T1]{fontenc}
-\usepackage[final]{microtype}
-
-% Highlight text: \hl
-\usepackage{soul}
-
-\definecolor{hypecol}{HTML}{0875b7}
-\hypersetup{%
-    colorlinks,
-    linkcolor={hypecol},
-    citecolor={hypecol},
-    urlcolor={hypecol}
-}
-
-% Case-dependent packages here
 \usepackage{tabularx}
 \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
 
 % To merge cells vertically
 \usepackage{multirow}
 
+% \def\includegraphic{}
+% \def\includegraphics{}
+
+%%% Put your definitions there:
+\startlocaldefs
+\endlocaldefs
+
+%%% Begin ...
 \begin{document}
 
-\maketitle
-\linenumbers
+%%% Start of article front matter
+\begin{frontmatter}
 
-\begin{abstract}
+\begin{fmbox}
+\dochead{Literature Review}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter the title of your article here     %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Tabular and Latent Space Synthetic Data Generation: A Literature Review}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter the authors here                   %%
+%%                                          %%
+%% Specify information, if available,       %%
+%% in the form:                             %%
+%%   <key>={<id1>,<id2>}                    %%
+%%   <key>=                                 %%
+%% Comment or delete the keys which are     %%
+%% not used. Repeat \author command as much %%
+%% as required.                             %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author[
+  addressref={aff1},                   % id's of addresses, e.g. {aff1,aff2}
+  corref={aff1},                       % id of corresponding address, if any
+% noteref={n1},                        % id's of article notes, if any
+  email={jpfonseca@novaims.unl.pt}   % email address
+]{\inits{J.F.}\fnm{Joao} \snm{Fonseca}}
+\author[
+  addressref={aff1},
+  email={bacao@novaims.unl.pt}
+]{\inits{F.B.}\fnm{Fernando} \snm{Bacao}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter the authors' addresses here        %%
+%%                                          %%
+%% Repeat \address commands as much as      %%
+%% required.                                %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\address[id=aff1]{%                           % unique id
+  \orgdiv{NOVA Information Management School},             % department, if any
+  \orgname{Universidade Nova de Lisboa},          % university, etc
+  \city{Lisboa},                              % city
+  \cny{Portugal}                                    % country
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Enter short notes here                   %%
+%%                                          %%
+%% Short notes will be after addresses      %%
+%% on first page.                           %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{artnotes}
+%%\note{Sample of title note}     % note to the article
+%\note[id=n1]{Equal contributor} % note, connected to author
+%\end{artnotes}
+
+\end{fmbox}% comment this for two column layout
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                           %%
+%% The Abstract begins here                  %%
+%%                                           %%
+%% Please refer to the Instructions for      %%
+%% authors on https://www.biomedcentral.com/ %%
+%% and include the section headings          %%
+%% accordingly for your article type.        %%
+%%                                           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstractbox}
+
+\begin{abstract} % abstract
     The generation of synthetic data can be used for anonymization,
     regularization, oversampling, semi-supervised learning, self-supervised
     learning and various other tasks. Such broad potential motivated the
@@ -111,8 +184,52 @@
     this study to assist researchers and practitioners identify relevant gaps
     in the literature and design better and more informed practices regarding
     synthetic data.
-
 \end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% The keywords begin here                  %%
+%%                                          %%
+%% Put each keyword in separate \kwd{}.     %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{keyword}
+    \kwd{Synthetic Data}
+    \kwd{Tabular data}
+    \kwd{Data privacy}
+    \kwd{Regularization}
+    \kwd{Oversampling}
+    \kwd{Active Learning}
+    \kwd{Semi-supervised Learning}
+    \kwd{Self-supervised Learning}
+\end{keyword}
+
+\end{abstractbox}
+
+\end{frontmatter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                            %%
+%% The Main Body begins here                  %%
+%%                                            %%
+%% Please refer to the instructions for       %%
+%% authors on:                                %%
+%% https://www.biomedcentral.com/getpublished %%
+%% and include the section headings           %%
+%% accordingly for your article type.         %%
+%%                                            %%
+%% See the Results and Discussion section     %%
+%% for details on how to create sub-sections  %%
+%%                                            %%
+%% use \cite{...} to cite references          %%
+%%  \cite{koon} and                           %%
+%%  \cite{oreg,khar,zvai,xjon,schn,pond}      %%
+%%                                            %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%% start of article main body
+% <put your article body there>
 
 \section{Introduction}\label{sec:introduction}
 
@@ -127,11 +244,6 @@ its original input space~\cite{kingma2019introduction, devries2017dataset}.
 This abstraction is often referred to as embeddings, encodings, feature
 space or latent space. In this paper, we will refer to this concept as
 latent space.
-
-
-
-
-
 
 Synthetic data is obtained from a generative process based on properties of
 real data~\cite{assefa2020generating}. The generation of synthetic data is
@@ -230,26 +342,26 @@ ML problems. Related literature reviews are mostly focused on specific
 algorithmic or domain applications, with little to no emphasis on the core
 generative process. For this reason, these techniques often appear
 ``sandboxed'', even though there is a significant overlap between them. There
-are some related reviews published since 2019. \citet{assefa2020generating}
+are some related reviews published since 2019. \cite{assefa2020generating}
 provides a general overview of synthetic data generation for time series data
-anonymization in the finance sector. \citet{hernandez2022synthetic} reviews
+anonymization in the finance sector. \cite{hernandez2022synthetic} reviews
 data generation techniques for tabular health records anonymization.
-\citet{raghunathan2021synthetic} reviews synthetic data anonymization
+\cite{raghunathan2021synthetic} reviews synthetic data anonymization
 techniques that preserve the statistical properties of a dataset.
-\citet{nalepa2019data} reviews data augmentation techniques for brain-tumor
-segmentation. \citet{bayer2021survey} distinguishes augmentation techniques
+\cite{nalepa2019data} reviews data augmentation techniques for brain-tumor
+segmentation. \cite{bayer2021survey} distinguishes augmentation techniques
 for text classification into latent and data space, while providing an
 extensive overview of augmentation methods within this domain. However, the
 taxonomy proposed and latent space augmentation methods are not necessarily
-specific to the domain. \citet{shorten2021text}, \citet{chen2021empirical},
-\citet{feng2021survey} and \citet{liu2020survey} also review data augmentation
-techniques for text data.  \citet{yi2019generative} review Generative
-Adversarial Network architectures for medical imaging. \citet{wang2020survey}
-reviews face data augmentation techniques. \citet{shorten2019survey},
-\citet{khosla2020enhancing} and \citet{khalifa2021comprehensive} discuss
-techniques for image data augmentation.  \citet{iwana2021empirical} and
-\citet{wen2020time} also review time series data augmentation techniques.
-\citet{zhao2022graph} review data augmentation techniques for graph data. The
+specific to the domain. \cite{shorten2021text}, \cite{chen2021empirical},
+\cite{feng2021survey} and \cite{liu2020survey} also review data augmentation
+techniques for text data.  \cite{yi2019generative} review Generative
+Adversarial Network architectures for medical imaging. \cite{wang2020survey}
+reviews face data augmentation techniques. \cite{shorten2019survey},
+\cite{khosla2020enhancing} and \cite{khalifa2021comprehensive} discuss
+techniques for image data augmentation.  \cite{iwana2021empirical} and
+\cite{wen2020time} also review time series data augmentation techniques.
+\cite{zhao2022graph} review data augmentation techniques for graph data. The
 analysis of related literature reviews~\footnote{Results obtained using Google
     Scholar, limited to articles published since 2019, using the search query
     {\fontfamily{qcr}\selectfont (``synthetic data generation'' OR
@@ -258,7 +370,6 @@ analysis of related literature reviews~\footnote{Results obtained using Google
     $11^{th}$, 2022. More articles were added later whenever found relevant.
 } is shown in Table~\ref{tab:literature-reviews}.
 
-% TODO: move table to appendix (?)
 \begin{table}[t!]
     \centering
     \caption{\label{tab:literature-reviews}
@@ -270,61 +381,61 @@ analysis of related literature reviews~\footnote{Results obtained using Google
         Reference & Data type & ML problem & Domain & Observations \\
         \midrule
 
-        \citet{assefa2020generating} & --- & Data privacy &
+        \cite{assefa2020generating} & --- & Data privacy &
         Finance & Analysis of applications, motivation and properties of
         synthetic data for anonymization. \\
 
-        \citet{hernandez2022synthetic} & Tabular & Data privacy &
+        \cite{hernandez2022synthetic} & Tabular & Data privacy &
         Healthcare & Focus on GANs. \\
 
-        \citet{raghunathan2021synthetic} & Tabular & Data privacy &
+        \cite{raghunathan2021synthetic} & Tabular & Data privacy &
         Statistics & Focus on general definitions such as differential privacy
         and statistical disclosure control.\\
 
-        \citet{nalepa2019data} & Image & Segmentation & Medicine & Analysis of
+        \cite{nalepa2019data} & Image & Segmentation & Medicine & Analysis of
         algorithmic applications on a 2018 brain-tumor segmentation
         challenge.\\
 
-        \citet{bayer2021survey} & Text & Classification & --- & Distinguish
+        \cite{bayer2021survey} & Text & Classification & --- & Distinguish
         100 methods into 12 groups. \\
 
-        \citet{shorten2021text} & Text & Deep Learning & --- & General
+        \cite{shorten2021text} & Text & Deep Learning & --- & General
         overview of text data augmentation. \\
 
-        \citet{chen2021empirical} & Text & Few-shot Learning & --- &
+        \cite{chen2021empirical} & Text & Few-shot Learning & --- &
         Augmentation techniques for machine learning with limited data\\
 
-        \citet{feng2021survey} & Text & --- & --- & Overview of augmentation
+        \cite{feng2021survey} & Text & --- & --- & Overview of augmentation
         techniques and applications on NLP tasks.\\
 
-        \citet{liu2020survey} & Text & --- & Various & Analysis of industry
+        \cite{liu2020survey} & Text & --- & Various & Analysis of industry
         use cases of data augmentation in NLP\@. Emphasis on input level data
         augmentation.\\
 
-        \citet{yi2019generative} & Image & --- & Medicine & Emphasis on GANs.\\
+        \cite{yi2019generative} & Image & --- & Medicine & Emphasis on GANs.\\
 
-        \citet{wang2020survey} & Image & Deep Learning & --- & Regularization
+        \cite{wang2020survey} & Image & Deep Learning & --- & Regularization
         techniques using facial image data. Emphasis on Deep Learning
         generative models.\\
 
-        \citet{shorten2019survey} & Image & Deep Learning & --- & Emphasis on
+        \cite{shorten2019survey} & Image & Deep Learning & --- & Emphasis on
         data augmentation as a regularization technique.\\
 
-        \citet{khosla2020enhancing} & Image & --- & --- & Broad overview of
+        \cite{khosla2020enhancing} & Image & --- & --- & Broad overview of
         image data augmentation. Emphasis on traditional approaches. \\
 
-        \citet{khalifa2021comprehensive} & Image & --- & Various & General
+        \cite{khalifa2021comprehensive} & Image & --- & Various & General
         overview of image data augmentation and relevant domains of
         application.\\
 
-        \citet{iwana2021empirical} & Time series & Classification & --- &
+        \cite{iwana2021empirical} & Time series & Classification & --- &
         Defined a taxonomy for time series data augmentation.\\
 
-        \citet{wen2020time} & Time series & Various & --- & Analysis of data
+        \cite{wen2020time} & Time series & Various & --- & Analysis of data
         augmentation methods for classification, anomaly detection and
         forecasting.\\
 
-        \citet{zhao2022graph} & Graph & Various & --- & Graph data
+        \cite{zhao2022graph} & Graph & Various & --- & Graph data
         augmentation for supervised and self-supervised learning.\\
 
         \bottomrule
@@ -410,7 +521,7 @@ information~\cite{dankar2021fake}. One solution for this problem is the
 generation of synthetic data without identifiable information. Generally
 speaking, ML tasks that require data with sensitive information are not
 compromised when using synthetic data. The experiment conducted by
-\citet{patki2016synthetic} using relational datasets showed that in 11 out 15
+\cite{patki2016synthetic} using relational datasets showed that in 11 out 15
 comparisons ($\approx 73\%$), practitioners performing predictive modelling
 tasks using fully synthetic datasets performed the same or better than those
 using the original dataset. Optionally, anonymized synthetic data may be
@@ -517,21 +628,20 @@ that $\mathbb{P}^s \approx \mathbb{P}$, $x_i \neq x_j \forall x_i \in
 generate a $\mathcal{D}^s$ that maximizes either $f_{per}$, $f_{qual}$, or a
 combination of both.
 
-
 \section{Data Generation Taxonomy}\label{sec:taxonomy}
 
 The taxonomy proposed in this paper is a combination of
 different definitions found in the literature, extended with other traits that
 vary among domains and generation techniques. Within image data studies,
-\citet{shorten2019survey} and \citet{khalifa2021comprehensive} divide data
+\cite{shorten2019survey} and \cite{khalifa2021comprehensive} divide data
 augmentation techniques into ``basic'' or ``classical'' approaches and deep
 learning approaches. In both cases, the former refers to domain-specific
 generation techniques, while the latter may be applied to any data structure.
-\citet{iwana2021empirical} proposes a time-series data augmentation taxonomy
+\cite{iwana2021empirical} proposes a time-series data augmentation taxonomy
 divided in four families: (1) Random transformation, (2) Pattern mixing, (3)
 Generative models and (4) Decomposition. With exception to generative models,
 the majority of the methods presented in the remaining families are well
-established and domain specific. \citet{hernandez2022synthetic} defines a
+established and domain specific. \cite{hernandez2022synthetic} defines a
 taxonomy for synthetic tabular data generation approaches divided in three
 types of approaches: (1) Classical, (2) Deep learning and (3) Others. Most
 taxonomies follow similar definitions, while varying in terminology
@@ -600,7 +710,7 @@ characterizes data generation mechanisms using four properties:
 
 \begin{figure}
 	\centering
-	\includegraphics[width=.8\linewidth]{../analysis/data-generation-taxonomy}
+	\includegraphics[width=.95\linewidth]{../analysis/data-generation-taxonomy}
     \caption{General taxonomy of data generation mechanisms proposed in this
         paper.
     }~\label{fig:data-generation-taxonomy}
@@ -611,6 +721,8 @@ relevant methods were characterized using this taxonomy and listed in
 Table~\ref{tbl:generators}.
 
 \begingroup\small
+\setlength\LTleft{-1.5cm}
+\setlength\LTright{1.5cm}
 \begin{longtable}{rcccccccc}
     \caption{Summary of the synthetic data generation methods discussed in this work.}
     \label{tbl:generators}\\
@@ -1006,7 +1118,7 @@ mixup approach to generate data within a hyperrectangle/orthotope: $x^s =
 \Lambda \odot x_i + (1-\Lambda) \odot x_j$, where $\odot$ denotes the Hadamard
 product.
 
-\citet{feng2020autuencoder} proposed an autoencoder-based data augmentation
+\cite{feng2020autuencoder} proposed an autoencoder-based data augmentation
 (AE-DA) approach where the training of the autoencoder is done for each target
 class, non-iteratively, which reduces the amount of time required compared to
 the batch processing approach. The decoding weights of an autoencoder are
@@ -1017,7 +1129,7 @@ drawn from a uniform distribution.
 
 The Modality-Agnostic Automated Data Augmentation in the Latent Space model
 (MODALS)~\cite{cheung2020modals} leverages on the concept discussed
-by~\citet{devries2017dataset}, as well as the Latent Space Interpolation
+by~\cite{devries2017dataset}, as well as the Latent Space Interpolation
 method (LSI)~\cite{liu2018data} and M-Mixup~\cite{verma2019manifold}.
 However, MODALS introduces a framework for data augmentation internally. It
 contains a feature extraction step, trained using a combination of adversarial
@@ -1066,7 +1178,7 @@ architecture modified for tabular data (\textit{i.e.}, 1-dimensional).
 However, as discussed by the authors, this method contains limitations since
 it is difficult to achieve DP with AE-based models since they access the
 original data during the training procedure, unlike GANs.
-\citet{delgado2021deep} studies the impact of data augmentation on supervised
+\cite{delgado2021deep} studies the impact of data augmentation on supervised
 learning with small datasets. The authors compare four different AE
 architectures: Undercomplete, Sparse, Deep and Variational AE\@. Although all
 of the tested AE architectures improved classification performance, the deep
@@ -1217,7 +1329,7 @@ dataset. The GMM Filtering-SMOTE (GMF-SMOTE)~\cite{xu2022synthetic} algorithm
 applies a somewhat inverse approach; a GMM is used to detect and delete
 boundary samples the synthetic data is generated with SMOTE.
 
-\citet{dai2019generative} propose a contrastive learning-based VAE approach
+\cite{dai2019generative} propose a contrastive learning-based VAE approach
 for oversampling, adapted from the architecture proposed
 in~\cite{abid2019contrastive}. They address a limitation found in most
 oversampling methods, where these methods focus almost exclusively on the
@@ -1257,7 +1369,7 @@ procedure for the continuous features and the nominal features are determined
 with their modes within $x^c$'s nearest neighbors. The
 SMOTEN~\cite{chawla2002smote} is an oversampling algorithm for nominal
 features only. It uses the nearest neighbor approach proposed in
-\citet{cost1993weighted} and generates $x^s$ using the modes of the features
+\cite{cost1993weighted} and generates $x^s$ using the modes of the features
 in $x^c$'s nearest neighbors. Solutions to oversampling in regression problems
 are generally also based on SMOTE, such as SMOTER~\cite{torgo2013smote} and
 G-SMOTER~\cite{camacho2022geometric}.
@@ -1307,7 +1419,7 @@ methods can be divided into AL with pipelined data augmentation approaches and
 AL with within-acquisition data augmentation~\cite{kim2021lada}. Pipelined
 data augmentation is the more intuitive approach, where at each training phase
 the synthetic data is produced to improve the quality of the classifier and is
-independent from $f_{acq}$. In \citet{fonseca2021increasing}, the pipelined
+independent from $f_{acq}$. In \cite{fonseca2021increasing}, the pipelined
 approach in tabular data achieves a superior performance compared to the
 traditional AL framework using the G-SMOTE algorithm and the oversampling
 generation policy. Other methods, although developed and tested on image data,
@@ -1460,6 +1572,8 @@ requirement also requires a manifold, while the opposite is not necessarily
 true.
 
 \begingroup\small
+\setlength\LTleft{-1.8cm}
+\setlength\LTright{1.8cm}
 \begin{longtable}{clcccccccc}
     \caption{Analysis of synthetic data generation mechanisms.}
     \label{tbl:generation-mechanisms}\\
@@ -1595,7 +1709,7 @@ distributions.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/masking-example}
+	\includegraphics[width=.95\linewidth]{../analysis/masking-example}
     \caption{Examples of synthetic observations generated with different
         masking approaches.
     }~\label{fig:masking-example}
@@ -1672,7 +1786,7 @@ visualization of the PDF mechanisms discussed, applied to a mock dataset.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/pdf-example}
+	\includegraphics[width=.95\linewidth]{../analysis/pdf-example}
     \caption{%
         Examples of PDF mechanisms fitted to a mock dataset. Legend: (a)
         Original dataset, (b) Gaussian generative model, (c) Gaussian Mixture
@@ -1705,7 +1819,7 @@ non-trivial.
 
 Random walk algorithms comprise the general process of iterating through a set
 of random steps. Although uncommon, random walk approaches may be used to
-sample data. The random walk approach described in \citet{zhang2014rwo} uses
+sample data. The random walk approach described in \cite{zhang2014rwo} uses
 the Gaussian noise mechanism over minority class observations to create
 synthetic observations. The Gibbs sampling mechanism also performs a random
 walk by iterating through sampled feature values.
@@ -1868,11 +1982,11 @@ referred to~\cite{dankar2022multi} and~\cite{theis2016note}.
 
 The GANBLR model~\cite{zhang2021ganblr} was evaluated on three aspects: (1) ML
 utility, (2) Statistical similarity, and (3) Interpretability. In
-\citet{xu2019modeling}, the authors evaluate the CTGAN and TVAE models using a
+\cite{xu2019modeling}, the authors evaluate the CTGAN and TVAE models using a
 likelihood fitness metric (to measure statistical similarity) and ML efficacy
-(\textit{i.e.}, utility). \citet{hittmeir2019utility} evaluate synthetic data
+(\textit{i.e.}, utility). \cite{hittmeir2019utility} evaluate synthetic data
 generators using a 2-step approach: Similarity comparison and data utility.
-According to \citet{alaa2022faithful}, the evaluation of generative models
+According to \cite{alaa2022faithful}, the evaluation of generative models
 should quantify three key aspects of synthetic data:
 
 \begin{enumerate}
@@ -1941,7 +2055,7 @@ trained on a dataset with both the original and synthetic data, using as
 target the source of each observation (synthetic or original). The goal of
 this classifier is to predict the likelihood of an observation to be
 synthetic. Therefore, this approach guarantees observation-level insights
-regarding the faithfulness of each observation. \citet{woo2009global} suggest
+regarding the faithfulness of each observation. \cite{woo2009global} suggest
 a summarization of this metric, also defined as the propensity Mean Squared Error
 (pMSE)~\cite{chundawat2022tabsyndex}:
 
@@ -1962,10 +2076,10 @@ pMSE is given by~\cite{snoke2018general}:
 Where $k$ is the number of parameters in the logistic regression model
 (including bias). When the synthetic dataset is easily distinguishable from
 the original dataset, $U_p$ will be close to ${(1-c)}^2$.
-\citet{dankar2021fake}, established a generally consistent, weak negative
+\cite{dankar2021fake}, established a generally consistent, weak negative
 correlation between $U_p$ and OA\@.
 
-\citet{chundawat2022tabsyndex} proposed TabSynDex to address the lack of
+\cite{chundawat2022tabsyndex} proposed TabSynDex to address the lack of
 uniformity of synthetic data evaluation, which can also be used as a loss
 function to train network-based models. It is a single metric evaluation
 approach bounded within $[0,1]$ that consists of a combination between (1) the
@@ -1975,7 +2089,7 @@ support coverage-based metric for histogram comparison and (5) the performance
 difference in a ML efficacy-based metric between models trained on real and
 synthetic data.
 
-The three-dimensional metric proposed by~\citet{alaa2022faithful} presents an
+The three-dimensional metric proposed by~\cite{alaa2022faithful} presents an
 alternative evaluation approach. It combines three metrics
 ($\alpha$-Precision, $\beta$-Recall and Authenticity) for various application
 domains. It extends the Precision and Recall metrics defined
@@ -2169,11 +2283,11 @@ mixed data types (\textit{i.e.}, a combination of categorical, ordinal,
 continuous and discrete features) and the metrics should evaluate the
 performance of different data mining tasks along with the anonymization
 reliability. This problem appears to be universal across domains. For example,
-\citet{hernandez2022synthetic} observed the lack of a universal method or
+\cite{hernandez2022synthetic} observed the lack of a universal method or
 metric to report the performance synthetic data generation algorithms for
 tabular health records. Therefore, in order to facilitate the usage of these
 techniques in industry domains, these benchmarks must also be
-realistic. \citet{rosenblatt2020differentially} attempts to address this
+realistic. \cite{rosenblatt2020differentially} attempts to address this
 problem by proposing a standardized evaluation methodology using standard
 datasets and real-world industry applications.
 
@@ -2288,6 +2402,31 @@ mechanisms and evaluation procedures. However, the empirical work presented in
 the literature show significant performance improvements and promising
 research directions for future work.
 
-\printbibliography
+\begin{backmatter}
+
+\section*{Funding}%% if any
+This research was supported by a research grant of the Portuguese Foundation
+for Science and Technology (``Fundação para a Ciência e a Tecnologia''),
+reference SFRH/BD/151473/2021, and by project UIDB/04152/2020 — Centro de
+Investigação em Gestão de Informação (MagIC).
+
+\section*{Availability of data and materials}%% if any
+All materials (tables, figures, examples and associated Python scripts)
+generated are available at
+\href{https://github.com/joaopfonseca/publications}{https://github.com/joaopfonseca/publications}
+
+\section*{Competing interests}
+The authors declare that they have no known competing financial interests or
+personal relationships that could have appeared to influence the work reported
+in this paper.
+
+\section*{Authors' contributions}
+JF defined the methodology for the analysis and prepared the original draft.
+FB reviewed the manuscript and provided supervision.
+
+\bibliographystyle{bmc-mathphys}
+\bibliography{references}
+
+\end{backmatter}
 
 \end{document}
