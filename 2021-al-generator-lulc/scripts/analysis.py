@@ -335,7 +335,6 @@ def mean_std_ranks_al(wide_optimal, al_metric="area_under_learning_curve"):
 
 
 def data_utilization_rate(*wide_optimal):
-
     df = wide_optimal[0]
     df = df.div(df["NONE"], axis=0)
 
@@ -449,7 +448,6 @@ def generate_main_results(results):
 
 
 def generate_data_utilization_tables(wide_optimal_al):
-
     # Mean data utilization to reach the .85 g-mean threshold
     data_utilization = wide_optimal_al[0].reset_index()
 
@@ -670,7 +668,6 @@ def generate_statistical_results(wide_optimal_al, alpha=0.1, control_method="NON
 
 
 if __name__ == "__main__":
-
     data_path, results_path, analysis_path = generate_paths(__file__)
 
     # load datasets
@@ -710,7 +707,6 @@ if __name__ == "__main__":
         result.reset_index(inplace=True)
         # Keep only G-mean and F-score
         if "Evaluation Metric" in result.columns or "Metric" in result.columns:
-
             query_col = (
                 "Evaluation Metric"
                 if "Evaluation Metric" in result.columns

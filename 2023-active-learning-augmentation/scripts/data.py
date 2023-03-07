@@ -30,7 +30,6 @@ def set_sample_size(n_instances):
 
 
 if __name__ == "__main__":
-
     # Download datasets
     datasets = MulticlassDatasets().download()
 

@@ -172,7 +172,6 @@ def generate_main_results(data_path, results_path):
 
 
 if __name__ == "__main__":
-
     # Extract paths
     data_path, results_path, analysis_path = generate_paths()
 

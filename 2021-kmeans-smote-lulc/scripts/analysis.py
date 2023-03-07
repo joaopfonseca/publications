@@ -101,7 +101,6 @@ def _make_bold(row, maximum=True, num_decimals=2):
 
 
 def calculate_max_improvement(results, oversamplers=None):
-
     # Calculate wide optimal results
     res = calculate_wide_optimal(results)
     ovrs_names = res.columns[3:]
@@ -436,7 +435,6 @@ def make_resampling_example():
         )
 
     def plot_decision_function(X, y, clf, ax, label=None, cmap="cividis"):
-
         plot_step = 0.02
         x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
         y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
@@ -482,7 +480,6 @@ def make_resampling_example():
 
 
 if __name__ == "__main__":
-
     data_path, results_path, analysis_path = generate_paths(__file__)
 
     # load datasets

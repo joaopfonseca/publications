@@ -44,7 +44,6 @@ def visualize_clf_dataset(
     ax=None,
     title=None,
 ):
-
     if ax is None:
         ax = plt.subplot()
 
@@ -82,7 +81,6 @@ def visualize_clf_dataset(
 
 
 def standard_al(X, y, axes, colors, n_samples_iter=5, random_state=None):
-
     rng = np.random.default_rng(random_state)
 
     # Initialization
@@ -107,7 +105,6 @@ def standard_al(X, y, axes, colors, n_samples_iter=5, random_state=None):
 
 
 def augmentation_al(X, y, axes, colors, n_samples_iter=5, random_state=None):
-
     rng = np.random.default_rng(random_state)
 
     # Initialization

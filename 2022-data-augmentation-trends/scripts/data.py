@@ -9,7 +9,6 @@ from research.utils import generate_paths, load_datasets
 DATA_PATH = generate_paths(__file__)[0]
 
 if __name__ == "__main__":
-
     # Read and concatenate data
     data = load_datasets(
         DATA_PATH, suffix=".csv", target_exists=False, error_bad_lines=False

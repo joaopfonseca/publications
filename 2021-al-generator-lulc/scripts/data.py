@@ -20,7 +20,6 @@ DATA_PATH = join(dirname(__file__), pardir, "data")
 
 
 if __name__ == "__main__":
-
     # Download datasets
     datasets = RemoteSensingDatasets().download()
 
@@ -28,7 +27,6 @@ if __name__ == "__main__":
     min_n_samples, dataset_size, rnd_seed = 150, 1500, 42
     content = []
     for name, data in datasets.content_:
-
         classes = [
             cl for cl, count in Counter(data.target).items() if count >= min_n_samples
         ]

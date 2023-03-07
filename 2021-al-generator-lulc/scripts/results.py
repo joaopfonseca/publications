@@ -123,7 +123,6 @@ CONFIG_AL = {
 
 
 if __name__ == "__main__":
-
     # Extract paths
     data_dir, results_dir, _ = generate_paths(__file__)
 

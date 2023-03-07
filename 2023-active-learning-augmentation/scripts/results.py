@@ -154,7 +154,6 @@ CONFIG = {
 
 
 if __name__ == "__main__":
-
     # extract and load datasets
     ZipFile(join(DATA_PATH, "active_learning_augmentation.db.zip"), "r").extract(
         "active_learning_augmentation.db", path=DATA_PATH

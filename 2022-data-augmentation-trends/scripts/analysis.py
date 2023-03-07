@@ -390,7 +390,6 @@ def undirected_network_analysis(df, source_col, target_col, weights=None):
 
 
 if __name__ == "__main__":
-
     # Set up variables and basic configs
     data_path, results_path, analysis_path = generate_paths(__file__)
     results = pickle.load(open(join(results_path, "results.pkl"), "rb"))

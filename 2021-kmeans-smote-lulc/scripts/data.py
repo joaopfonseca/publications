@@ -21,7 +21,6 @@ DATA_PATH = join(dirname(__file__), pardir, "data")
 
 
 if __name__ == "__main__":
-
     # Download datasets
     datasets = RemoteSensingDatasets().download()
 

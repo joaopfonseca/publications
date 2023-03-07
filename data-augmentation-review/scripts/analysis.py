@@ -63,7 +63,6 @@ def kde_mesh(X, mesh):
 
 
 if __name__ == "__main__":
-
     # Generate data and meshgrid
     X, y = make_blobs(
         n_samples=100,

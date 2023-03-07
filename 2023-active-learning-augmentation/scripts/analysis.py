@@ -395,7 +395,6 @@ def generate_main_results(results):
 
 
 def data_utilization_rate(*wide_optimal):
-
     df = wide_optimal[0]
     df = df.div(df["NONE"], axis=0)
 
@@ -416,7 +415,6 @@ def data_utilization_rate(*wide_optimal):
 
 
 def generate_data_utilization_tables(wide_optimal_al):
-
     data_utilization = wide_optimal_al[0].reset_index()
 
     # Data utilization per dataset and performance threshold
@@ -645,7 +643,6 @@ def generate_statistical_results(wide_optimal_al, alpha=0.1, control_method="NON
 
 
 if __name__ == "__main__":
-
     # extract and load datasets
     ZipFile(join(DATA_PATH, "active_learning_augmentation.db.zip"), "r").extract(
         "active_learning_augmentation.db", path=DATA_PATH

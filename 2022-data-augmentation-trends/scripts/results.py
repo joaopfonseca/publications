@@ -86,7 +86,6 @@ def lda_preprocessing(documents):
 
 
 if __name__ == "__main__":
-
     data_path, results_path, _ = generate_paths(__file__)
 
     df, df_journals = [

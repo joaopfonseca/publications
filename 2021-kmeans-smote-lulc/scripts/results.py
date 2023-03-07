@@ -77,7 +77,6 @@ CONFIG = {
 
 
 if __name__ == "__main__":
-
     # Extract paths
     data_dir, results_dir, _ = generate_paths()
 
@@ -89,7 +88,6 @@ if __name__ == "__main__":
 
     # Generate oversamplers
     for oversampler in oversamplers:
-
         # Define and fit experiment
         experiment = ImbalancedExperiment(
             oversamplers=[oversampler],
