@@ -148,7 +148,6 @@ CONFIG = {
 
 
 if __name__ == "__main__":
-
     DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
 
     # Get objects
@@ -157,7 +156,6 @@ if __name__ == "__main__":
     for dataset, oversampler in track(
         list(product(datasets, CONFIG["oversamplers"])), description="Experiment"
     ):
-
         file_name = (
             f'{dataset[0].replace(" ", "_").lower()}__'
             + f'{oversampler[0].replace("-", "").lower()}.pkl'

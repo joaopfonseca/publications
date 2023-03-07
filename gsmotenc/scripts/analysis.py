@@ -8,6 +8,7 @@ Analyze the experimental results.
 from os.path import join
 from collections import Counter
 from itertools import product
+import warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -68,7 +69,6 @@ def summarize_datasets(datasets):
 
 
 def calculate_wide_optimal(results):
-
     mean_scoring_cols = results.columns[results.columns.str.contains("mean_test")]
 
     optimal = results[mean_scoring_cols]
@@ -286,7 +286,6 @@ def save_longtable(df, path=None, caption=None, label=None):
 
 
 def format_table(df, with_sem=True, maximum=True, decimals=3):
-
     if with_sem:
         df = generate_mean_std_tbl_bold(*df, maximum=maximum, decimals=decimals)
     else:
@@ -314,8 +313,42 @@ def format_table(df, with_sem=True, maximum=True, decimals=3):
     return df
 
 
-if __name__ == "__main__":
+def calculate_mean_sem_perc_diff_scores(
+    wide_optimal, compared_oversamplers=["SMOTENC", "G-SMOTE"]
+):
+    """Calculate mean and standard error scores' percentage difference."""
 
+    # Calculate wide optimal results
+    ovrs_names = wide_optimal.columns
+
+    # Calculate percentage difference only for more than one oversampler
+    if len(ovrs_names) < 2:
+        warnings.warn(
+            "More than one oversampler is required to "
+            "calculate the mean percentage difference."
+        )
+
+    # Extract oversamplers
+    control, test = (
+        compared_oversamplers if compared_oversamplers is not None else ovrs_names[-2:]
+    )
+
+    # Calculate percentage difference
+    scores = wide_optimal[wide_optimal[control] > 0]
+    perc_diff_scores = pd.DataFrame(
+        (100 * (scores[test] - scores[control]) / scores[control]),
+        columns=["Difference"],
+    )
+    perc_diff_scores = pd.concat([scores.iloc[:, :3], perc_diff_scores], axis=1)
+
+    # Calulate mean and std percentage difference
+    mean_perc_diff_scores = perc_diff_scores.groupby(["Classifier", "Metric"]).mean()
+    sem_perc_diff_scores = perc_diff_scores.groupby(["Classifier", "Metric"]).sem()
+
+    return mean_perc_diff_scores, sem_perc_diff_scores
+
+
+if __name__ == "__main__":
     # Define paths and basic variables
     DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
     datasets = load_datasets(data_dir=DATA_PATH)
@@ -394,6 +427,11 @@ if __name__ == "__main__":
         join(ANALYSIS_PATH, "consistency_analysis_plot.pdf"),
     )
 
+    # Get mean percentage difference scores (SMOTENC vs G-SMOTENC)
+    perc_diff_scores = calculate_mean_sem_perc_diff_scores(
+        wide_optimal, compared_oversamplers=["SMOTENC", "G-SMOTE"]
+    )
+
     # Save all tables to latex
     TBL_OUTPUTS = (
         (
@@ -448,6 +486,11 @@ if __name__ == "__main__":
                 "hypothesis is that the benchmark methods perform similarly "
                 "to the control method (G-SMOTENC)."
             ),
+        ),
+        (
+            "mean_perc_diff_scores",
+            format_table(perc_diff_scores, decimals=2)[["Difference"]],
+            ("Percentage difference between G-SMOTENC and SMOTE across all datasets."),
         ),
     )
 

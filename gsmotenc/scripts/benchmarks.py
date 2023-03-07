@@ -115,7 +115,6 @@ class MySMOTENC(BaseOverSampler):
         return X_new, y_new
 
     def cat_corr_pandas(self, X, target_df, target_column, target_value):
-
         target_df = pd.Series(target_df, name=target_column)
 
         # X has categorical columns
@@ -138,7 +137,6 @@ class MySMOTENC(BaseOverSampler):
 
         for column in categorical_columns:
             for level in list(X.loc[:, column].unique()):
-
                 # filter rows where level is present
                 row_level_filter = X.loc[:, column] == level
                 rows_in_level = len(X.loc[row_level_filter, :])

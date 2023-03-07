@@ -14,7 +14,6 @@ from mlresearch.utils import generate_paths
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
 
 if __name__ == "__main__":
-
     rnd_seed = 5
 
     # Get data
@@ -35,7 +34,6 @@ if __name__ == "__main__":
     min_n_samples, n_obs = 15, 5000
     content = []
     for name, data in filtered_content:
-
         cat_feats = data.columns[data.columns.str.startswith("cat_")].tolist()
 
         # Ensure categorical features are stored as string
