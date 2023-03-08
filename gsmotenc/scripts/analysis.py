@@ -32,11 +32,11 @@ def summarize_datasets(datasets):
         {
             "Dataset": [dataset[0].title() for dataset in datasets],
             "Metric": [
-                dataset[1][0].columns.str.startswith("cat_").sum()
+                (~dataset[1][0].columns.str.startswith("cat_")).sum()
                 for dataset in datasets
             ],
             "Non-Metric": [
-                (~dataset[1][0].columns.str.startswith("cat_")).sum()
+                dataset[1][0].columns.str.startswith("cat_").sum()
                 for dataset in datasets
             ],
             "Obs.": [dataset[1][0].shape[0] for dataset in datasets],
@@ -285,13 +285,19 @@ def save_longtable(df, path=None, caption=None, label=None):
         return wo_tex
 
 
-def format_table(df, with_sem=True, maximum=True, decimals=3):
+def format_table(df, with_sem=True, maximum=True, decimals=3, bold=True):
     if with_sem:
-        df = generate_mean_std_tbl_bold(*df, maximum=maximum, decimals=decimals)
+        if bold:
+            df = generate_mean_std_tbl_bold(*df, maximum=maximum, decimals=decimals)
+        else:
+            df = generate_mean_std_tbl_bold(
+                *df, maximum=maximum, decimals=decimals, threshold=9e99
+            )
     else:
         df = df.copy()
         df = df.apply(
-            lambda row: make_bold(row, maximum=maximum, num_decimals=decimals), axis=1
+            lambda row: make_bold(row, maximum=maximum, num_decimals=decimals),
+            axis=1,
         )
 
     index_cols = list(df.index.names)
@@ -489,7 +495,9 @@ if __name__ == "__main__":
         ),
         (
             "mean_perc_diff_scores",
-            format_table(perc_diff_scores, decimals=2)[["Difference"]],
+            format_table(perc_diff_scores, decimals=2, bold=False)[
+                ["Difference"]
+            ].reset_index(),
             ("Percentage difference between G-SMOTENC and SMOTE across all datasets."),
         ),
     )

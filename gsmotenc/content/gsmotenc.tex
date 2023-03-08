@@ -548,8 +548,31 @@ The datasets used in this experiment were extracted from the
 of the datasets are publicly available and cover a range of different domains.
 The criteria to select the datasets ensured that all datasets are imbalanced
 and contained non-metric features (\textit{i.e.}, ordinal, nominal or binary).
-These datasets are used to show how the performance of different
-classifiers varies across over/undersamplers.
+These datasets are used to show how the performance of different classifiers
+varies across over/undersamplers.\hl{ The Abalone
+dataset}~\cite{clark1996quantitative}\hl{ consists on determining the age of
+abalone based on physical measurements. The Adult
+dataset}~\cite{kohavi1996scaling}\hl{ was extracted from USA's 1994 Census
+database and its prediction task is to determine whether a person's income is
+over 50K a year. The Annealling dataset}~\cite{quinlan1987decision}\hl{
+contains 4 target classes regarding the modification of the physical and/or
+chemical properties of different materials. The Census-Income dataset was
+extracted from the 1994 and 1995 current population surveys conducted by the
+U.S. Census Bureau. The Contraceptive dataset}~\cite{lim2000comparison}\hl{ is
+a subset of the 1987 National Indonesia Contraceptive Prevalence Survey, where
+the classification task is to predict the contraceptive method choice among
+married, not pregnant women. The Covertype
+dataset}~\cite{blackard1999comparative}\hl{ contains cartographic data on
+four wilderness areas in the Roosevelt National Forest of northern
+Colorado. The task is to predict the forest cover type. The Credit Approval
+dataset}~\cite{quinlan1987simplifying}\hl{ contains information on anonymized
+credit card applications. The classification task is to predict whether an
+applicant is approved to receive a credit card. The German Credit dataset
+contains customer information to determine their their credit risk (either
+good or bad). The Heart Disease dataset}~\cite{detrano1989international}\hl{
+is the merging of databases from four different healthcare institutions from
+Cleveland, Hungary, Switzerland and Long Beach. The classification task is to
+predict the presence of a heart disease in the patient.}
 
 All datasets were initially preprocessed manually with minimal manipulations.
 We removed features and/or observations with missing values and identified the
@@ -583,13 +606,19 @@ resulting datasets is shown in Table~\ref{tbl:datasets_description}.
 
 \input{../analysis/datasets_description.tex}
 
+
 \subsection{Machine Learning Algorithms}~\label{sec:ml_algorithms}
 
 The choice of classifiers used in the experimental procedure was based on
 their type (tree-based, nearest neighbors-based, linear model and
 ensemble-based), popularity and consistency in performance. We used Decision
 Tree (DT), a K-Nearest Neighbors (KNN) classifier, a Logistic
-Regression (LR) and a Random Forest (RF).
+Regression (LR) and a Random Forest (RF).\hl{ Our choice of classifiers
+ensures an unbiased and accurate analysis of the results obtained in the
+experimental phase, based on the nature and popularity of these classifiers.
+However, the classifier has no influence on G-SMOTENC's resampling
+phase; the classifier is trained using the resampled (balanced) data, but does
+not affect the synthetic data generation process.}
 
 Given the lack of existing oversamplers that address imbalanced learning
 problems with mixed data types, the amount of benchmark methods used is also
@@ -746,6 +775,11 @@ oversamplers.
 
 \input{../analysis/mean_sem_scores.tex}
 
+\hl{Table}~\ref{tbl:mean_perc_diff_scores}\hl{ shows the mean and standard
+error of the percentage difference between G-SMOTENC and SMOTENC.}
+
+\input{../analysis/mean_perc_diff_scores.tex}
+
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
 
 It is necessary to use methods that account for the multiple comparison
@@ -786,7 +820,10 @@ SMOTENC's.
 The relative difference in the classifiers' performance is better visible in
 Table~\ref{tbl:mean_sem_scores}. Using an RF classifier, for example, the
 impact of using G-SMOTENC compared to no oversampling improves, on average, 13
-percentual points on G-mean and nine percentual points using F-Score. 
+percentual points on G-mean and nine percentual points using F-Score. \hl{The
+mean percentage difference shown in
+Table}~\ref{tbl:mean_perc_diff_scores}\hl{ shows that, on average, G-SMOTENC
+is always superior to SMOTENC.}
 
 The difference in performance between oversamplers was found to be
 statistically significant across classifiers and performance metrics in the
