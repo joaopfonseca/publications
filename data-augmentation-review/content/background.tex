@@ -1,0 +1,135 @@
+\section{Background}\label{sec:background}
+
+In this section\hl{,} we define basic\hl{ }concepts, common goals,
+trade-offs\hl{,} and
+motivations regarding the generation of synthetic data in ML\@. We define
+synthetic data generation as the production of artificial observations that
+resemble naturally occurring ones within a certain domain, using a generative
+model. It requires access to a training dataset, a generative process, or a
+data stream. However, the constraints imposed \hl{on} this process largely
+depend\hl{ } on the target ML task. For example, to generate artificial data
+for regularization purposes in supervised learning (\textit{i.e.}, data
+augmentation) the training dataset must be annotated. The production of
+anonymized datasets using synthetic data generation requires synthetic
+datasets to be different from the original data while following similar
+statistical properties. Domain knowledge may also be necessary to encode
+specific relationships among features into the generative process.
+
+
+\subsection{Relevant Learning Problems}
+
+%% Anonymize datasets (differential privacy)
+The breach of sensitive information is an important barrier to the sharing of
+datasets, especially when it concerns personal
+information~\cite{dankar2021fake}. One solution for this problem is the
+generation of synthetic data without identifiable information. Generally
+speaking, ML tasks that require data with sensitive information are not
+compromised when using synthetic data. The experiment conducted by
+\cite{patki2016synthetic} using relational datasets showed that in 11 out
+\hl{of} 15 comparisons ($\approx 73\%$), practitioners performing predictive
+modelling tasks using fully synthetic datasets performed the same or better
+than those using the original dataset. Optionally, anonymized synthetic data
+may be produced with theoretical privacy guarantees, using differential
+privacy techniques. This topic is discussed in Section~\ref{sec:data-privacy}.
+
+%% Generalization/regularization
+A common problem in the training of \hl{ML classifiers is} their
+capacity to generalize~\cite{Zhang2021} (\textit{i.e.}, reduce the difference
+in classification performance between known and unseen observations). \hl{This
+is particularly true for deep neural networks since they require the
+estimation of high amounts of parameters.} Data augmentation is a common
+method to address this problem for any type of ML classifier. The generation
+of synthetic observations increases the range of the input space used in the
+training phase and reduces the difference in performance between known and new
+observations. Although other regularization methods exist, data augmentation
+is a useful method since it does not affect the choice in the architecture of
+the ML classifier and does not exclude the usage of other regularization
+methods. In domains such as computer vision and NLP, data augmentation is also
+used to improve the robustness of models against adversarial
+attacks~\cite{zeng2020data, morris2020textattack}. These topics are discussed
+\hl{in} higher detail in Section~\ref{sec:regularization}.
+
+%% Oversampling
+In supervised learning, synthetic data generation is often motivated by the
+need to balance target class distributions (\textit{i.e.}, oversampling).
+Since most ML classifiers are designed to perform best with balanced datasets,
+defining an appropriate decision boundary to distinguish rare classes becomes
+difficult~\cite{saez2016analyzing}. Although there are other approaches to
+address imbalanced learning, oversampling techniques are generally easier to
+implement since they do not involve modifications to the classifier. This
+topic is discussed \hl{in} higher detail in Section~\ref{sec:oversampling}.
+
+%% Active Learning + Few-shot Learning
+In supervised learning tasks where labeled data is not readily available, but
+can be labeled, an Active Learning (AL) method may be used to improve the
+efficiency of the labeling process. AL aims to reduce the cost of producing
+training datasets by finding the most informative observations to label and
+feed into the classifier~\cite{fonseca2021increasing}. In this case, the
+generation of synthetic data is particularly useful to reduce the amount of
+labeled data required for a successful ML project. This topic is discussed in
+Section~\ref{sec:active-learning}.
+
+%% Semi-supervised Learning + Self-supervised learning
+Two other techniques reliant on synthetic data generation are Semi-supervised
+Learning (Semi-SL) and Self-Supervised Learning (Self-SL). The former
+leverages both labeled and unlabeled data in the training phase,
+simultaneously, while several methods apply perturbations on the training data
+as part of the training procedure~\cite{van2020survey}. The latter, Self-SL,
+is a technique used to train neural networks in the absence of labeled data.
+Several Semi-SL and Self-SL methods use synthetic data generation as a core
+element. These methods are discussed in
+Sections~\ref{sec:semi-supervised-learning}
+and~\ref{sec:self-supervised-learning}.
+
+
+% Concepts definition, goals + trade-offs, Motivations
+
+% Concepts definition
+% - Original dataset
+% - Synthetic dataset
+% - Generator
+% - Quality criteria (e.g., similarity function)
+% - Objective performance metric (ML method to improve)
+ 
+% Common success criteria 
+% - The synthetic dataset should be different than the original dataset (i.e.,
+%   no duplicates)
+% - It should minimize a similarity function
+% - The statistical properties of the dataset are preserved
+% - It should improve the output of the objective performance
+ 
+% Trade-offs
+% - Additional computational overhead
+% - Expose the classifier to unfeasible input areas
+
+\subsection{Problem Formulation}\label{sec:problem-formulation}
+
+The original dataset, $\mathcal{D} = \mathcal{D}_L \cup \mathcal{D}_U$,
+is a collection of real observations and is distinguished according to whether
+a target feature exists, $\mathcal{D}_L = {((x_i, y_i))}^l_{i=1}$, or not,
+$\mathcal{D}_U = {(x_i)}^{u}_{i=1}$. All three datasets, $\mathcal{D}$,
+$\mathcal{D}_L$ and $\mathcal{D}_U$ consist of ordered collections with
+lengths $l+u$, $l$ and $u$, respectively. Synthetic data generation is
+performed using a generator, $f_{gen}(x;\tau) = x^s$, where $\tau$
+defines the generation policy (\textit{i.e.}, its hyperparameters), $x \in
+\mathcal{D}$ is an observation and $x^s \in \mathcal{D}^s$ is a
+synthetic observation. Analogous to $\mathcal{D}$, the synthetic dataset,
+$\mathcal{D}^s$, is also distinguished according to whether there is an
+assignment of a target feature, $\mathcal{D}^s_L = {((x^s_j,
+y^s_j))}^{l'}_{j=1}$, or not, $\mathcal{D}^s_U =
+{(x^s_j)}^{u'}_{j=1}$.
+
+% - Quality criteria (e.g., similarity function)
+Depending on the ML task, it may be relevant to establish metrics to measure
+the quality of $\mathcal{D}^s$. In this case, a metric
+$f_{qual}(\mathcal{D}^s, \mathcal{D})$ is used to determine the level of
+similarity/dissimilarity between $\mathcal{D}$ and $\mathcal{D}^s$. In
+addition, a performance metric to estimate the performance of a model on the
+objective task, $f_{per}$, may be used to determine the appropriateness of a
+model with parameters $\theta$, \textit{i.e.}, $f_{\theta}$. The generator's
+goal is to generate $\mathcal{D}^s$ with arbitrary length, given
+$\mathcal{D} \sim \mathbb{P}$ and $\mathcal{D}^s \sim \mathbb{P}^s$, such
+that $\mathbb{P}^s \approx \mathbb{P}$, $x_i \neq x_j \forall x_i \in
+\mathcal{D} \wedge x_j \in \mathcal{D}^s$. $f_{gen}(x;\tau)$ attempts to
+generate a $\mathcal{D}^s$ that maximizes either $f_{per}$, $f_{qual}$, or a
+combination of both.

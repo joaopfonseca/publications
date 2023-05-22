@@ -1,0 +1,322 @@
+\section{Introduction}\label{sec:introduction}
+
+
+Tabular data consists of a database structured in tabular form, composed of
+columns (features) and rows (observations)~\cite{yoon2020vime}. It is one of
+the most commonly used data structures within a wide range of domains.
+However, ML techniques developed for tabular data can be applied to any type
+of data; input data, regardless of its original format, can be mapped into a
+manifold, lower-dimensional abstraction of the input data and mapped back into
+its original input space~\cite{kingma2019introduction, devries2017dataset}.
+This abstraction is often referred to as embeddings, encodings, feature
+space\hl{,} or latent space. In this paper, we will refer to this concept as
+latent space.
+
+Synthetic data is obtained from a generative process based on properties of
+real data~\cite{assefa2020generating}. The generation of synthetic data is
+essential for several objectives. For example, it is used as a form of
+regularizing ML classifiers (\textit{i.e.}, data
+augmentation)~\cite{wang2021regularizing}. One form of anonymizing datasets is
+via the production of synthetic observations (\textit{i.e.}, synthetic data
+generation)~\cite{patki2016synthetic}. In settings where only a small portion
+of training data is labeled, some techniques generate artificial data using
+both labeled and unlabeled data with a modified loss function to train neural
+networks (\textit{i.e.}, semi-supervised learning)~\cite{laine2017temporal}.
+In imbalanced learning contexts, synthetic data can be used to balance the
+target classes' frequencies and reinforce the learning of minority classes
+(\textit{i.e.}, oversampling)~\cite{fonseca2021improving}. Some active
+learning frameworks use synthetic data to improve data selection and
+classifier training~\cite{kim2021lada}. Other techniques employ data
+generation to train neural networks without labeled data (\textit{i.e.},
+self-supervised learning)~\cite{grill2020bootstrap}.
+
+The breadth of these techniques span\hl{s} multiple domains, such as facial
+recognition~\cite{lv2017data}, Land Use/Land Cover
+mapping~\cite{douzas2019imbalanced}, medical image
+processing~\cite{yi2019generative}, Natural Language Processing
+(NLP)~\cite{feng2021survey} or credit card default
+prediction~\cite{alam2020investigation}. \hl{Finding appropriate data
+generation techniques varies according to the domain and data type}. In
+addition, several synthetic data generation methods are specific to the
+domain, data type\hl{,} or target ML task. Generally, these methods rely on
+the domain data's structure \hl{and} are not easily transferable to tabular
+data.
+
+Overall, synthetic data generation techniques for tabular data are not as
+explored as image or text data, despite \hl{their} popularity and
+ubiquity~\cite{fakoor2020fast}. Furthermore, these techniques are invariant to
+the original data format; they can be applied to both the latent
+space~\cite{devries2017dataset} or tabular data. On one hand, data generation
+in the latent space uses a generative model to learn a manifold,
+lower-dimensional abstraction over the input
+space~\cite{kingma2019introduction}. At
+this level, any tabular data generation mechanism can be applied and
+reconstructed into the input space if necessary. On the other hand, synthetic
+data generation on tabular data can be applied to most problems. Although, the
+choice of generation mechanism depends on (1) the importance of the original
+statistical information and the relationships among features, (2) the target
+ML task\hl{,} and (3) the role synthetic data plays in the process (\textit{i.e.},
+anonymization, regularization, class balancing, etc.).  For example, when
+generating data to address an imbalanced learning problem (\textit{i.e.},
+oversampling), the relationships between the different features are not
+necessarily kept, since the goal is to reinforce the learning of the minority
+class by redefining an ML classifier's decision boundaries. If the goal is to
+anonymize a dataset, perform some type of descriptive task, or ensure
+consistent model interpretability, statistical information must be preserved.
+
+Depending on the context, evaluating the quality of the generated data is a
+complex task. For example, for image and time series data, perceptually small
+changes in the original data can lead to large changes in the \hl{E}uclidean
+distance~\cite{assefa2020generating, theis2016note}. The evaluation of
+generative models typically account\hl{s} primarily for the performance in a
+specific task, since good performance in one criterion does not imply good
+performance on another~\cite{theis2016note}. However, in computationally
+intensive tasks it is often impracticable to search for the optimal
+configurations of generative models. To address this limitation, other
+evaluation methods have been proposed to assist in this evaluation, which
+typically use statistical divergence metrics, averaged distance metrics,
+statistical similarity measurements, or precision/recall
+metrics~\cite{chundawat2022tabsyndex, alaa2022faithful}. The relevant
+performance metrics found in the literature are discussed in
+Section~\ref{sec:evaluating-synthetic-data}.
+
+\subsection{Motivation, Scope and Contributions}
+
+We focus on data generation techniques in the tabular and latent space
+(\textit{i.e.}, embedded inputs) with a focus on classification and associated
+ML problems. Related literature reviews are mostly focused on specific
+algorithmic or domain applications, with little to no emphasis on the core
+generative process. For this reason, these techniques often appear
+``sandboxed'', even though there is a significant overlap between them. There
+are some related reviews published since 2019. \cite{assefa2020generating}
+provides a general overview of synthetic data generation for time series data
+anonymization in the finance sector. \cite{hernandez2022synthetic} reviews
+data generation techniques for tabular health records anonymization.
+\cite{raghunathan2021synthetic} reviews synthetic data anonymization
+techniques that preserve the statistical properties of a dataset.
+\cite{sauber2022use} \hl{reviews GAN-based oversampling methods for tabular
+data, with a focus on cybersecurity and finance.} \cite{nalepa2019data}
+reviews data augmentation techniques for brain-tumor segmentation.
+\cite{bayer2021survey} distinguishes augmentation techniques for text
+classification into latent and data space, while providing an extensive
+overview of augmentation methods within this domain. However, the taxonomy
+proposed and latent space augmentation methods are not necessarily specific to
+the domain. \cite{shorten2021text}, \cite{chen2021empirical},
+\cite{feng2021survey} and \cite{liu2020survey} also review data augmentation
+techniques for text data. \cite{sampath2021survey}\hl{ reviews GAN
+architectures for imbalanced learning in computer vision tasks}.
+\cite{yi2019generative} review Generative Adversarial Network architectures
+for medical imaging. \cite{wang2020survey} reviews face data augmentation
+techniques. \cite{shorten2019survey}, \cite{khosla2020enhancing} and
+\cite{khalifa2021comprehensive} discuss techniques for image data
+augmentation.  \cite{iwana2021empirical} and \cite{wen2020time} also review
+time series data augmentation techniques.  \cite{zhao2022graph} review data
+augmentation techniques for graph data. The analysis of related literature
+reviews~\footnote{Results obtained using Google Scholar, limited to articles
+    published since 2019, using the search query {\fontfamily{qcr}\selectfont
+        (``synthetic data generation'' OR ``oversampling'' OR ``imbalanced
+        learning'' OR ``data augmentation'') AND (``literature review'' OR
+``survey'')}. Retrieved on August $11^{th}$, 2022. More articles were added
+later whenever found relevant.  } is shown in
+Table~\ref{tab:literature-reviews}.
+
+\begingroup\small
+\setlength\LTleft{-1.5cm}
+\setlength\LTright{1.5cm}
+\begin{table}[t!]
+    \centering
+    \caption{\label{tab:literature-reviews}
+        Related literature reviews published since 2019. \hl{A field containing
+        ``---'' indicates that the corresponding literature review does not
+        focus on a particular data type, ML problem or domain.}
+    }
+    \begin{tabularx}{\textwidth}{@{}rcccX@{}}
+        \toprule
+        Reference & Data type & ML problem & Domain & Observations \\
+        \midrule
+
+        \cite{assefa2020generating} & --- & Data privacy &
+        Finance & Analysis of applications, motivation and properties of
+        synthetic data for anonymization. \\
+
+        \cite{hernandez2022synthetic} & Tabular & Data privacy &
+        Healthcare & Focus on GANs. \\
+
+        \cite{raghunathan2021synthetic} & Tabular & Data privacy &
+        Statistics & Focus on general definitions such as differential privacy
+        and statistical disclosure control.\\
+
+        \cite{sauber2022use} & \hl{Tabular} & \hl{Imbalanced Learning} &
+        \hl{Various} & \hl{Focus on oversampling with GANs in cybersecurity
+        and finance.}\\
+
+        \cite{bayer2021survey} & Text & Classification & --- & Distinguish
+        100 methods into 12 groups. \\
+
+        \cite{shorten2021text} & Text & Deep Learning & --- & General
+        overview of text data augmentation. \\
+
+        \cite{chen2021empirical} & Text & Few-shot Learning & --- &
+        Augmentation techniques for machine learning with limited data\\
+
+        \cite{feng2021survey} & Text & --- & --- & Overview of augmentation
+        techniques and applications on NLP tasks.\\
+
+        \cite{liu2020survey} & Text & --- & Various & Analysis of industry
+        use cases of data augmentation in NLP\@. Emphasis on input level data
+        augmentation.\\
+
+        \cite{nalepa2019data} & Image & Segmentation & Medicine & Analysis of
+        algorithmic applications on a 2018 brain-tumor segmentation
+        challenge.\\
+
+        \cite{sampath2021survey} & \hl{Image} & \hl{Imbalanced Learning} &
+        \hl{---} & \hl{Emphasis on GANs.} \\
+
+        \cite{yi2019generative} & Image & --- & Medicine & Emphasis on GANs.\\
+
+        \cite{wang2020survey} & Image & Deep Learning & --- & Regularization
+        techniques using facial image data. Emphasis on Deep Learning
+        generative models.\\
+
+        \cite{shorten2019survey} & Image & Deep Learning & --- & Emphasis on
+        data augmentation as a regularization technique.\\
+
+        \cite{khosla2020enhancing} & Image & --- & --- & Broad overview of
+        image data augmentation. Emphasis on traditional approaches. \\
+
+        \cite{khalifa2021comprehensive} & Image & --- & Various & General
+        overview of image data augmentation and relevant domains of
+        application.\\
+
+        \cite{iwana2021empirical} & Time series & Classification & --- &
+        Defined a taxonomy for time series data augmentation.\\
+
+        \cite{wen2020time} & Time series & Various & --- & Analysis of data
+        augmentation methods for classification, anomaly detection and
+        forecasting.\\
+
+        \cite{zhao2022graph} & Graph & Various & --- & Graph data
+        augmentation for supervised and self-supervised learning.\\
+
+        \bottomrule
+        
+    \end{tabularx}
+\end{table}
+\endgroup
+
+This literature review focuses on generation mechanisms applied to tabular
+data across the main ML techniques where tabular synthetic data is used.  We
+also discuss generation mechanisms used in the latent space, since the
+generation mechanisms in tabular data and latent space may be used
+interchangeably. In addition, we focus on the ML perspective of synthetic
+data, as opposed to the practical perspective; according to the practical
+perspective, synthetic data is used as a proxy of real data\hl{ when it is}
+inaccessible, essential, and a secondary asset for tasks like education,
+software development, or systems demonstrations~\cite{mannino2019real}.
+\hl{The ML perspective focuses on the generation of synthetic data based on
+existing, naturally occurring data to either improve a ML task or replace the
+original data.} 
+
+The different taxonomies \hl{of synthetic data generation }established in the
+literature follow a similar philosophy\hl{ }but vary in terminology and are
+often specific to the technique discussed. Regardless, it is possible to
+establish a broader taxonomy without giving up on specificity. This study
+provides a joint overview of the different data generation approaches,
+domains\hl{,} and ML techniques where data generation is being used, as well
+as a common taxonomy across domains. It extends the analyses found in these
+articles and uses the compiled knowledge to identify research gaps. We compare
+the strengths and weaknesses of the models developed within each of these
+fields. Finally, we identify possible future research directions to address
+some of the limitations found. The contributions of this paper are summarized
+below:
+
+\begin{itemize}
+
+    \item Bridge different ML concepts \hl{that} us\hl{e} synthetic data generation
+        \hl{techniques} \hl{(Sections}~\ref{sec:background}\hl{
+        and}~\ref{sec:algorithmic-applications}\hl{)};
+
+    \item Propose a synthetic data generation/data augmentation taxonomy to
+        address the ambiguity in the various taxonomies proposed in the
+        literature \hl{(Section}~\ref{sec:taxonomy}\hl{)};
+
+    \item Characterize all the relevant data generation methods using the
+        proposed taxonomy \hl{(Sections}~\ref{sec:taxonomy}\hl{
+        and}~\ref{sec:algorithmic-applications}\hl{)};
+
+    \item \hl{C}onsolidate the current generation mechanisms across the
+        different techniques \hl{and methods to evaluate the quality of
+        synthetic data generation (Sections}~\ref{sec:generation-mechanisms}
+        \hl{and}~\ref{sec:evaluating-synthetic-data}\hl{)};
+
+    \item Highlight the \hl{main} challenges of synthetic data generation and
+        discuss possible future research directions
+        \hl{(Sections}~\ref{sec:discussion}\hl{and}~\ref{sec:future-work}\hl{)}.
+
+\end{itemize}
+
+\subsection{Bibliometric Data Collection}
+
+\hl{Considering the goals determined in this study, the literature collection is
+more complex than usual; the wide range of domains and ML problems where
+synthetic data is used involved considering different naming conventions for
+the same concepts. In addition, it involved the identification of such domains
+and ML problems and checking for less popular mechanism combinations (some of
+which do not show up in any general query, unless purposefully looked up). To
+achieve this, we followed a 2-step approach:}
+
+\begin{enumerate}
+
+    \item \hl{Collection of related literature reviews/surveys/systematic studies:
+        Allowed us to understand which domains and ML problems to discuss,
+        naming conventions (for example, latent vs. embeddings vs. econdings
+        vs. feature space; or synthetic vs. anonymized vs. augmented vs.
+        artificial vs. resampled data), differences in taxonomies across
+        domains, and importance of this study.  Based on the rate at which
+        research is being developed in ML, we considered exclusively studies
+        from 2019 onward since any literature review prior to this date can be
+        deemed outdated and overlapping with more recent literature reviews.}
+
+    \item \hl{Individual queries according to specific domains, ML problems,
+        concepts, and taxonomy proposed. The large amount of queries performed
+        at this stage involved a case-by-case screening of the studies}’
+        \hl{relevancy, searching through the bibliographies of existing papers as
+        well as papers citing the original study and the inclusion of studies
+        that were a priori known by the authors.} 
+
+\end{enumerate}
+
+\hl{The studies included in this literature review were collected from Google
+Scholar. Compared to other sources, such as Scopus, Web of Science, Dimensions
+or OpenCitation}’\hl{s COCI, several studies found Google Scholar to be the most
+complete source for literature search. According
+to}~\cite{martin2021google}\hl{,
+it contains 88\% of all citations, many of which are not found in other
+sources, and contains 89\% to 94\% of the citations found by the remaining
+sources. Another study found even higher
+disparities}~\cite{martin2018google}\hl{;
+Google Scholar found 93\% to 96\% of citations across all areas, far more
+complete than the remaining options, and found 95\% and 92\% of Web of
+Science's and Scopus' citations, respectively. Since a large percentage of the
+journals/repositories considered are high-impact journals, conference
+proceedings, or well-known repositories, it is reasonable to assume all the
+targeted studies were readily available via Google Scholar.}
+
+
+\subsection{Paper Organization}
+
+The rest of this paper is organized as follows: Section~\ref{sec:background}
+defines and formalizes the different concepts, goals, trade-offs\hl{,} and
+motivations related to synthetic data generation. Section~\ref{sec:taxonomy}
+defines the taxonomy used to categorize all the algorithms analy\hl{z}ed in this
+study. Section~\ref{sec:algorithmic-applications} analyses all the algorithms
+using synthetic data generation, distinguished by learning problem.
+Section~\ref{sec:generation-mechanisms} describes the main generation
+mechanisms found, distinguished by generation type.
+Section~\ref{sec:evaluating-synthetic-data} reviews performance evaluation
+methods of synthetic data generation mechanisms. Section~\ref{sec:discussion}
+summarizes the main findings and general recommendations for good practices on
+synthetic data usage. Section~\ref{sec:future-work} discusses limitations,
+research gaps\hl{,} and future research directions. Section~\ref{sec:conclusions}
+presents the main conclusions drawn from this study.

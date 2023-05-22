@@ -1,0 +1,178 @@
+\section{Evaluating the Quality of Synthetic Data
+}\label{sec:evaluating-synthetic-data}
+
+The vast majority of synthetic data generation models are evaluated on a\hl{n} ML
+utility basis. Compared to research on the development of actual synthetic
+data generation algorithms, there is a general lack of research on the
+development of metrics to evaluate their quality beyond performance metrics
+such as Overall Accuracy (OA) or F1-score.
+% \footnote{\hl{For a more comprehensive
+% analysis and definitions of frequently used supervised learning performance
+% metrics, the reader is referred to}~\cite{seliya2009study}.} 
+One motivation to
+do this is the ability to anticipate the quality of the data for the target
+task before training a\hl{n} ML classifier, which may be expensive and
+time-consuming. This is a challenging problem\hl{ }since the usefulness of
+synthetic data generators depend\hl{s} on the assumptions imposed according to
+the dataset, domain\hl{,} and ML problem~\cite{chundawat2022tabsyndex}. This
+section focuses on the main evaluation approaches found in the literature
+beyond classification performance, as well as recently proposed methods. For a
+more comprehensive analysis of performance metrics for synthetic data
+evaluation, the reader is referred to~\cite{dankar2022multi}
+and~\cite{theis2016note}.
+
+The GANBLR model~\cite{zhang2021ganblr} was evaluated on three aspects: (1) ML
+utility, (2) Statistical similarity, and (3) Interpretability. In
+\cite{xu2019modeling}, the authors evaluate the CTGAN and TVAE models using a
+likelihood fitness metric (to measure statistical similarity) and ML efficacy
+(\textit{i.e.}, utility). \cite{hittmeir2019utility} evaluate synthetic data
+generators using a 2-step approach: Similarity comparison and data utility.
+According to \cite{alaa2022faithful}, the evaluation of generative models
+should quantify three key aspects of synthetic data:
+
+\begin{enumerate}
+
+    \item Fidelity. \hl{S}ynthetic observations must resemble real
+        observations; 
+
+    \item Diversity. \hl{S}ynthetic observations should cover $\mathcal{D}$'s
+        variability;
+
+    \item Generalization. \hl{S}ynthetic observations should not be copies of
+        real observations;
+
+\end{enumerate}
+
+Ensuring these properties are met will secure the objectives defined in
+Section~\ref{sec:problem-formulation}: $\mathbb{P}^s \approx
+\mathbb{P}$ and $x_i \neq x_j \forall x_i \in \mathcal{D} \wedge x_j \in
+\mathcal{D}^s$. \hl{However, this is a relatively recent consideration that was
+not commonly found in the literature. The only study found to explicitly
+address all three aspects was}~\cite{alaa2022faithful}\hl{, although all other
+studies and metrics discussed in Section}~\ref{sec:quantitative-approaches}
+\hl{address (implicitly or explicitly) at least one of these aspects.}
+
+The effective evaluation of synthetic data generation methods is a complex
+task. \hl{G}ood performance \hl{on} one evaluation method does not
+necessarily imply a good performance on the primary ML task, results from
+different evaluation methods seem to be independent, and evaluating the models
+directly onto the target application is generally
+recommended~\cite{theis2016note}. Therefore, each evaluation procedure must be
+carefully implemented and adapted according to the use case.
+
+\subsection{Quantitative approaches}~\label{sec:quantitative-approaches}
+
+The Kullback-Leibler (KL) divergence (and equivalently the log-likelihood) is a
+common approach to evaluate generative models~\cite{theis2016note}. Other
+commonly used metrics, like Parzen window estimates, appear to be a generally
+poor quality estimation method and are not recommended for most
+applications~\cite{theis2016note}. KL divergence is defined as follows:
+
+\begin{equation}
+    D_{KL}(P||Q) = \sum_{x\in\mathcal{X}}P(x)\log{\frac{P(x)}{Q(x)}}
+\end{equation}
+
+Where $\mathcal{X}$ is a probability space, $P$ and $Q$ are estimated
+probability distributions based on $\mathbb{P}$ and $\mathbb{P}^s$,
+respectively. The KL divergence is a non\hl{-}symmetric measurement that represents
+how a reference probability distribution ($P$) differs from another
+($Q$). A $D_{KL}$ close to zero means $Q$ is similar to $P$. However, metrics
+like the KL divergence or the log-likelihood are generally difficult to
+interpret, do not scale well for high dimensional data\hl{,} and fail to
+highlight model failures~\cite{alaa2022faithful}. Another related metric, used
+in~\cite{zhao2021ctab}, is the Jensen-Shannon (JS) divergence. It consists of
+a symmetrized and smoothed variation of the KL divergence. Having
+$M=\frac{P+Q}{2}$, it is calculated as:
+
+\begin{equation}
+    D_{JS}(P||Q) = \frac{D_{KL}(P||M) + D_{KL}(Q||M)}{2}
+\end{equation}
+
+The Wasserstein Distance is another relevant metric to estimate the
+distance between two distribution functions. It was also used to develop GAN
+variants since it improves the stability in the training of
+GANs~\cite{gulrajani2017improved, goncalves2020generation}.
+
+In past literature, the propensity score was considered an appropriate
+performance metric to measure the utility of masked data~\cite{woo2009global}.
+This metric is estimated using a classifier (typically a logistic regression)
+trained on a dataset with both the original and synthetic data, using as \hl{a}
+target the source of each observation (synthetic or original). The goal of
+this classifier is to predict the likelihood of an observation \hl{being}
+synthetic. Therefore, this approach guarantees observation-level insights
+regarding the faithfulness of each observation. \cite{woo2009global} suggest
+a summarization of this metric, also defined as the propensity Mean Squared Error
+(pMSE)~\cite{chundawat2022tabsyndex}:
+
+\begin{equation}~\label{ep:propensity}
+    U_p = pMSE = \frac{1}{N} \sum^N_{i=1}{(\hat{p}_i - c)}^2
+\end{equation}
+
+Where $N = |\mathcal{D} \cup \mathcal{D}^s|$, $c = \frac{|\mathcal{D}^s|}{N}$
+and $\hat{p}_i$ is the estimated propensity score for observation $i$. When a
+synthetic dataset is indistinguishable from real data, $pMSE$ will be close to
+zero. Specifically, when the data source is indistinguishable, the expected
+pMSE is given by~\cite{snoke2018general}:
+
+\begin{equation}
+    E(pMSE) = \frac{(k-1)(1-c)^2c}{N}
+\end{equation}
+
+Where $k$ is the number of parameters in the logistic regression model
+(including bias). When the synthetic dataset is easily distinguishable from
+the original dataset, $U_p$ will be close to ${(1-c)}^2$.
+\cite{dankar2021fake}, established a generally consistent, weak negative
+correlation between $U_p$ and OA\@.
+
+\cite{chundawat2022tabsyndex} proposed TabSynDex to address the lack of
+uniformity of synthetic data evaluation, which can also be used as a loss
+function to train network-based models. It is a single metric evaluation
+approach bounded within $[0,1]$ that consists of a combination \hl{of} (1) the
+relative errors of basic statistics (mean, median\hl{,} and standard deviation), (2)
+the relative errors of correlation matrices, (3) a pMSE-based index, (4) a
+support coverage-based metric for histogram comparison and (5) the performance
+difference in a\hl{n} ML efficacy-based metric between models trained on real and
+synthetic data.
+
+The three-dimensional metric proposed by~\cite{alaa2022faithful} presents an
+alternative evaluation approach. It combines three metrics
+($\alpha$-Precision, $\beta$-Recall\hl{,} and Authenticity) for various application
+domains. It extends the Precision and Recall metrics defined
+in~\cite{sajjadi2018assessing} into $\alpha$-Precision and $\beta$-Recall,
+which are used to quantify fidelity and diversity. Finally, the authenticity
+metric is estimated using a classifier that is trained based on the distance
+(denoted as $d$) between $x^s$ and its nearest neighbor in $\mathcal{D}$,
+$x_{i^*}$; if $d(x^s, x_{i^*})$ is smaller than the distance between $x_{i^*}$
+and its nearest neighbor in $\mathcal{D}\backslash \{x_{i^*}\}$, $x^s$ will
+likely be considered unauthentic. This approach provides a threefold
+perspective over the quality of $\mathcal{D}^s$ and allows a sample-level
+analysis of the generator's performance. Furthermore, there is a relative
+trade-off between the two metrics used to audit the generator and the
+synthetic data; a higher $\alpha$-Precision score will generally correspond to
+a lower Authenticity score and vice versa.
+
+A less common evaluation approach is to attempt to replicate the results of
+studies using synthetic data~\cite{el2020seven, benaim2020analyzing,
+rosenblatt2022epistemic}. Another method is the computation of the
+average distance among synthetic observations and their nearest neighbors
+within the original dataset~\cite{hittmeir2019utility}. The Confidence
+Interval Overlap and Average Percentage Overlap metrics may be used to
+evaluate synthetic data specifically for regression
+problems~\cite{khan2022utility, karr2006framework}.
+
+\subsection{Visual and Qualitative approaches}
+
+One of the qualitative approaches found in the literature is the comparison of
+the features' distributions with synthetic data and the original data using
+histogram plots~\cite{hittmeir2019utility}. This comparison can be
+complemented with the quantification of these distribution
+differences~\cite{el2020seven}. A complementary approach is the comparison of
+correlation matrices via heat map plots~\cite{hittmeir2019utility}.
+
+Another way to assess the quality of synthetic data is \hl{to evaluate
+individual, synthetic data points and collect} subjective
+\hl{evaluations} by domain experts~\cite{el2020seven}. The goal of such \hl{a} test is to
+understand whether domain experts are able to distinguish synthetic from real
+data, which could be quantified with classification performance metrics. A low
+classification performance implies synthetic data that is difficult to
+distinguish from real data.

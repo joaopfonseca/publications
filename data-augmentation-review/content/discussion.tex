@@ -1,0 +1,88 @@
+\section{Discussion}\label{sec:discussion}
+
+The generation of tabular and latent space synthetic data has applications in
+multiple ML tasks and domains. Specifically, we found six areas that were
+shown to benefit from synthetic data: data privacy, regularization,
+oversampling, active learning, semi-supervised learning\hl{,} and self-supervised
+learning. Synthetic data may be used either as an accessory task to improve
+a\hl{n} ML model's performance over a primary task (\textit{e.g.},
+regularization and oversampling), an intermediate task (\textit{e.g.}, feature
+extraction), or as a final product itself (\textit{e.g.}, data anonymization).
+The analysis of data generation algorithms for each relevant learning problem
+led to the proposal of a general\hl{-}purpose taxonomy primarily focused on the
+underlying mechanisms used for data generation. We characterized every
+algorithm discussed in this work into four categories: (1) architecture, (2)
+application level, (3) data space\hl{,} and (4) scope. The successful implementation
+of synthetic data generation generally requires a few considerations:
+
+\begin{enumerate}
+
+    \item Ensuring the dataset's features are comprised within similar, fixed
+        boundaries. For example, any method using a neighbors-based approach
+        will rely on distance measurements (typically the \hl{E}uclidean distance),
+        which is sensitive to the scale of the data and a nearest-neighbors
+        estimation may vary depending on whether the data was scaled \textit{a
+        priori}. This can be achieved with data scaling. 
+
+    \item Various generation mechanisms require a manifold. There are two
+        approaches to address non-manifold input data: (1) Adopt methods
+        sensitive to the presence of non-metric features, or (2) project the
+        input data into a manifold (\textit{i.e.}, a latent space).
+
+    \item The smoothness assumption is prevalent in linear and
+        perturbation-based data generation mechanisms. If a classification
+        problem has low class separation and \hl{it is }difficult to solve, the choice in
+        the design of the generator algorithm is also difficult. Generally,
+        generation algorithm\hl{s} with a global scope might adapt better to
+        classification problems with low separability. On the other hand,
+        problems with higher separability might require a definition of more
+        uniform decision boundaries to prevent overfitting, which can be
+        achieved with generation algorithms with a local scope.
+
+    \item Considering the trade-off between performance and computational
+        power. It is generally understood that computationally-intensive
+        approaches tend to produce synthetic data with higher quality. When
+        trained properly, neural network mechanisms typically lead to
+        synthetic data that is more difficult to distinguish compared to the
+        remaining approaches. Geometric mechanisms have also achieved good
+        results but often require\hl{ }careful tuning of their hyperparameters.
+        Linear and perturbation mechanisms do not require much training and
+        use \hl{fewer} hyperparameters but have been know\hl{n} for often producing low
+        diversity synthetic data (\textit{vis a vis} the original dataset).
+
+\end{enumerate}
+
+This work focused primarily on the mechanisms used to generate synthetic
+observations; preprocessing, learning phase design, latent space learning\hl{,} and
+ML task-specific contributions were secondary objectives for analysis.
+Consequently, understanding\hl{ }how the constraints within each task condition
+the choice and design of the synthetic data generator is a subject of future
+work.
+
+Throughout the analysis of the literature, we identified six types of
+generation mechanisms and discuss more specific methods used in classical and
+state-of-the-art techniques. Techniques for data privacy via synthetic data
+rely primarily on perturbation mechanisms, PDFs, PGMs\hl{,} and Neural networks.
+Regularization approaches frequently employ Linear mechanisms. Other less
+commonly used mechanisms are PGMs, Neural network approaches, geometric\hl{,} and
+perturbation mechanisms. Various Oversampling algorithms have been proposed
+using each of the mechanisms found. However, the most prevalent mechanisms
+used were linear-based. AL methods rarely employ synthetic data. The few
+studies found employ primarily linear and geometric mechanisms, and a minority
+used AE models for latent space augmentation. Most Semi-SL methods used
+perturbation and linear mechanisms, while geometric mechanisms are rarely
+used. All tabular Self-SL methods used perturbation mechanisms. 
+
+% Recommendations for data evaluation
+Designing an approach to measure the quality of synthetic data depends on the
+target ML problem. A\hl{ }holistic evaluation approach for synthetic data should
+consider the analysis of (1) ML utility, (2) Statistical similarity, \hl{and} (3)
+interpretability. The analysis of statistical similarity can be further
+divided into (1) fidelity, (2) diversity\hl{,} and (3) generalization.  However,
+balancing the analysis between these three perspectives is not a
+straightforward task. For example, duplicating a dataset to form a synthetic
+dataset will result in\hl{ }the best possible fidelity and diversity, but bad
+generalization. Overall, there is a paucity of research into the development
+of comprehensive analyses of synthetic data, as well as understanding the
+balance between the different types of analyses.
+
