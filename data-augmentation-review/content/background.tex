@@ -1,13 +1,13 @@
 \section{Background}\label{sec:background}
 
-In this section\hl{,} we define basic\hl{ }concepts, common goals,
-trade-offs\hl{,} and
+In this section, we define basic concepts, common goals,
+trade-offs, and
 motivations regarding the generation of synthetic data in ML\@. We define
 synthetic data generation as the production of artificial observations that
 resemble naturally occurring ones within a certain domain, using a generative
 model. It requires access to a training dataset, a generative process, or a
-data stream. However, the constraints imposed \hl{on} this process largely
-depend\hl{ } on the target ML task. For example, to generate artificial data
+data stream. However, the constraints imposed on this process largely
+depend  on the target ML task. For example, to generate artificial data
 for regularization purposes in supervised learning (\textit{i.e.}, data
 augmentation) the training dataset must be annotated. The production of
 anonymized datasets using synthetic data generation requires synthetic
@@ -26,18 +26,18 @@ generation of synthetic data without identifiable information. Generally
 speaking, ML tasks that require data with sensitive information are not
 compromised when using synthetic data. The experiment conducted by
 \cite{patki2016synthetic} using relational datasets showed that in 11 out
-\hl{of} 15 comparisons ($\approx 73\%$), practitioners performing predictive
+of 15 comparisons ($\approx 73\%$), practitioners performing predictive
 modelling tasks using fully synthetic datasets performed the same or better
 than those using the original dataset. Optionally, anonymized synthetic data
 may be produced with theoretical privacy guarantees, using differential
 privacy techniques. This topic is discussed in Section~\ref{sec:data-privacy}.
 
 %% Generalization/regularization
-A common problem in the training of \hl{ML classifiers is} their
+A common problem in the training of ML classifiers is their
 capacity to generalize~\cite{Zhang2021} (\textit{i.e.}, reduce the difference
-in classification performance between known and unseen observations). \hl{This
+in classification performance between known and unseen observations). This
 is particularly true for deep neural networks since they require the
-estimation of high amounts of parameters.} Data augmentation is a common
+estimation of high amounts of parameters. Data augmentation is a common
 method to address this problem for any type of ML classifier. The generation
 of synthetic observations increases the range of the input space used in the
 training phase and reduces the difference in performance between known and new
@@ -47,7 +47,7 @@ the ML classifier and does not exclude the usage of other regularization
 methods. In domains such as computer vision and NLP, data augmentation is also
 used to improve the robustness of models against adversarial
 attacks~\cite{zeng2020data, morris2020textattack}. These topics are discussed
-\hl{in} higher detail in Section~\ref{sec:regularization}.
+in higher detail in Section~\ref{sec:regularization}.
 
 %% Oversampling
 In supervised learning, synthetic data generation is often motivated by the
@@ -57,7 +57,7 @@ defining an appropriate decision boundary to distinguish rare classes becomes
 difficult~\cite{saez2016analyzing}. Although there are other approaches to
 address imbalanced learning, oversampling techniques are generally easier to
 implement since they do not involve modifications to the classifier. This
-topic is discussed \hl{in} higher detail in Section~\ref{sec:oversampling}.
+topic is discussed in higher detail in Section~\ref{sec:oversampling}.
 
 %% Active Learning + Few-shot Learning
 In supervised learning tasks where labeled data is not readily available, but

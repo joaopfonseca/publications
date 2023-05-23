@@ -1,7 +1,7 @@
 \section{Evaluating the Quality of Synthetic Data
 }\label{sec:evaluating-synthetic-data}
 
-The vast majority of synthetic data generation models are evaluated on a\hl{n} ML
+The vast majority of synthetic data generation models are evaluated on an ML
 utility basis. Compared to research on the development of actual synthetic
 data generation algorithms, there is a general lack of research on the
 development of metrics to evaluate their quality beyond performance metrics
@@ -11,10 +11,10 @@ such as Overall Accuracy (OA) or F1-score.
 % metrics, the reader is referred to}~\cite{seliya2009study}.} 
 One motivation to
 do this is the ability to anticipate the quality of the data for the target
-task before training a\hl{n} ML classifier, which may be expensive and
-time-consuming. This is a challenging problem\hl{ }since the usefulness of
-synthetic data generators depend\hl{s} on the assumptions imposed according to
-the dataset, domain\hl{,} and ML problem~\cite{chundawat2022tabsyndex}. This
+task before training an ML classifier, which may be expensive and
+time-consuming. This is a challenging problem since the usefulness of
+synthetic data generators depends on the assumptions imposed according to
+the dataset, domain, and ML problem~\cite{chundawat2022tabsyndex}. This
 section focuses on the main evaluation approaches found in the literature
 beyond classification performance, as well as recently proposed methods. For a
 more comprehensive analysis of performance metrics for synthetic data
@@ -32,13 +32,13 @@ should quantify three key aspects of synthetic data:
 
 \begin{enumerate}
 
-    \item Fidelity. \hl{S}ynthetic observations must resemble real
+    \item Fidelity. Synthetic observations must resemble real
         observations; 
 
-    \item Diversity. \hl{S}ynthetic observations should cover $\mathcal{D}$'s
+    \item Diversity. Synthetic observations should cover $\mathcal{D}$'s
         variability;
 
-    \item Generalization. \hl{S}ynthetic observations should not be copies of
+    \item Generalization. Synthetic observations should not be copies of
         real observations;
 
 \end{enumerate}
@@ -46,14 +46,14 @@ should quantify three key aspects of synthetic data:
 Ensuring these properties are met will secure the objectives defined in
 Section~\ref{sec:problem-formulation}: $\mathbb{P}^s \approx
 \mathbb{P}$ and $x_i \neq x_j \forall x_i \in \mathcal{D} \wedge x_j \in
-\mathcal{D}^s$. \hl{However, this is a relatively recent consideration that was
+\mathcal{D}^s$. However, this is a relatively recent consideration that was
 not commonly found in the literature. The only study found to explicitly
-address all three aspects was}~\cite{alaa2022faithful}\hl{, although all other
-studies and metrics discussed in Section}~\ref{sec:quantitative-approaches}
-\hl{address (implicitly or explicitly) at least one of these aspects.}
+address all three aspects was~\cite{alaa2022faithful}, although all other
+studies and metrics discussed in Section~\ref{sec:quantitative-approaches}
+address (implicitly or explicitly) at least one of these aspects.
 
 The effective evaluation of synthetic data generation methods is a complex
-task. \hl{G}ood performance \hl{on} one evaluation method does not
+task. Good performance on one evaluation method does not
 necessarily imply a good performance on the primary ML task, results from
 different evaluation methods seem to be independent, and evaluating the models
 directly onto the target application is generally
@@ -74,11 +74,11 @@ applications~\cite{theis2016note}. KL divergence is defined as follows:
 
 Where $\mathcal{X}$ is a probability space, $P$ and $Q$ are estimated
 probability distributions based on $\mathbb{P}$ and $\mathbb{P}^s$,
-respectively. The KL divergence is a non\hl{-}symmetric measurement that represents
+respectively. The KL divergence is a non-symmetric measurement that represents
 how a reference probability distribution ($P$) differs from another
 ($Q$). A $D_{KL}$ close to zero means $Q$ is similar to $P$. However, metrics
 like the KL divergence or the log-likelihood are generally difficult to
-interpret, do not scale well for high dimensional data\hl{,} and fail to
+interpret, do not scale well for high dimensional data, and fail to
 highlight model failures~\cite{alaa2022faithful}. Another related metric, used
 in~\cite{zhao2021ctab}, is the Jensen-Shannon (JS) divergence. It consists of
 a symmetrized and smoothed variation of the KL divergence. Having
@@ -96,9 +96,9 @@ GANs~\cite{gulrajani2017improved, goncalves2020generation}.
 In past literature, the propensity score was considered an appropriate
 performance metric to measure the utility of masked data~\cite{woo2009global}.
 This metric is estimated using a classifier (typically a logistic regression)
-trained on a dataset with both the original and synthetic data, using as \hl{a}
+trained on a dataset with both the original and synthetic data, using as a
 target the source of each observation (synthetic or original). The goal of
-this classifier is to predict the likelihood of an observation \hl{being}
+this classifier is to predict the likelihood of an observation being
 synthetic. Therefore, this approach guarantees observation-level insights
 regarding the faithfulness of each observation. \cite{woo2009global} suggest
 a summarization of this metric, also defined as the propensity Mean Squared Error
@@ -127,16 +127,16 @@ correlation between $U_p$ and OA\@.
 \cite{chundawat2022tabsyndex} proposed TabSynDex to address the lack of
 uniformity of synthetic data evaluation, which can also be used as a loss
 function to train network-based models. It is a single metric evaluation
-approach bounded within $[0,1]$ that consists of a combination \hl{of} (1) the
-relative errors of basic statistics (mean, median\hl{,} and standard deviation), (2)
+approach bounded within $[0,1]$ that consists of a combination of (1) the
+relative errors of basic statistics (mean, median, and standard deviation), (2)
 the relative errors of correlation matrices, (3) a pMSE-based index, (4) a
 support coverage-based metric for histogram comparison and (5) the performance
-difference in a\hl{n} ML efficacy-based metric between models trained on real and
+difference in an ML efficacy-based metric between models trained on real and
 synthetic data.
 
 The three-dimensional metric proposed by~\cite{alaa2022faithful} presents an
 alternative evaluation approach. It combines three metrics
-($\alpha$-Precision, $\beta$-Recall\hl{,} and Authenticity) for various application
+($\alpha$-Precision, $\beta$-Recall, and Authenticity) for various application
 domains. It extends the Precision and Recall metrics defined
 in~\cite{sajjadi2018assessing} into $\alpha$-Precision and $\beta$-Recall,
 which are used to quantify fidelity and diversity. Finally, the authenticity
@@ -169,9 +169,9 @@ complemented with the quantification of these distribution
 differences~\cite{el2020seven}. A complementary approach is the comparison of
 correlation matrices via heat map plots~\cite{hittmeir2019utility}.
 
-Another way to assess the quality of synthetic data is \hl{to evaluate
-individual, synthetic data points and collect} subjective
-\hl{evaluations} by domain experts~\cite{el2020seven}. The goal of such \hl{a} test is to
+Another way to assess the quality of synthetic data is to evaluate
+individual, synthetic data points and collect subjective
+evaluations by domain experts~\cite{el2020seven}. The goal of such a test is to
 understand whether domain experts are able to distinguish synthetic from real
 data, which could be quantified with classification performance metrics. A low
 classification performance implies synthetic data that is difficult to

@@ -1,17 +1,17 @@
 \section{Future Work}\label{sec:future-work}
 
-As discussed throughout our analysis, it appears \hl{that} synthetic data
+As discussed throughout our analysis, it appears that synthetic data
 generation research is generally isolated within ML problems and/or domains.
 Given the breadth and complexity of input-level and latent-level data
 generation mechanisms, it is increasingly important to find an \textit{a
 priori} approach to efficiently determine appropriate data generation policies
 and techniques. However, the complexity of this task is determined by various
 factors: different data types, ML problems, model architectures, computational
-resources, performance metrics\hl{,} and contextual constraints.
-Auto-augmentation and meta\hl{-}learning aim to address this challenge and are
+resources, performance metrics, and contextual constraints.
+Auto-augmentation and meta-learning aim to address this challenge and are
 still subject to active research.
 
-\hl{\textbf{Latent space learning.}} It is understood that, if learned
+\textbf{Latent space learning.} It is understood that, if learned
 properly, the latent space is expected to be convex and isotropic. In that
 case, using linear generation techniques in the latent space would produce
 synthetic data without introducing noise~\cite{cheung2020modals}. However, it
@@ -35,37 +35,37 @@ focused on GAN architectures, which require significant computational power.
 Other methods to learn manifold latent spaces could be explored to address
 this limitation.
 
-\hl{\textbf{Selection of generation mechanisms.}} It remains an open question
+\textbf{Selection of generation mechanisms.} It remains an open question
 which generation mechanisms, or types of
 mechanisms, create better synthetic data~\cite{cheung2020modals}. Although
 there is not necessarily a one-size-fits-all solution, a general set of rules
 of thumb could be explored, such as understanding how certain characteristics
 of a problem will affect the choice of the generation policy, which types of
 mechanisms are more appropriate for different types of dataset, ML model
-architecture, domains\hl{,} and target ML problem, or the trade-offs between the
+architecture, domains, and target ML problem, or the trade-offs between the
 different types of generation mechanism. A better understanding of the
 relationship between recently proposed methods for evaluating synthetic data
 (as discussed in Section~\ref{sec:evaluating-synthetic-data}) and the
-performance \hl{over} the target ML problem might contribute to answer\hl{ing} this question.
-Furthermore, determining the use cases, quality\hl{,} and general performance of
-data generation on the input, latent\hl{,} and output space should be further
-developed. Finally, it \hl{is} still unclear \textit{why} synthetic data generation
+performance over the target ML problem might contribute to answering this question.
+Furthermore, determining the use cases, quality, and general performance of
+data generation on the input, latent, and output space should be further
+developed. Finally, it is still unclear \textit{why} synthetic data generation
 works for each of the ML tasks discussed. Research on this topic lacks depth
 and fails to address the theoretical underpinnings~\cite{feng2021survey,
 dao2019kernel}.
 
 % data privacy
-\hl{\textbf{Data privacy.} }The evaluation of anonymization techniques lack\hl{s} standardized,
-objective\hl{,} and
+\textbf{Data privacy.} The evaluation of anonymization techniques lacks standardized,
+objective, and
 reliable performance metrics and benchmark datasets to allow an easier
 comparison across classifiers to evaluate key aspects of data anonymization
-(resemblance, utility, privacy\hl{,} and performance). These datasets should contain
+(resemblance, utility, privacy, and performance). These datasets should contain
 mixed data types (\textit{i.e.}, a combination of categorical, ordinal,
-continuous\hl{,} and discrete features) and the metrics should evaluate the
+continuous, and discrete features) and the metrics should evaluate the
 performance of different data mining tasks along with the anonymization
 reliability. This problem appears to be universal across domains. For example,
 \cite{hernandez2022synthetic} observed the lack of a universal method or
-metric to report the performance \hl{of} synthetic data generation algorithms for
+metric to report the performance of synthetic data generation algorithms for
 tabular health records. Therefore, in order to facilitate the usage of these
 techniques in industry domains, these benchmarks must also be
 realistic. \cite{rosenblatt2020differentially} attempts to address this
@@ -73,24 +73,24 @@ problem by proposing a standardized evaluation methodology using standard
 datasets and real-world industry applications.
 
 % Regularization in supervised learning
-\hl{\textbf{Regularization in supervised learning. }}Unlike data privacy
+\textbf{Regularization in supervised learning. }Unlike data privacy
 solutions, studies on data augmentation techniques generally do not consider
 the similarity/dissimilarity of synthetic data. The study of quality metrics
 for supervised learning may reduce computational overhead and experimentation
-time. Only one study related to the relationship \hl{between} quality metrics
+time. Only one study related to the relationship between quality metrics
 and performance in the primary ML task was found in~\cite{dankar2021fake},
 which was done only for the pMSE metric.
 
-\hl{\textbf{Consistency and interpretability. }}Neural network mechanisms typically
+\textbf{Consistency and interpretability.} Neural network mechanisms typically
 involve a higher computational cost compared to the remaining types of
-mechanisms. This problem is further aggravated \hl{by} their inconsistent
+mechanisms. This problem is further aggravated by their inconsistent
 performance, since different initializations may result in very different
 performances. This problem may be observed in~\cite{douzas2018effective}. More
-generally, \hl{representing training data in the latent space} raises the
+generally, representing training data in the latent space raises the
 challenge of interpretability; the ability to interpret latent space
 representations could guide the design of data generation techniques. 
 
-\hl{\textbf{Ensembles of generation mechanisms.} }In non-tabular data domains,
+\textbf{Ensembles of generation mechanisms.} In non-tabular data domains,
 a common approach for data augmentation is the combination of several data
 augmentation methods to increase the diversification of synthetic data. This
 is true for both text classification~\cite{bayer2021survey} and image
@@ -105,14 +105,14 @@ tabular synthetic data at an observation level, may facilitate this work.
 
 
 % oversampling
-\hl{\textbf{Oversampling. }}Various oversampling methods have been proposed to
+\textbf{Oversampling.} Various oversampling methods have been proposed to
 address imbalanced learning limitations. However, there is still a major
 limitation in the literature regarding the oversampling of datasets with mixed
-data types or with exclusively non\hl{-}metric features at the input space. In
-addition,\hl{ }research on oversampling using PDFs or PGMs is scarce.
+data types or with exclusively non-metric features at the input space. In
+addition, research on oversampling using PDFs or PGMs is scarce.
 
-\hl{\textbf{Tabular few-shot learning.} }To the best of our knowledge,
-research on few-shot learning for tabular data is \hl{infrequent}. Few-shot
+\textbf{Tabular few-shot learning.} To the best of our knowledge,
+research on few-shot learning for tabular data is infrequent. Few-shot
 learning research using synthetic data generation techniques has been
 extensively developed using image~\cite{cubuk2019autoaugment, zhao2019data}
 and text data~\cite{zhou2021flipda}, but they are rarely adapted or tested for
@@ -120,7 +120,7 @@ tabular data. One of the few studies found achieved a good performance in both
 few-shot and zero-shot learning through the adaptation of a Large Language
 model for tabular data~\cite{hegselmann2022tabllm}. 
 
-\hl{\textbf{Fairness and bias.}} Oversampling does not seem to be a relevant
+\textbf{Fairness and bias.} Oversampling does not seem to be a relevant
 source of bias in behavioral research and does not appear to have an
 appreciably different effect on results for directly versus indirectly
 oversampled variables~\cite{hauner2014latent}. However, most oversampling
@@ -133,6 +133,6 @@ ethnicity groups.
 Finally, various synthetic data generation algorithms are research-based, and
 might not be usable or feasible to be implemented by
 practitioners~\cite{bayer2021survey}. One way to address this problem is to
-publish the code developed, and ideally make them available as open\hl{-}source
+publish the code developed, and ideally make them available as open-source
 libraries for out-of-the-box usage.
 

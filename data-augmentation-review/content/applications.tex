@@ -1,12 +1,12 @@
 \section{Algorithmic applications}\label{sec:algorithmic-applications}
 
-In this section\hl{,} we discuss the data generation mechanisms for the different
+In this section, we discuss the data generation mechanisms for the different
 contexts where they are applied. We emphasize the constraints in each problem
 that condition the way generation mechanisms are used. The literature search
 was conducted with the Google Scholar database, using multiple keywords
 related to each learning problem. Additional studies were collected by
 checking the citing and cited articles of each study found initially. The
-related work discussed \hl{in }these studies was used to check for additional missing
+related work discussed in these studies was used to check for additional missing
 methods. Although a larger preference was given to studies published in or
 after 2019, our analysis includes relevant papers from previous years,
 including seminal/classical publications in the field. All the steps involved
@@ -18,13 +18,13 @@ learning problem.
 Synthetic data generation is a technique used to produce synthetic, anonymized
 versions of datasets~\cite{dankar2021fake}. It is considered a good approach
 to share sensitive data without compromising significantly a given data mining
-task~\cite{taub2018differential, park2018data}.\hl{ }Dataset anonymization via synthetic
+task~\cite{taub2018differential, park2018data}. Dataset anonymization via synthetic
 data generation attempts to balance disclosure risk and data utility in the
 final synthetic dataset. The goal is to ensure observations are not
 identifiable and the relevant data mining tasks are not
 compromised~\cite{singh2017aggregating, li2018privacy}.
 
-The generation of synthetic datasets allow\hl{s} a more flexible approach to
+The generation of synthetic datasets allows a more flexible approach to
 implement ML tasks. To do this, it is important to guarantee that sensitive
 information in $\mathcal{D}$ is not leaked into $\mathcal{D}^s$. Differential
 privacy (DP), a formalization of privacy, offers strict theoretical privacy
@@ -49,8 +49,8 @@ appealing since it is not affected by post-processing; any ML pipeline may be
 applied on $\mathcal{D}^s$ while maintaining $(\epsilon, \delta)$-differential
 privacy~\cite{dwork2014algorithmic}.
 
-\hl{Choosing an} appropriate DP synthetic data generation technique
-\hl{is generally challenging and }depends on the task to be developed (if known) and the domain. However,
+Choosing an appropriate DP synthetic data generation technique
+is generally challenging and depends on the task to be developed (if known) and the domain. However,
 marginal-based algorithms appear to perform well across various
 tests~\cite{tao2021benchmarking}. A well-known method for the generation of DP
 synthetic datasets is the combination of the Multiplicative Weights update
@@ -105,7 +105,7 @@ includes a feature extraction step (using RON) and the synthetic data
 generated is not projected back into the input space, we consider RON-GAUSS an
 internal approach to the ML pipeline.
 
-The Maxim\hl{u}m Spanning Tree (MST) algorithm~\cite{mckenna2021winning} is a
+The Maximum Spanning Tree (MST) algorithm~\cite{mckenna2021winning} is a
 marginal estimation-based approach that produces differentially private data.
 It uses the Private-PGM mechanism~\cite{mckenna2019graphical} that relies on
 the PGM approach to generate synthetic data. PGM models are most commonly used
@@ -130,14 +130,14 @@ ensemble of classifiers to distinguish real from synthetic data. As a second
 step, the predicted labels are passed (with added noise) to another
 discriminator, which is used to train the generator network.
 
-\hl{Finally, there are also popular synthetic data-based anonymization approaches to
+Finally, there are also popular synthetic data-based anonymization approaches to
 perform anonymization without DP guarantees. For example, the Synthetic Data
-Vault (SDV)}~\cite{patki2016synthetic} \hl{anonymizes databases using Gaussian
+Vault (SDV)~\cite{patki2016synthetic} anonymizes databases using Gaussian
 copula models to generate synthetic data. However, this method allows the
 usage of other generation mechanisms. A posterior extension of SDV was
-proposed to generate data using a CTGAN}~\cite{xu2019modeling}\hl{ and to handle
+proposed to generate data using a CTGAN~\cite{xu2019modeling} and to handle
 sequential tabular data using a conditional probabilistic auto-regressive
-neural network}~\cite{zhang2022sequential}. 
+neural network~\cite{zhang2022sequential}. 
 
 
 \subsection{Regularization}\label{sec:regularization}
@@ -148,13 +148,13 @@ generalization performance~\cite{benning2018modern}. However, if one or more
 of these assumptions do not hold, the ML model becomes prone to
 overfitting~\cite{Bartlett2021}. Regularization techniques are used to
 address problems like overfitting, small training dataset, high
-dimensionality, outliers, label noise\hl{,} and catastrophic
-forgetting~\cite{Halevy2009, Domingos2012, Salman2019, Xie2021}. \hl{One of
-these techniques is} data augmentation.
+dimensionality, outliers, label noise, and catastrophic
+forgetting~\cite{Halevy2009, Domingos2012, Salman2019, Xie2021}. One of
+these techniques is data augmentation.
 It is used to increase the size and variability of a training dataset, by
 producing synthetic observations~\cite{Van2001, Wong2016}. Since it is applied
 at the data level, it can be used for various types of problems and
-classifiers~\cite{Behpour2019}.\hl{ }Although data
+classifiers~\cite{Behpour2019}. Although data
 augmentation is commonly used and extensively studied in computer
 vision~\cite{shorten2019survey} and natural language
 processing~\cite{feng2021survey}, its research on tabular data is less common.
@@ -190,13 +190,13 @@ by~\cite{devries2017dataset}, as well as the Latent Space Interpolation
 method (LSI)~\cite{liu2018data} and M-Mixup~\cite{verma2019manifold}.
 However, MODALS introduces a framework for data augmentation internally. It
 contains a feature extraction step, trained using a combination of adversarial
-loss, classification loss\hl{,} and triplet loss, where latent space generation
+loss, classification loss, and triplet loss, where latent space generation
 mechanisms are applied. The classifier is trained using the original and the
-synthetic observations generated in the latent space. In this study\hl{,} the
-authors discuss \hl{the} difference transform augmentation method (among others already
+synthetic observations generated in the latent space. In this study, the
+authors discuss the difference transform augmentation method (among others already
 described in this study). It generates within-class synthetic data by
 selecting a $x^c$ and two random observations within the same class, $x_i,
-x_j$, to compute $x^s = x^c + \lambda (x_i-x_j)$. In addition\hl{,} they also
+x_j$, to compute $x^s = x^c + \lambda (x_i-x_j)$. In addition, they also
 experiment with Gaussian noise and Hard example extrapolation, determined by
 $x^s = x^c + \lambda (x^c-\mu)$, where $\mu$ is the mean of the observations
 within a given class.
@@ -221,7 +221,7 @@ conditional GAN approach to tabular data. Another GAN-based architecture,
 MedGAN~\cite{armanious2020medgan}, can also be adapted for tabular data and is
 used as a benchmark in related studies (\textit{e.g.},~\cite{xu2019modeling,
 zhang2021ganblr}). When compared to the remaining GAN-based approaches,
-MedGAN's architecture is more complex and\hl{ }generally underperforms in the
+MedGAN's architecture is more complex and generally underperforms in the
 experiments found in the literature. The GANBLR~\cite{zhang2021ganblr}
 modifies vanilla GAN architectures with a Bayesian network as both generator
 and discriminator to create synthetic data. This approach benefits from its
@@ -229,7 +229,7 @@ interpretability and reduced complexity while maintaining state-of-the-art
 performance across various evaluation criteria.
 
 Another less popular approach for network-based synthetic data generation
-\hl{is}
+is
 autoencoder architectures. TVAE, proposed in~\cite{xu2019modeling} achieved
 state-of-the art performance.  It consists of the VAE algorithm with an
 architecture modified for tabular data (\textit{i.e.}, 1-dimensional).
@@ -238,7 +238,7 @@ it is difficult to achieve DP with AE-based models since they access the
 original data during the training procedure, unlike GANs.
 \cite{delgado2021deep} studies the impact of data augmentation on supervised
 learning with small datasets. The authors compare four different AE
-architectures: Undercomplete, Sparse, Deep\hl{,} and Variational AE\@. Although all
+architectures: Undercomplete, Sparse, Deep, and Variational AE\@. Although all
 of the tested AE architectures improved classification performance, the deep
 and variational autoencoders were the best overall performing models.
 
@@ -250,15 +250,15 @@ limited classification performance.  With highly skewed distributions in
 $\mathcal{D}_L$, the classifier’s predictions tend to be biased towards
 overrepresented classes~\cite{fonseca2021improving}. For example, one can
 predict correctly with over 99\% accuracy whether credit card accounts were
-defrauded using a constant classifier. \hl{One way to address this issue is
-via oversampling}~\cite{douzas2019imbalanced}\hl{, which can
-be considered a specific setting of data augmentation}.
-\hl{It} is an appropriate technique when, given a set of $n$ target
+defrauded using a constant classifier. One way to address this issue is
+via oversampling~\cite{douzas2019imbalanced}, which can
+be considered a specific setting of data augmentation.
+It is an appropriate technique when, given a set of $n$ target
 classes, there is a collection $C_{maj}$ containing the majority class
 observations and $C_{min}$ containing the minority class observations such
 that $\mathcal{D}_L = \bigcup^n_{i=1} C_i$. The training dataset
-$\mathcal{D}_L$ is considered imbalanced if $|C_{maj}| > |C_{min}|$.\hl{
-}An oversampl\hl{er} \hl{is expected to} generate a $\mathcal{D}_L^s = \bigcup^n_{i=1} C_i^s$
+$\mathcal{D}_L$ is considered imbalanced if $|C_{maj}| > |C_{min}|$.
+An oversampler is expected to generate a $\mathcal{D}_L^s = \bigcup^n_{i=1} C_i^s$
 that guarantees $|C_i \cup C_i^s| = |C_{maj}|, \forall i \in \{1, \ldots,
 n\}$. The model $f_\theta$ will be trained using an artificially balanced
 dataset $\mathcal{D}_L' = \mathcal{D}_L \cup \mathcal{D}_L^s$.
@@ -272,7 +272,7 @@ However, the random duplication of observations often leads to
 overfitting~\cite{krawczyk2016learning}.
 
 The Synthetic Minority Oversampling Technique (SMOTE)~\cite{chawla2002smote}
-attempts to address the data duplication limitation in ROS with a two\hl{-}stage 
+attempts to address the data duplication limitation in ROS with a two-stage 
 data generation mechanism:
 
 \begin{enumerate}
@@ -294,8 +294,8 @@ minority class observation is assigned to $x^c$ or $x^{nn}$, (2) it
 introduces noise when $x^c$ and $x^{nn}$ belong to different minority-class
 clusters, (3) it introduces near duplicate observations when $x^c$ and
 $x^{nn}$ are too close and (4) it does not account for within-class
-imbalance (\textit{i.e.}, different input space regions should assume\hl{
-}different importance according to the concentration of minority class
+imbalance (\textit{i.e.}, different input space regions should assume
+different importance according to the concentration of minority class
 observations).
 
 Borderline-SMOTE~\cite{han2005borderline} modifies SMOTE's selection
@@ -303,10 +303,10 @@ mechanism. It calculates the $k$-nearest neighbors for all minority class
 observations and selects the ones that are going to be used as $x^c$ in the
 generation phase. An observation is selected based on the number of neighbors
 belonging to a different class, where the observations with no neighbors
-belonging to $C_{min}$ and insufficient number of neighbors belonging \hl{to}
+belonging to $C_{min}$ and insufficient number of neighbors belonging to
 $C_{maj}$ are not considered for the generation phase. This approximates the
 synthetic observations to the border of the expected decision boundaries.
-Various other methods were proposed since then to modify \hl{the} selection mechanism,
+Various other methods were proposed since then to modify the selection mechanism,
 such as K-means SMOTE~\cite{douzas2018improving}. This approach addresses
 within-class imbalance and the generation of noisy synthetic data by
 generating data within clusters. The data generation is done according to each
@@ -318,7 +318,7 @@ solution.
 The Adaptive Synthetic Sampling approach (ADASYN)~\cite{he2008adasyn} uses a
 comparable approach to Borderline-SMOTE\@. It calculates the ratio of
 non-minority class observations within the $k$-nearest neighbors of each $x
-\in C_{min}$. The \hl{number }of observations to be generated using each $x \in
+\in C_{min}$. The number of observations to be generated using each $x \in
 C_{min}$ as $x^c$ is determined according to this ratio; the more non-minority
 class neighbors an observation contains, the more synthetic observations are
 generated using it as $x^c$. The generation phase is done using the linear
@@ -330,18 +330,18 @@ ADASYN's ratio and the synthetic data is sampled using the calculated Gaussian
 Kernel function whose bandwidth is passed as an additional hyperparameter.
 
 Modifications to SMOTE's generation mechanism are less common and generally
-attempt to address \hl{the }problem of noisy synthetic data generation. Safe-level
+attempt to address the problem of noisy synthetic data generation. Safe-level
 SMOTE~\cite{bunkhumpornpat2009safe} truncates the line segment between $x^c$
 and $x^{nn}$ according to a safe level ratio. Geometric-SMOTE
-(G-SMOTE)~\cite{douzas2019geometric}\hl{ }generates synthetic data within a
+(G-SMOTE)~\cite{douzas2019geometric} generates synthetic data within a
 deformed and truncated hypersphere to also avoid the generation of
-near-duplicate synthetic data. It also \hl{modifies} the selection strategy to
+near-duplicate synthetic data. It also modifies the selection strategy to
 combine the selection of majority class observations as $x^{nn}$ to avoid the
 introduction of noisy synthetic data. 
 
 LR-SMOTE~\cite{liang2020lr} modifies both the selection and generation
 mechanisms. The set of observations to use as $x^c$ contains the misclassified
-minority class observations using a\hl{n} SVM classifier, out of which the
+minority class observations using an SVM classifier, out of which the
 potentially noisy observations are removed. The k-means clustering method is
 used to find the closest observations to the cluster centroids, which are used
 as $x^c$. The observations with a higher number of majority class neighbors
@@ -373,9 +373,9 @@ dataset. The GMM Filtering-SMOTE (GMF-SMOTE)~\cite{xu2022synthetic} algorithm
 applies a somewhat inverse approach; a GMM is used to detect and delete
 boundary samples the synthetic data is generated with SMOTE.
 
-\hl{The contrastive learning-based VAE approach proposed
-in}~\cite{dai2019generative}\hl{, designed for oversampling, was adapted from
-the architecture proposed in}~\cite{abid2019contrastive}. They address a
+The contrastive learning-based VAE approach proposed
+in~\cite{dai2019generative}, designed for oversampling, was adapted from
+the architecture proposed in~\cite{abid2019contrastive}. They address a
 limitation found in most oversampling methods, where these methods focus
 almost exclusively on the distribution of the minority class, while largely
 ignoring the majority class distribution. Their VAE architecture uses two
@@ -385,9 +385,9 @@ the sets of latent variables (which follows a Gaussian distribution) and
 projecting it into the decoder.
 
 Another set of network-based methods that fully replace SMOTE-based mechanisms
-\hl{is} GAN-based architectures. One example of this approach is
+is GAN-based architectures. One example of this approach is
 CGAN~\cite{douzas2018effective}. It uses an adversarial training approach to
-generate data that approximates the original data distribution and \hl{is}
+generate data that approximates the original data distribution and is
 indistinguishable from the original dataset (according to the adversarial
 classifier). A more recent GAN-based oversampler, K-means CTGAN~\cite{an2021k}
 uses a K-means clustering method as an additional attribute to train the
@@ -395,20 +395,20 @@ CTGAN\@. In this case, cluster labels allow the reduction of within-class
 imbalance. These types of approaches benefit from learning the overall
 per-class distribution, instead of using local information only. However, GANs
 require more computational power to train, their performance is sensitive to
-the initialization\hl{,} and are prone to the ``mode collapse'' problem.
+the initialization, and are prone to the ``mode collapse'' problem.
 
 Statistical-based oversampling approaches are less common. Some methods, such
 as RACOG and wRACOG~\cite{das2014racog} are based on Gibbs sampling,
 PDFOS~\cite{gao2014pdfos} is based on probability density function estimations
 and RWO~\cite{zhang2014rwo} uses a random walk algorithm. Although
 oversampling for classification problems using continuous features appears as
-a relatively well\hl{-}explored problem, there is a general lack of research on
+a relatively well-explored problem, there is a general lack of research on
 oversampling using nominal features or mixed data types (\textit{i.e.}, using
 both nominal and continuous features) and regression problems.
 SMOTENC~\cite{chawla2002smote} introduces a SMOTE adaptation for mixed data
 types. It calculates the nearest neighbors of $x^c$ by including in the
-\hl{E}uclidean distance metric the median of the standard deviations of the
-continuous features for every nominal feature value that \hl{is} different
+Euclidean distance metric the median of the standard deviations of the
+continuous features for every nominal feature value that is different
 between $x^c$ and $x^{nn}$. The generation is done using the normal SMOTE
 procedure for the continuous features and the nominal features are determined
 with their modes within $x^c$'s nearest neighbors. The
@@ -447,18 +447,18 @@ G-SMOTER~\cite{camacho2022geometric}.
 AL is an informed approach to data collection and labeling. In classification
 problems, when $|\mathcal{D}_U| \gg |\mathcal{D}_L|$ and it is possible to
 label data according to a given budget, AL methods will search for the most
-informative unlabeled observations. Once labeled and included in\hl{ }the
+informative unlabeled observations. Once labeled and included in the
 training set, these observations are expected to improve the performance of
-the classifier to a greater extent when compared to randomly select\hl{ed}
+the classifier to a greater extent when compared to randomly selected
 observations. AL is an iterative process where an acquisition function
 $f_{acq}(x, f_\theta): \mathcal{D}_U \to \mathbb{R}$ computes a classification
 uncertainty score for each unlabeled observation, at each iteration.
 $f_{acq}$ provides the selection criteria based on the uncertainty scores,
 $f_\theta$ and the labeling budget~\cite{kim2021lada}.
 
-One way to improve an AL process is via the generation of synthetic data\hl{,
+One way to improve an AL process is via the generation of synthetic data,
 since the generation of informative, labeled, synthetic observations reduces the amount
-of data labeling required to achieve a certain classification performance}. In
+of data labeling required to achieve a certain classification performance. In
 this case, synthetic data is expected to improve classification with a better
 definition of the classifier's decision boundaries. This allows the allocation
 of the data collection budget over a larger area of the input space. These
@@ -466,8 +466,8 @@ methods can be divided into AL with pipelined data augmentation approaches and
 AL with within-acquisition data augmentation~\cite{kim2021lada}. Pipelined
 data augmentation is the more intuitive approach, where at each training phase
 the synthetic data is produced to improve the quality of the classifier and is
-independent \hl{of} $f_{acq}$. In \cite{fonseca2021increasing}, the pipelined
-approach in tabular data achieves\hl{ }superior performance compared to the
+independent of $f_{acq}$. In \cite{fonseca2021increasing}, the pipelined
+approach in tabular data achieves superior performance compared to the
 traditional AL framework using the G-SMOTE algorithm and the oversampling
 generation policy. Other methods, although developed and tested on image data,
 could also be adapted for tabular data: in the Bayesian Generative Active Deep
@@ -479,7 +479,7 @@ data.
 The Look-Ahead Data Acquisition via augmentation algorithm~\cite{kim2021lada}
 proposes an acquisition function that considers the classification uncertainty
 of synthetic data generated using a given unlabeled observation, instead of
-only estimating \hl{the }classification uncertainty of the unlabeled observation
+only estimating the classification uncertainty of the unlabeled observation
 itself. This approach considers both the utility of the augmented data and the
 utility of the unlabeled observation. This goal is achieved with the data
 augmentation method InfoMixup, which uses M-Mixup~\cite{verma2019manifold}
@@ -530,7 +530,7 @@ DAE networks can be adapted for tabular data~\cite{sattarov2022explaining}.
 
 The $\Pi$-model simultaneously uses both labeled and unlabeled data in the
 training phase~\cite{samuli2017temporal}. Besides minimizing cross-entropy,
-they add to the loss function the squared difference between two input\hl{-}level
+they add to the loss function the squared difference between two input-level
 transformations (Gaussian noise and other image-specific methods) in the
 network's output layer. Mean Teacher algorithm~\cite{tarvainen2017mean} built
 upon the $\Pi$-model, which used the same types of augmentation. The
@@ -560,9 +560,9 @@ Self-supervised learning (Self-SL), although closely related to Semi-SL,
 assumes $\mathcal{D}_L = \emptyset$. These models focus
 on representation learning using $\mathcal{D}_U$ via secondary learning
 tasks, which can be adapted to multiple downstream
-tasks~\cite{liu2021self}. This family of techniques allow\hl{s} the usage of raw,
+tasks~\cite{liu2021self}. This family of techniques allows the usage of raw,
 unlabeled data, which is generally cheaper to acquire when compared to
-processed, curated\hl{,} and labeled data. Although not all Self-SL methods rely on
+processed, curated, and labeled data. Although not all Self-SL methods rely on
 data augmentation (\textit{e.g.}, STab~\cite{hajiramezanali2022stab}), the
 majority of state-of-the-art tabular Self-SL methods use data augmentation as
 a central concept for the training phase.
@@ -570,15 +570,15 @@ a central concept for the training phase.
 The value imputation and mask estimation method (VIME)~\cite{yoon2020vime} is
 a Semi-SL and Self-SL approach that introduces Masking, a tabular data
 augmentation method. It is motivated by the need to generate corrupted,
-difficult\hl{-}to\hl{-}distinguish synthetic data in a computationally efficient way for
+difficult-to-distinguish synthetic data in a computationally efficient way for
 Self-SL training. They replace with probability $p_m$ the feature values in $x_i$
 with another randomly selected value of each corresponding feature. To do
 this, the authors use a binomial mask vector $m=[m_1, \ldots, m_d]^\bot \in
 \{0,1\}^d$, $m_j \sim \text{Bern}(p_m)$, observation $x_i$ and the noise vector
 $\epsilon$ (\textit{i.e.}, the vector of possible replacement values). A
 synthetic observation is produced as $x^s=(1-m) \odot x_i + m \odot \epsilon$.
-A subsequent study \hl{that} proposed the SubTab~\cite{ucar2021subtab}
-framework present\hl{s} a multi-view approach; analogous to cropping in image data
+A subsequent study that proposed the SubTab~\cite{ucar2021subtab}
+framework presents a multi-view approach; analogous to cropping in image data
 or feature bagging in ensemble learning. In addition, the authors propose an
 extension of the masking approach proposed in VIME by introducing noise using
 different approaches: Gaussian noise, swap-noise (\textit{i.e.}, the approach

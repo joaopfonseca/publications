@@ -8,15 +8,15 @@ augmentation techniques into ``basic'' or ``classical'' approaches and deep
 learning approaches. In both cases, the former refers to domain-specific
 generation techniques, while the latter may be applied to any data structure.
 \cite{iwana2021empirical} proposes a time-series data augmentation taxonomy
-divided in\hl{to} four families: (1) Random transformation, (2) Pattern mixing, (3)
-Generative models\hl{,} and (4) Decomposition. \hl{Except for} generative models,
+divided into four families: (1) Random transformation, (2) Pattern mixing, (3)
+Generative models, and (4) Decomposition. Except for generative models,
 the majority of the methods presented in the remaining families are
-well\hl{-}established and domain\hl{-}specific. \cite{hernandez2022synthetic}
+well-established and domain-specific. \cite{hernandez2022synthetic}
 defines a taxonomy for synthetic tabular data generation approaches divided
-in\hl{to} three types of approaches: (1) Classical, (2) Deep learning, and (3)
+into three types of approaches: (1) Classical, (2) Deep learning, and (3)
 Others. Most taxonomies follow similar definitions while varying in
 terminology or distinction criteria. In addition, all taxonomies with
-categories defined as ``basic'', ``traditional''\hl{,} or ``classical'' use these to
+categories defined as ``basic'', ``traditional'', or ``classical'' use these to
 characterize domain-specific transformations.
 
 Within the taxonomies found, none of them consider how a generation
@@ -31,11 +31,11 @@ characterizes data generation mechanisms using four properties:
 \begin{enumerate}
 
     \item Architecture. Defines the broader type of data augmentation. It is
-        based on domain specificity, architecture type\hl{,} or data transformations
+        based on domain specificity, architecture type, or data transformations
         using a heuristic or random perturbation process. Data generation
         based on data sampling from a probability function is considered
         probability-based. Generation techniques that apply a form of random
-        perturbation, interpolation\hl{,} or geometric transformation to the data
+        perturbation, interpolation, or geometric transformation to the data
         with some degree of randomness are considered randomized approaches.
         Typical, domain-specific data generation techniques are considered
         domain-specific approaches. These techniques apply transformations to
@@ -49,7 +49,7 @@ characterizes data generation mechanisms using four properties:
     \item Application level. Refers to the phase of the ML pipeline where the
         generative process is included. Generative models are considered
         internal if used alongside the primary ML task, whereas
-        models used \hl{before} the development of the primary ML task are
+        models used before the development of the primary ML task are
         considered external.
 
     \item Scope. Considers the usage of the original dataset's properties.
@@ -73,7 +73,7 @@ characterizes data generation mechanisms using four properties:
         based on the target feature (\textit{i.e.}, on the output space).
         Although some studies discuss the need to generate synthetic data on
         the input space~\cite{dankar2021fake, patki2016synthetic}, 
-        \hl{various studies successfully} apply synthetic data generation
+        various studies successfully apply synthetic data generation
         techniques on a latent space.
 
 \end{enumerate}
@@ -95,9 +95,9 @@ Table~\ref{tbl:generators}.
 \setlength\LTright{1.5cm}
 \begin{longtable}{rcccccccc}
     \caption{Summary of the synthetic data generation methods discussed in
-    this work. \hl{A field containing ``---'' indicates that the it is either
+    this work. A field containing ``---'' indicates that the it is either
     not applicable to the corresponding method, and/or applies its own unique
-    approach.}}
+    approach.}
     \label{tbl:generators}\\
     \toprule
                Algorithm & ML Problem & Type &  Architecture & Level &  Data
@@ -105,9 +105,9 @@ Table~\ref{tbl:generators}.
     \midrule
     \endfirsthead
     \caption[]{Summary of the synthetic data generation methods discussed in
-    this work. \hl{A field containing ``---'' indicates that the it is either
+    this work. A field containing ``---'' indicates that the it is either
     not applicable to the corresponding method, and/or applies its own unique
-    approach.}} \\
+    approach.} \\
     \toprule
                Algorithm & ML Problem & Type &  Architecture & Level &  Data
                Space & Scope \\
